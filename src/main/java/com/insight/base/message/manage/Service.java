@@ -1,0 +1,132 @@
+package com.insight.base.message.manage;
+
+import com.insight.base.message.common.dto.ChannelTempDto;
+import com.insight.base.message.common.dto.SceneDto;
+import com.insight.base.message.common.dto.TemplateDto;
+import com.insight.util.pojo.Reply;
+
+/**
+ * @author 宣炳刚
+ * @date 2019-08-28
+ * @remark 消息管理服务接口
+ */
+public interface Service {
+
+    /**
+     * 获取短信模板列表
+     *
+     * @param keyword 查询关键词
+     * @param page    分页页码
+     * @param size    每页记录数
+     * @return Reply
+     */
+    Reply getTemplates(String keyword, int page, int size);
+
+    /**
+     * 获取短信模板
+     *
+     * @param id 短信模板ID
+     * @return Reply
+     */
+    Reply getTemplate(String id);
+
+    /**
+     * 新增短信模板
+     *
+     * @param dto 短信模板DTO
+     * @return Reply
+     */
+    Reply newTemplate(TemplateDto dto);
+
+    /**
+     * 编辑短信模板
+     *
+     * @param dto 短信模板DTO
+     * @return Reply
+     */
+    Reply editTemplate(TemplateDto dto);
+
+    /**
+     * 删除短信模板
+     *
+     * @param id 短信模板ID
+     * @return Reply
+     */
+    Reply deleteTemplate(String id);
+
+    /**
+     * 改变短信模板禁用/启用状态
+     *
+     * @param id     短信模板ID
+     * @param status 禁用/启用状态
+     * @return Reply
+     */
+    Reply changeTemplateStatus(String id, boolean status);
+
+    /**
+     * 获取场景列表
+     *
+     * @param keyword 查询关键词
+     * @param page    分页页码
+     * @param size    每页记录数
+     * @return Reply
+     */
+    Reply getScenes(String keyword, int page, int size);
+
+    /**
+     * 获取场景
+     *
+     * @param id 场景ID
+     * @return Reply
+     */
+    Reply getScene(String id);
+
+    /**
+     * 新增场景
+     *
+     * @param dto 场景DTO
+     * @return Reply
+     */
+    Reply newScene(SceneDto dto);
+
+    /**
+     * 编辑场景
+     *
+     * @param dto 场景DTO
+     * @return Reply
+     */
+    Reply editScene(SceneDto dto);
+
+    /**
+     * 删除场景
+     *
+     * @param id 场景ID
+     * @return Reply
+     */
+    Reply deleteScene(String id);
+
+    /**
+     * 改变场景禁用/启用状态
+     *
+     * @param id     场景ID
+     * @param status 禁用/启用状态
+     * @return Reply
+     */
+    Reply changeSceneStatus(String id, boolean status);
+
+    /**
+     * 添加渠道模板
+     *
+     * @param dto 渠道模板DTO
+     * @return Reply
+     */
+    Reply addChannel(ChannelTempDto dto);
+
+    /**
+     * 移除渠道模板
+     *
+     * @param id 渠道模板ID
+     * @return Reply
+     */
+    Reply removeChannel(String id);
+}
