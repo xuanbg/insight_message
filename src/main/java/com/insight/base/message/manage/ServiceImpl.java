@@ -6,15 +6,14 @@ import com.insight.base.message.common.dto.TemplateDto;
 import com.insight.util.pojo.Reply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 /**
  * @author 宣炳刚
  * @date 2019-08-28
  * @remark 消息管理服务
  */
-@Service
-public class ServiceImpl implements com.insight.base.message.manage.Service {
+@org.springframework.stereotype.Service
+public class ServiceImpl implements Service {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**

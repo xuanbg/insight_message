@@ -25,22 +25,20 @@ public interface Service {
     /**
      * 生成短信验证码
      *
-     * @param type    验证码类型(0:验证手机号;1:注册用户账号;2:重置密码;3:修改支付密码;4:登录验证码;5:修改手机号)
-     * @param key     手机号或手机号+验证答案的Hash值
+     * @param type    验证码类型:0.验证手机号;1.注册用户账号;2.重置密码;3.修改支付密码;4.修改手机号
+     * @param mobile  手机号
+     * @param code    验证码
      * @param minutes 验证码有效时长(分钟)
-     * @param length  验证码长度
      * @return Reply
      */
-    Reply getSmsCode(int type, String key, int minutes, int length);
+    Reply seedSmsCode(int type, String mobile, String code, int minutes);
 
     /**
      * 验证短信验证码
      *
-     * @param type    验证码类型(0:验证手机号;1:注册用户账号;2:重置密码;3:修改支付密码;4:登录验证码;5:修改手机号)
-     * @param mobile  手机号
-     * @param code    验证码
-     * @param isCheck 是否检验模式(true:检验模式,验证后验证码不失效;false:验证模式,验证后验证码失效)
+     * @param key     验证参数,MD5(type + mobile + code)
+     * @param isCheck 是否检验模式:true.检验模式,验证后验证码不失效;false.验证模式,验证后验证码失效
      * @return Reply
      */
-    Reply verifySmsCode(int type, String mobile, String code, Boolean isCheck);
+    Reply verifySmsCode(String key, Boolean isCheck);
 }
