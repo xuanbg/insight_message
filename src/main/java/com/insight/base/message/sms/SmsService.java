@@ -1,37 +1,31 @@
 package com.insight.base.message.sms;
 
 import com.insight.util.pojo.Reply;
-
-import java.util.Map;
+import com.insight.util.pojo.Sms;
+import com.insight.util.pojo.SmsCode;
 
 /**
  * @author 宣炳刚
  * @date 2019-08-28
  * @remark 短信服务接口
  */
-public interface Service {
+public interface SmsService {
 
     /**
      * 发送短信
      *
-     * @param mobiles 手机号,多个手机号逗号分隔
-     * @param scene   场景编号
-     * @param channel 渠道编号
-     * @param param   短信参数
+     * @param sms 短信DTO
      * @return Reply
      */
-    Reply sendMessage(String mobiles, String scene, String channel, Map param);
+    Reply sendMessage(Sms sms);
 
     /**
      * 生成短信验证码
      *
-     * @param type    验证码类型:0.验证手机号;1.注册用户账号;2.重置密码;3.修改支付密码;4.修改手机号
-     * @param mobile  手机号
-     * @param code    验证码
-     * @param minutes 验证码有效时长(分钟)
+     * @param code 验证码
      * @return Reply
      */
-    Reply seedSmsCode(int type, String mobile, String code, int minutes);
+    Reply seedSmsCode(SmsCode code);
 
     /**
      * 验证短信验证码

@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RestController
 @RequestMapping("/base/message/schedule")
-public class Controller {
+public class ScheduleController {
 }

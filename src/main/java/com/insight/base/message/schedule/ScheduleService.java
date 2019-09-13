@@ -9,7 +9,7 @@ import java.util.Map;
  * @date 2019-08-28
  * @remark 计划任务服务接口
  */
-public interface Service {
+public interface ScheduleService {
 
 
 }

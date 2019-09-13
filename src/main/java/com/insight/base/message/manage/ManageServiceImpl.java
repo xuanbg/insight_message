@@ -1,19 +1,20 @@
 package com.insight.base.message.manage;
 
-import com.insight.base.message.common.dto.ChannelTempDto;
-import com.insight.base.message.common.dto.SceneDto;
-import com.insight.base.message.common.dto.TemplateDto;
+import com.insight.base.message.common.entity.ChannelTemp;
+import com.insight.base.message.common.entity.Scene;
+import com.insight.base.message.common.entity.Template;
 import com.insight.util.pojo.Reply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 宣炳刚
  * @date 2019-08-28
  * @remark 消息管理服务
  */
-@org.springframework.stereotype.Service
-public class ServiceImpl implements Service {
+@Service
+public class ManageServiceImpl implements ManageService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -47,7 +48,7 @@ public class ServiceImpl implements Service {
      * @return Reply
      */
     @Override
-    public Reply newTemplate(TemplateDto dto) {
+    public Reply newTemplate(Template dto) {
         return null;
     }
 
@@ -58,7 +59,7 @@ public class ServiceImpl implements Service {
      * @return Reply
      */
     @Override
-    public Reply editTemplate(TemplateDto dto) {
+    public Reply editTemplate(Template dto) {
         return null;
     }
 
@@ -116,7 +117,7 @@ public class ServiceImpl implements Service {
      * @return Reply
      */
     @Override
-    public Reply newScene(SceneDto dto) {
+    public Reply newScene(Scene dto) {
         return null;
     }
 
@@ -127,7 +128,7 @@ public class ServiceImpl implements Service {
      * @return Reply
      */
     @Override
-    public Reply editScene(SceneDto dto) {
+    public Reply editScene(Scene dto) {
         return null;
     }
 
@@ -161,7 +162,7 @@ public class ServiceImpl implements Service {
      * @return Reply
      */
     @Override
-    public Reply addChannel(ChannelTempDto dto) {
+    public Reply addChannel(ChannelTemp dto) {
         return null;
     }
 

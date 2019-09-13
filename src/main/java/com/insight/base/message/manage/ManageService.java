@@ -1,8 +1,8 @@
 package com.insight.base.message.manage;
 
-import com.insight.base.message.common.dto.ChannelTempDto;
-import com.insight.base.message.common.dto.SceneDto;
-import com.insight.base.message.common.dto.TemplateDto;
+import com.insight.base.message.common.entity.ChannelTemp;
+import com.insight.base.message.common.entity.Scene;
+import com.insight.base.message.common.entity.Template;
 import com.insight.util.pojo.Reply;
 
 /**
@@ -10,7 +10,7 @@ import com.insight.util.pojo.Reply;
  * @date 2019-08-28
  * @remark 消息管理服务接口
  */
-public interface Service {
+public interface ManageService {
 
     /**
      * 获取短信模板列表
@@ -36,7 +36,7 @@ public interface Service {
      * @param dto 短信模板DTO
      * @return Reply
      */
-    Reply newTemplate(TemplateDto dto);
+    Reply newTemplate(Template dto);
 
     /**
      * 编辑短信模板
@@ -44,7 +44,7 @@ public interface Service {
      * @param dto 短信模板DTO
      * @return Reply
      */
-    Reply editTemplate(TemplateDto dto);
+    Reply editTemplate(Template dto);
 
     /**
      * 删除短信模板
@@ -87,7 +87,7 @@ public interface Service {
      * @param dto 场景DTO
      * @return Reply
      */
-    Reply newScene(SceneDto dto);
+    Reply newScene(Scene dto);
 
     /**
      * 编辑场景
@@ -95,7 +95,7 @@ public interface Service {
      * @param dto 场景DTO
      * @return Reply
      */
-    Reply editScene(SceneDto dto);
+    Reply editScene(Scene dto);
 
     /**
      * 删除场景
@@ -120,7 +120,7 @@ public interface Service {
      * @param dto 渠道模板DTO
      * @return Reply
      */
-    Reply addChannel(ChannelTempDto dto);
+    Reply addChannel(ChannelTemp dto);
 
     /**
      * 移除渠道模板
