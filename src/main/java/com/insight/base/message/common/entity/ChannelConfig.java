@@ -8,7 +8,7 @@ import java.util.Date;
  * @date 2019-08-28
  * @remark 渠道消息模板
  */
-public class ChannelTemp implements Serializable {
+public class ChannelConfig implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
@@ -17,9 +17,14 @@ public class ChannelTemp implements Serializable {
     private String id;
 
     /**
-     * 渠道ID
+     * 渠道编码
      */
-    private String channelId;
+    private String code;
+
+    /**
+     * 渠道名称
+     */
+    private String channel;
 
     /**
      * 场景ID
@@ -35,11 +40,6 @@ public class ChannelTemp implements Serializable {
      * 签名
      */
     private String sign;
-
-    /**
-     * 是否失效:0.正常;1.失效
-     */
-    private Boolean isInvalid;
 
     /**
      * 创建人部门ID
@@ -69,12 +69,20 @@ public class ChannelTemp implements Serializable {
         this.id = id;
     }
 
-    public String getChannelId() {
-        return channelId;
+    public String getCode() {
+        return code;
     }
 
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
     public String getSceneId() {
@@ -99,14 +107,6 @@ public class ChannelTemp implements Serializable {
 
     public void setSign(String sign) {
         this.sign = sign;
-    }
-
-    public Boolean getInvalid() {
-        return isInvalid;
-    }
-
-    public void setInvalid(Boolean invalid) {
-        isInvalid = invalid;
     }
 
     public String getDeptId() {

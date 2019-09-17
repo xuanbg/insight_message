@@ -1,8 +1,11 @@
 package com.insight.base.message.manage;
 
-import com.insight.base.message.common.entity.ChannelTemp;
+import com.insight.base.message.common.entity.ChannelConfig;
 import com.insight.base.message.common.entity.Scene;
 import com.insight.base.message.common.entity.Template;
+import com.insight.util.Json;
+import com.insight.util.ReplyHelper;
+import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.Reply;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,46 +58,86 @@ public class ManageController {
     /**
      * 新增短信模板
      *
-     * @param dto 短信模板DTO
+     * @param info 用户关键信息
+     * @param dto  短信模板DTO
      * @return Reply
      */
     @PostMapping("/v1.0/templates")
-    public Reply newTemplate(@Valid @RequestBody Template dto) {
-        return service.newTemplate(dto);
+    public Reply newTemplate(@RequestHeader("loginInfo") String info, @Valid @RequestBody Template dto) {
+        if (dto == null) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.newTemplate(loginInfo, dto);
     }
 
     /**
      * 编辑短信模板
      *
-     * @param dto 短信模板DTO
+     * @param info 用户关键信息
+     * @param dto  短信模板DTO
      * @return Reply
      */
     @PutMapping("/v1.0/templates")
-    public Reply editTemplate(@Valid @RequestBody Template dto) {
-        return service.editTemplate(dto);
+    public Reply editTemplate(@RequestHeader("loginInfo") String info, @Valid @RequestBody Template dto) {
+        if (dto == null) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.editTemplate(loginInfo, dto);
     }
 
     /**
      * 删除短信模板
      *
-     * @param id 短信模板ID
+     * @param info 用户关键信息
+     * @param id   短信模板ID
      * @return Reply
      */
     @DeleteMapping("/v1.0/templates")
-    public Reply deleteTemplate(String id) {
-        return service.deleteTemplate(id);
+    public Reply deleteTemplate(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+        if (id == null || id.isEmpty()) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.deleteTemplate(loginInfo, id);
     }
 
     /**
-     * 改变短信模板禁用/启用状态
+     * 禁用短信模板
      *
-     * @param id     短信模板ID
-     * @param status 禁用/启用状态
+     * @param info 用户关键信息
+     * @param id   短信模板ID
      * @return Reply
      */
-    @PutMapping("/v1.0/templates/status")
-    public Reply changeTemplateStatus(String id, boolean status) {
-        return service.changeTemplateStatus(id, status);
+    @PutMapping("/v1.0/templates/disable")
+    public Reply disableTemplate(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+        if (id == null || id.isEmpty()) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.changeTemplateStatus(loginInfo, id, false);
+    }
+
+    /**
+     * 启用短信模板
+     *
+     * @param info 用户关键信息
+     * @param id   短信模板ID
+     * @return Reply
+     */
+    @PutMapping("/v1.0/templates/enable")
+    public Reply enableTemplate(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+        if (id == null || id.isEmpty()) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.changeTemplateStatus(loginInfo, id, true);
     }
 
     /**
@@ -124,67 +167,132 @@ public class ManageController {
     /**
      * 新增场景
      *
-     * @param dto 场景DTO
+     * @param info 用户关键信息
+     * @param dto  场景DTO
      * @return Reply
      */
     @PostMapping("/v1.0/scenes")
-    public Reply newScene(@Valid @RequestBody Scene dto) {
-        return service.newScene(dto);
+    public Reply newScene(@RequestHeader("loginInfo") String info, @Valid @RequestBody Scene dto) {
+        if (dto == null) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.newScene(loginInfo, dto);
     }
 
     /**
      * 编辑场景
      *
-     * @param dto 场景DTO
+     * @param info 用户关键信息
+     * @param dto  场景DTO
      * @return Reply
      */
     @PutMapping("/v1.0/scenes")
-    public Reply editScene(@Valid @RequestBody Scene dto) {
-        return service.editScene(dto);
+    public Reply editScene(@RequestHeader("loginInfo") String info, @Valid @RequestBody Scene dto) {
+        if (dto == null) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.editScene(loginInfo, dto);
     }
 
     /**
      * 删除场景
      *
-     * @param id 场景ID
+     * @param info 用户关键信息
+     * @param id   场景ID
      * @return Reply
      */
     @DeleteMapping("/v1.0/scenes")
-    public Reply deleteScene(String id) {
-        return service.deleteScene(id);
+    public Reply deleteScene(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+        if (id == null || id.isEmpty()) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.deleteScene(loginInfo, id);
     }
 
     /**
-     * 改变场景禁用/启用状态
+     * 禁用场景
      *
-     * @param id     场景ID
-     * @param status 禁用/启用状态
+     * @param info 用户关键信息
+     * @param id   场景ID
      * @return Reply
      */
-    @PutMapping("/v1.0/scenes/status")
-    public Reply changeSceneStatus(String id, boolean status) {
-        return service.changeSceneStatus(id, status);
+    @PutMapping("/v1.0/scenes/disable")
+    public Reply disableScene(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+        if (id == null || id.isEmpty()) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.changeSceneStatus(loginInfo, id, false);
+    }
+
+    /**
+     * 启用场景
+     *
+     * @param info 用户关键信息
+     * @param id   场景ID
+     * @return Reply
+     */
+    @PutMapping("/v1.0/scenes/enable")
+    public Reply enableScene(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+        if (id == null || id.isEmpty()) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.changeSceneStatus(loginInfo, id, true);
+    }
+
+    /**
+     * 获取渠道模板配置列表
+     *
+     * @param keyword 查询关键词
+     * @param page    分页页码
+     * @param size    每页记录数
+     * @return Reply
+     */
+    @GetMapping("/v1.0/scenes/channels")
+    public Reply getChannelConfigs(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        return service.getScenes(keyword, page, size);
     }
 
     /**
      * 添加渠道模板
      *
-     * @param dto 渠道模板DTO
+     * @param info 用户关键信息
+     * @param dto  渠道模板DTO
      * @return Reply
      */
     @PostMapping("/v1.0/scenes/channels")
-    public Reply addChannel(ChannelTemp dto) {
-        return service.addChannel(dto);
+    public Reply addChannelConfig(@RequestHeader("loginInfo") String info, @Valid @RequestBody ChannelConfig dto) {
+        if (dto == null) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.addChannelConfig(loginInfo, dto);
     }
 
     /**
      * 移除渠道模板
      *
-     * @param id 渠道模板ID
+     * @param info 用户关键信息
+     * @param id   渠道模板ID
      * @return Reply
      */
     @DeleteMapping("/v1.0/scenes/channels")
-    public Reply removeChannel(String id) {
-        return service.removeChannel(id);
+    public Reply removeChannelConfig(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+        if (id == null || id.isEmpty()) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.removeChannelConfig(loginInfo, id);
     }
 }
