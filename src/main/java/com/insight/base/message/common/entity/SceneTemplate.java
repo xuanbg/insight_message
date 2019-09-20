@@ -8,23 +8,13 @@ import java.util.Date;
  * @date 2019-08-28
  * @remark 渠道消息模板
  */
-public class ChannelConfig implements Serializable {
+public class SceneTemplate implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
      * UUID主键
      */
     private String id;
-
-    /**
-     * 渠道编码
-     */
-    private String code;
-
-    /**
-     * 渠道名称
-     */
-    private String channel;
 
     /**
      * 场景ID
@@ -35,6 +25,26 @@ public class ChannelConfig implements Serializable {
      * 模板ID
      */
     private String templateId;
+
+    /**
+     * 应用ID
+     */
+    private String appId;
+
+    /**
+     * 应用名称
+     */
+    private String appName;
+
+    /**
+     * 渠道编码
+     */
+    private String code;
+
+    /**
+     * 渠道名称
+     */
+    private String channel;
 
     /**
      * 签名
@@ -69,22 +79,6 @@ public class ChannelConfig implements Serializable {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getChannel() {
-        return channel;
-    }
-
-    public void setChannel(String channel) {
-        this.channel = channel;
-    }
-
     public String getSceneId() {
         return sceneId;
     }
@@ -99,6 +93,38 @@ public class ChannelConfig implements Serializable {
 
     public void setTemplateId(String templateId) {
         this.templateId = templateId;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
     public String getSign() {

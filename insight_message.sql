@@ -29,10 +29,11 @@ DROP TABLE IF EXISTS `imm_message`;
 CREATE TABLE `imm_message` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
   `app_id` char(32) NOT NULL COMMENT '应用Id',
-  `type` varchar(8) NOT NULL COMMENT '类型',
+  `tag` varchar(8) NOT NULL COMMENT '消息标签',
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)；5、消息+短信(101)；6、推送+短信(110)；7、消息+推送+短信(111)',
+  `receivers` json DEFAULT NULL COMMENT '接收人，用户ID(推送)/手机号(短信)',
   `title` varchar(64) NOT NULL COMMENT '标题',
-  `content` varchar(1024) NOT NULL COMMENT '内容',
-  `params` json DEFAULT NULL COMMENT '自定义参数',
+  `content` json DEFAULT NULL COMMENT '内容',
   `expire_date` date DEFAULT NULL COMMENT '失效日期',
   `is_broadcast` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否广播消息：0、普通消息；1、广播消息',
   `is_invalid` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否失效：0、正常；1、失效',
@@ -42,6 +43,8 @@ CREATE TABLE `imm_message` (
   `created_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_message_app_id` (`app_id`),
+  KEY `idx_message_tag` (`tag`),
+  KEY `idx_message_type` (`type`),
   KEY `idx_message_dept_id` (`dept_id`),
   KEY `idx_message_creator_id` (`creator_id`),
   KEY `idx_message_created_time` (`created_time`)
@@ -76,27 +79,6 @@ CREATE TABLE `imm_message_subscribe` (
   KEY `idx_message_subscribe_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息订阅表,只能订阅广播消息';
 
--- ----------------------------
--- Table structure for imm_message_log
--- ----------------------------
-DROP TABLE IF EXISTS `imm_message_log`;
-CREATE TABLE `imm_message_log` (
-  `id` char(32) NOT NULL COMMENT '主键(UUID)',
-  `request_id` char(36) NOT NULL COMMENT '请求ID',
-  `source` varchar(32) NOT NULL COMMENT '消息源服务名',
-  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '消息类型：0、未定义；1、推送；2、短信；',
-  `receivers` json DEFAULT NULL COMMENT '接收人，用户ID(推送)/手机号(短信)',
-  `scene_info` json DEFAULT NULL COMMENT '场景信息',
-  `content` json DEFAULT NULL COMMENT '消息内容',
-  `reply` json DEFAULT NULL COMMENT '返回数据包',
-  `is_success` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否推送成功：0、失败；1、成功',
-  `created_time` datetime NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`),
-  KEY `idx_message_log_request_id` (`request_id`),
-  KEY `idx_message_log_is_success` (`is_success`),
-  KEY `idx_message_log_created_time` (`created_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息日志表';
-
 
 -- ----------------------------
 -- Table structure for ims_scene
@@ -124,13 +106,12 @@ CREATE TABLE `ims_scene` (
 DROP TABLE IF EXISTS `ims_template`;
 CREATE TABLE `ims_template` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
-  `app_id` char(32) NOT NULL COMMENT '应用ID',
-  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)；5、消息+短信(101)；6、推送+短信(110)；7、消息+推送+短信(111)',
   `code` varchar(8) DEFAULT NULL COMMENT '模板编号',
+  `tag` varchar(8) NOT NULL COMMENT '消息标签',
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)；5、消息+短信(101)；6、推送+短信(110)；7、消息+推送+短信(111)',
   `title` varchar(64) DEFAULT NULL COMMENT '消息标题',
   `content` varchar(1024) NOT NULL COMMENT '消息内容',
   `expire` int(10) unsigned DEFAULT NULL COMMENT '消息有效时长(小时)',
-  `params` json DEFAULT NULL COMMENT '自定义参数',
   `remark` varchar(256) DEFAULT NULL COMMENT '备注',
   `is_invalid` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否失效：0、正常；1、失效',
   `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
@@ -146,28 +127,31 @@ CREATE TABLE `ims_template` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息模板表';
 
 -- ----------------------------
--- Table structure for ims_channel_template
+-- Table structure for ims_scene_template
 -- ----------------------------
-DROP TABLE IF EXISTS `ims_channel_template`;
-CREATE TABLE `ims_channel_template` (
+DROP TABLE IF EXISTS `ims_scene_template`;
+CREATE TABLE `ims_scene_template` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
-  `code` char(4) NOT NULL COMMENT '渠道编码',
-  `channel` varchar(64) NOT NULL COMMENT '渠道名称',
   `scene_id` char(32) NOT NULL COMMENT '场景ID',
   `template_id` char(32) NOT NULL COMMENT '模板ID',
+  `app_id` char(32) DEFAULT NULL COMMENT '应用ID',
+  `app_name` varchar(64) DEFAULT NULL COMMENT '应用名称',
+  `channel_code` char(4) DEFAULT NULL COMMENT '渠道编码',
+  `channel` varchar(64) DEFAULT NULL COMMENT '渠道名称',
   `sign` varchar(16) DEFAULT NULL COMMENT '消息签名',
   `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
   `creator` varchar(64) NOT NULL COMMENT '创建人',
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
   `created_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_channel_template_code` (`code`) USING BTREE,
-  KEY `idx_channel_template_scene_id` (`scene_id`) USING BTREE,
-  KEY `idx_channel_template_template_id` (`template_id`) USING BTREE,
-  KEY `idx_channel_template_dept_id` (`dept_id`) USING BTREE,
-  KEY `idx_channel_template_creator_id` (`creator_id`) USING BTREE,
-  KEY `idx_channel_template_created_time` (`created_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='渠道短信模板表';
+  KEY `idx_scene_template_scene_id` (`scene_id`) USING BTREE,
+  KEY `idx_scene_template_template_id` (`template_id`) USING BTREE,
+  KEY `idx_scene_template_app_id` (`app_id`) USING BTREE,
+  KEY `idx_scene_template_code` (`code`) USING BTREE,
+  KEY `idx_scene_template_dept_id` (`dept_id`) USING BTREE,
+  KEY `idx_scene_template_creator_id` (`creator_id`) USING BTREE,
+  KEY `idx_scene_template_created_time` (`created_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='场景模板配置表';
 
 
 -- ----------------------------

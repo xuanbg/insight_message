@@ -1,6 +1,6 @@
 package com.insight.base.message.manage;
 
-import com.insight.base.message.common.entity.ChannelConfig;
+import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Scene;
 import com.insight.base.message.common.entity.Template;
 import com.insight.util.Json;
@@ -257,9 +257,9 @@ public class ManageController {
      * @param size    每页记录数
      * @return Reply
      */
-    @GetMapping("/v1.0/scenes/channels")
-    public Reply getChannelConfigs(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getScenes(keyword, page, size);
+    @GetMapping("/v1.0/scenes/configs")
+    public Reply getSceneTemplates(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        return service.getSceneTemplates(keyword, page, size);
     }
 
     /**
@@ -269,14 +269,14 @@ public class ManageController {
      * @param dto  渠道模板DTO
      * @return Reply
      */
-    @PostMapping("/v1.0/scenes/channels")
-    public Reply addChannelConfig(@RequestHeader("loginInfo") String info, @Valid @RequestBody ChannelConfig dto) {
+    @PostMapping("/v1.0/scenes/configs")
+    public Reply addSceneTemplate(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneTemplate dto) {
         if (dto == null) {
             return ReplyHelper.invalidParam();
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.addChannelConfig(loginInfo, dto);
+        return service.addSceneTemplate(loginInfo, dto);
     }
 
     /**
@@ -286,13 +286,13 @@ public class ManageController {
      * @param id   渠道模板ID
      * @return Reply
      */
-    @DeleteMapping("/v1.0/scenes/channels")
-    public Reply removeChannelConfig(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+    @DeleteMapping("/v1.0/scenes/configs")
+    public Reply removeSceneTemplate(@RequestHeader("loginInfo") String info, @RequestBody String id) {
         if (id == null || id.isEmpty()) {
             return ReplyHelper.invalidParam();
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.removeChannelConfig(loginInfo, id);
+        return service.removeSceneTemplate(loginInfo, id);
     }
 }

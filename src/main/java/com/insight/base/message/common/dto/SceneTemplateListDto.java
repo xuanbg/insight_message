@@ -9,23 +9,13 @@ import java.io.Serializable;
  * @date 2019-08-28
  * @remark 渠道消息模板
  */
-public class ChannelConfigListDto implements Serializable {
+public class SceneTemplateListDto implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
      * UUID主键
      */
     private String id;
-
-    /**
-     * 渠道编码
-     */
-    private String code;
-
-    /**
-     * 渠道名称
-     */
-    private String channel;
 
     /**
      * 场景ID
@@ -46,6 +36,26 @@ public class ChannelConfigListDto implements Serializable {
      * 模板名称
      */
     private String template;
+
+    /**
+     * 应用ID
+     */
+    private String appId;
+
+    /**
+     * 应用名称
+     */
+    private String appName;
+
+    /**
+     * 渠道编码
+     */
+    private String code;
+
+    /**
+     * 渠道名称
+     */
+    private String channel;
 
     /**
      * 签名

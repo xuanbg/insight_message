@@ -1,14 +1,17 @@
 package com.insight.base.message.common.entity;
 
+import com.insight.util.Json;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author 宣炳刚
- * @date 2019-08-28
- * @remark 消息模板
+ * @date 2019/9/20
+ * @remark 消息DTO
  */
-public class Template implements Serializable {
+public class Message implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
@@ -17,19 +20,14 @@ public class Template implements Serializable {
     private String id;
 
     /**
-     * 模板编号
+     * 应用ID
      */
-    private String code;
+    private String appId;
 
     /**
-     * 消息标签
+     * 消息类型
      */
-    private String tag;
-
-    /**
-     * 发送类型:0.未定义;1.仅消息(001);2.仅推送(010);3.推送+消息(011);4.仅短信(100);5.消息+短信(101);6.推送+短信(110);7.消息+推送+短信(111)
-     */
-    private Integer type;
+    private String type;
 
     /**
      * 消息标题
@@ -42,17 +40,22 @@ public class Template implements Serializable {
     private String content;
 
     /**
+     * 自定义参数
+     */
+    private Map params;
+
+    /**
      * 消息有效时长(小时)
      */
     private Integer expire;
 
     /**
-     * 备注
+     * 是否广播消息
      */
-    private String remark;
+    private Boolean isBroadcast;
 
     /**
-     * 是否失效:0.正常;1.失效
+     * 是否失效
      */
     private Boolean isInvalid;
 
@@ -84,27 +87,19 @@ public class Template implements Serializable {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public String getAppId() {
+        return appId;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -124,6 +119,14 @@ public class Template implements Serializable {
         this.content = content;
     }
 
+    public Map getParams() {
+        return params;
+    }
+
+    public void setParams(Map params) {
+        this.params = params;
+    }
+
     public Integer getExpire() {
         return expire;
     }
@@ -132,12 +135,12 @@ public class Template implements Serializable {
         this.expire = expire;
     }
 
-    public String getRemark() {
-        return remark;
+    public Boolean getBroadcast() {
+        return isBroadcast;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setBroadcast(Boolean broadcast) {
+        isBroadcast = broadcast;
     }
 
     public Boolean getInvalid() {
@@ -178,5 +181,10 @@ public class Template implements Serializable {
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
+    }
+
+    @Override
+    public String toString() {
+        return Json.toJson(this);
     }
 }

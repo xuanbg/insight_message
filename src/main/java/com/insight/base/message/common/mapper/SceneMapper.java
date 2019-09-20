@@ -1,8 +1,8 @@
 package com.insight.base.message.common.mapper;
 
-import com.insight.base.message.common.dto.ChannelConfigListDto;
+import com.insight.base.message.common.dto.SceneTemplateListDto;
 import com.insight.base.message.common.dto.SceneListDto;
-import com.insight.base.message.common.entity.ChannelConfig;
+import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Scene;
 import org.apache.ibatis.annotations.*;
 
@@ -77,30 +77,31 @@ public interface SceneMapper {
      * @param key 查询关键词
      * @return 分渠道模配置板列表
      */
-    @Select("<script>select c.id, c.code, c.channel, s.id as scene_id, concat(s.code, '-', s.name) as scene, t.id as template_id, concat(t.code, '-', t.title) as template, c.sign " +
-            "from ims_channel_template c " +
+    @Select("<script>select c.id, s.id as scene_id, concat(s.code, '-', s.name) as scene, t.id as template_id, concat(t.code, '-', t.title) as template, " +
+            "c.app_id, c.app_name, c.code, c.channel, c.sign from ims_scene_template c " +
             "join ims_scene s on s.id = c.scene_id " +
             "<if test = 'key != null'>and (s.code = %{key} or s.name like concat('%',#{key},'%')) </if>" +
             "join ims_template t on t.id = c.template_id " +
             "<if test = 'key != null'>and (t.code = %{key} or t.title like concat('%',#{key},'%')) </if>" +
-            "<if test = 'key != null'>where c.code = %{key} or c.channel like concat('%',#{key},'%') </if> " +
+            "<if test = 'key != null'>where c.code = %{key} or c.channel like concat('%',#{key},'%')" +
+            "or c.app_name like concat('%',#{key},'%') </if> " +
             "order by c.created_time desc</script>")
-    List<ChannelConfigListDto> getChannelTemps(@Param("key") String key);
+    List<SceneTemplateListDto> getSceneTemplates(@Param("key") String key);
 
     /**
      * 新增分渠道模板配置
      *
      * @param config 渠道模板配置DTO
      */
-    @Insert("INSERT ims_channel_template(id, code, channel, scene_id, template_id, sign, dept_id, creator, creator_id, created_time) VALUES " +
-            "(#{id}, #{code}, #{channel}, #{sceneId}, #{templateId}, #{sign}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
-    void addChannelTemp(ChannelConfig config);
+    @Insert("INSERT ims_scene_template(id, scene_id, template_id, app_id, app_name, code, channel, sign, dept_id, creator, creator_id, created_time) VALUES " +
+            "(#{id}, #{sceneId}, #{templateId}, #{appId}, #{appName}, #{code}, #{channel}, #{sign}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    void addSceneTemplate(SceneTemplate config);
 
     /**
      * 删除分渠道模板配置
      *
      * @param id 消息场景ID
      */
-    @Delete("delete from ims_channel_template where id = #{id};")
-    void deleteChannelTemp(String id);
+    @Delete("delete from ims_scene_template where id = #{id};")
+    void deleteSceneTemplate(String id);
 }

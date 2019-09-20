@@ -2,10 +2,10 @@ package com.insight.base.message.manage;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.insight.base.message.common.dto.ChannelConfigListDto;
+import com.insight.base.message.common.dto.SceneTemplateListDto;
 import com.insight.base.message.common.dto.SceneListDto;
 import com.insight.base.message.common.dto.TemplateListDto;
-import com.insight.base.message.common.entity.ChannelConfig;
+import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Scene;
 import com.insight.base.message.common.entity.Template;
 import com.insight.base.message.common.mapper.SceneMapper;
@@ -290,10 +290,10 @@ public class ManageServiceImpl implements ManageService {
      * @return Reply
      */
     @Override
-    public Reply getChannelConfigs(String keyword, int page, int size) {
+    public Reply getSceneTemplates(String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<ChannelConfigListDto> templates = sceneMapper.getChannelTemps(keyword);
-        PageInfo<ChannelConfigListDto> pageInfo = new PageInfo<>(templates);
+        List<SceneTemplateListDto> templates = sceneMapper.getSceneTemplates(keyword);
+        PageInfo<SceneTemplateListDto> pageInfo = new PageInfo<>(templates);
 
         return ReplyHelper.success(templates, pageInfo.getTotal());
     }
@@ -306,7 +306,7 @@ public class ManageServiceImpl implements ManageService {
      * @return Reply
      */
     @Override
-    public Reply addChannelConfig(LoginInfo info, ChannelConfig dto) {
+    public Reply addSceneTemplate(LoginInfo info, SceneTemplate dto) {
         String id = Generator.uuid();
         dto.setId(id);
         dto.setDeptId(info.getDeptId());
@@ -314,7 +314,7 @@ public class ManageServiceImpl implements ManageService {
         dto.setCreatorId(info.getUserId());
         dto.setCreatedTime(new Date());
 
-        sceneMapper.addChannelTemp(dto);
+        sceneMapper.addSceneTemplate(dto);
         writeLog(info, OperateType.INSERT, "消息模板配置管理", id, dto);
 
         return ReplyHelper.created(id);
@@ -328,13 +328,13 @@ public class ManageServiceImpl implements ManageService {
      * @return Reply
      */
     @Override
-    public Reply removeChannelConfig(LoginInfo info, String id) {
+    public Reply removeSceneTemplate(LoginInfo info, String id) {
         Scene scene = sceneMapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
         }
 
-        sceneMapper.deleteScene(id);
+        sceneMapper.deleteSceneTemplate(id);
         writeLog(info, OperateType.DELETE, "消息模板配置管理", id, scene);
 
         return ReplyHelper.success();

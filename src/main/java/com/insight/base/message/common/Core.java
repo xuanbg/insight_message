@@ -1,44 +1,36 @@
 package com.insight.base.message.common;
 
-import com.insight.util.Redis;
-import com.insight.util.Util;
+import com.insight.util.ReplyHelper;
+import com.insight.util.pojo.CustomMessage;
+import com.insight.util.pojo.NormalMessage;
+import com.insight.util.pojo.Reply;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 宣炳刚
  * @date 2019-08-31
- * @remark
+ * @remark 核心类
  */
+@Component
 public class Core {
 
     /**
-     * 验证短信验证码
+     * 发送消息
      *
-     * @param type   验证码类型
-     * @param mobile 手机号
-     * @param code   验证码
-     * @return 是否通过验证
+     * @param message 通用消息DTO
+     * @return Reply
      */
-    public Boolean verifySmsCode(int type, String mobile, String code) {
-        return verifySmsCode(type, mobile, code, false);
+    public Reply sendMessage(NormalMessage message) {
+        return ReplyHelper.success();
     }
 
     /**
-     * 验证短信验证码
+     * 发送消息
      *
-     * @param type    验证码类型
-     * @param mobile  手机号
-     * @param code    验证码
-     * @param isCheck 是否检验模式
-     * @return 是否通过验证
+     * @param message 自定义消息DTO
+     * @return Reply
      */
-    public Boolean verifySmsCode(int type, String mobile, String code, Boolean isCheck) {
-        String key = "SMSCode:" + Util.md5(type + mobile + code);
-        Boolean isExisted = Redis.hasKey(key);
-        if (!isExisted || isCheck) {
-            return isExisted;
-        }
-
-        Redis.deleteKey(key);
-        return true;
+    public Reply sendMessage(CustomMessage message) {
+        return ReplyHelper.success();
     }
 }

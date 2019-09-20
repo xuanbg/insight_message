@@ -1,6 +1,6 @@
 package com.insight.base.message.manage;
 
-import com.insight.base.message.common.entity.ChannelConfig;
+import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Scene;
 import com.insight.base.message.common.entity.Template;
 import com.insight.util.pojo.LoginInfo;
@@ -131,7 +131,7 @@ public interface ManageService {
      * @param size    每页记录数
      * @return Reply
      */
-    Reply getChannelConfigs(String keyword, int page, int size);
+    Reply getSceneTemplates(String keyword, int page, int size);
 
     /**
      * 添加渠道模板
@@ -140,7 +140,7 @@ public interface ManageService {
      * @param dto  渠道模板DTO
      * @return Reply
      */
-    Reply addChannelConfig(LoginInfo info, ChannelConfig dto);
+    Reply addSceneTemplate(LoginInfo info, SceneTemplate dto);
 
     /**
      * 移除渠道模板
@@ -149,5 +149,5 @@ public interface ManageService {
      * @param id   渠道模板ID
      * @return Reply
      */
-    Reply removeChannelConfig(LoginInfo info, String id);
+    Reply removeSceneTemplate(LoginInfo info, String id);
 }

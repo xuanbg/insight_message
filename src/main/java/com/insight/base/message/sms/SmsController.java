@@ -1,8 +1,8 @@
 package com.insight.base.message.sms;
 
 import com.insight.util.ReplyHelper;
+import com.insight.util.pojo.NormalMessage;
 import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.Sms;
 import com.insight.util.pojo.SmsCode;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,23 +31,23 @@ public class SmsController {
     /**
      * 发送短信
      *
-     * @param sms 短信DTO
+     * @param dto 短信DTO
      * @return Reply
      */
     @PostMapping("/v1.0/messages")
-    public Reply sendMessage(@Valid @RequestBody Sms sms) {
-        return service.sendMessage(sms);
+    public Reply sendMessage(@Valid @RequestBody NormalMessage dto) {
+        return service.sendMessage(dto);
     }
 
     /**
      * 生成短信验证码
      *
-     * @param code 验证码
+     * @param dto 验证码
      * @return Reply
      */
     @PostMapping("/v1.0/messages/codes")
-    public Reply seedSmsCode(@Valid @RequestBody SmsCode code) {
-        return service.seedSmsCode(code);
+    public Reply seedSmsCode(@Valid @RequestBody SmsCode dto) {
+        return service.seedSmsCode(dto);
     }
 
     /**
@@ -58,7 +58,7 @@ public class SmsController {
      * @return Reply
      */
     @GetMapping("/v1.0/messages/codes/{key}/status")
-    public Reply verifySmsCode(@PathVariable String key, @RequestParam(defaultValue = "false") Boolean isCheck) {
+    public Reply verifySmsCode(@PathVariable String key, @RequestParam(defaultValue = "true") Boolean isCheck) {
         if (key == null || key.isEmpty()){
             return ReplyHelper.invalidParam();
         }
