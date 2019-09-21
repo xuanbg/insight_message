@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -362,7 +363,7 @@ public class ManageServiceImpl implements ManageService {
             log.setDeptId(info.getDeptId());
             log.setCreator(info.getUserName());
             log.setCreatorId(info.getUserId());
-            log.setCreatedTime(new Date());
+            log.setCreatedTime(LocalDateTime.now());
 
             templateMapper.addLog(log);
         });
