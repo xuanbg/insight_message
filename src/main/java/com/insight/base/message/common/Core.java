@@ -1,7 +1,7 @@
 package com.insight.base.message.common;
 
+import com.insight.base.message.common.dto.TemplateDto;
 import com.insight.base.message.common.entity.Message;
-import com.insight.base.message.common.entity.Template;
 import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
 import com.insight.util.ReplyHelper;
@@ -47,7 +47,7 @@ public class Core {
     public Reply sendMessage(LoginInfo info, NormalMessage dto) {
         String tenantId = info.getTenantId();
         String appId = dto.getAppId();
-        Template template = mapper.getTemplate(tenantId, dto.getSceneCode(), appId, dto.getChannelCode());
+        TemplateDto template = mapper.getTemplate(tenantId, dto.getSceneCode(), appId, dto.getChannelCode());
         if (template == null) {
             return ReplyHelper.fail("没有可用消息模板,请检查消息参数是否正确");
         }

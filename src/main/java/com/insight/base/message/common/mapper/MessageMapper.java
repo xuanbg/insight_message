@@ -1,10 +1,10 @@
 package com.insight.base.message.common.mapper;
 
 import com.insight.base.message.common.dto.MessageListDto;
+import com.insight.base.message.common.dto.TemplateDto;
 import com.insight.base.message.common.entity.Message;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.entity.SubscribeMessage;
-import com.insight.base.message.common.entity.Template;
 import com.insight.util.common.ArrayTypeHandler;
 import org.apache.ibatis.annotations.*;
 
@@ -32,7 +32,7 @@ public interface MessageMapper {
             "join ims_scene s on s.id=c.scene_id and t.tenant_id = #{tenantId} and s.code = #{sceneCode} " +
             "where c.app_id = #{appId} and (c.channel_code is null or c.channel_code = #{channelCode}) " +
             "order by c.channel_code desc limit 1;")
-    Template getTemplate(@Param("tenantId") String tenantId, @Param("sceneCode") String sceneCode, @Param("appId") String appId, @Param("channelCode") String channelCode);
+    TemplateDto getTemplate(@Param("tenantId") String tenantId, @Param("sceneCode") String sceneCode, @Param("appId") String appId, @Param("channelCode") String channelCode);
 
     /**
      * 获取消息列表
