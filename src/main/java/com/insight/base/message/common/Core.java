@@ -52,6 +52,12 @@ public class Core {
             return ReplyHelper.fail("没有可用消息模板,请检查消息参数是否正确");
         }
 
+        String sign = template.getSign();
+        Map<String, Object> params = dto.getParams();
+        if (sign != null && !sign.isEmpty()){
+            params.put("sign", sign);
+        }
+
         // 组装消息
         Message message = new Message();
         message.setId(Generator.uuid());
@@ -123,14 +129,14 @@ public class Core {
      * @param params   消息参数
      * @return 消息内容
      */
-    private String assemblyMessage(String template, Map params) {
-        for (Object k : params.keySet()) {
+    private String assemblyMessage(String template, Map<String, Object> params) {
+        for (String k : params.keySet()) {
             Object v = params.get(k);
             if (v == null) {
                 continue;
             }
 
-            String key = "\\{" + k.toString() + "}";
+            String key = "\\{" + k + "}";
             template = template.replaceAll(key, v.toString());
         }
 

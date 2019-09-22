@@ -61,6 +61,11 @@ public class Template implements Serializable {
     private Integer expire;
 
     /**
+     * 短信签名
+     */
+    private String sign;
+
+    /**
      * 备注
      */
     private String remark;
@@ -152,6 +157,14 @@ public class Template implements Serializable {
 
     public void setExpire(Integer expire) {
         this.expire = expire;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 
     public String getRemark() {

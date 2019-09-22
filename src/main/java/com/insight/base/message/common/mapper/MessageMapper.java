@@ -27,7 +27,7 @@ public interface MessageMapper {
      * @param channelCode 渠道编码
      * @return 消息模板
      */
-    @Select("select t.tag, t.type, t.title, t.content, t.expire from ims_scene_template c " +
+    @Select("select t.tag, t.type, t.title, t.content, t.expire, c.sign from ims_scene_template c " +
             "join ims_template t on t.id = c.template_id and t.tenant_id = #{tenantId} " +
             "join ims_scene s on s.id=c.scene_id and t.tenant_id = #{tenantId} and s.code = #{sceneCode} " +
             "where c.app_id = #{appId} and (c.channel_code is null or c.channel_code = #{channelCode}) " +
