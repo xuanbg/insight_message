@@ -1,7 +1,11 @@
 package com.insight.base.message.common.entity;
 
+import com.insight.util.Json;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author 宣炳刚
@@ -17,28 +21,38 @@ public class Template implements Serializable {
     private String id;
 
     /**
+     * 租户ID
+     */
+    private String tenantId;
+
+    /**
      * 模板编号
      */
+    @NotEmpty(message = "消息模板编码不能为空")
     private String code;
 
     /**
      * 消息标签
      */
+    @NotEmpty(message = "消息标签不能为空")
     private String tag;
 
     /**
      * 发送类型:0.未定义;1.仅消息(001);2.仅推送(010);3.推送+消息(011);4.仅短信(100);5.消息+短信(101);6.推送+短信(110);7.消息+推送+短信(111)
      */
+    @NotNull(message = "发送类型不能为空")
     private Integer type;
 
     /**
      * 消息标题
      */
+    @NotEmpty(message = "消息标题不能为空")
     private String title;
 
     /**
      * 消息内容
      */
+    @NotEmpty(message = "消息内容不能为空")
     private String content;
 
     /**
@@ -74,7 +88,7 @@ public class Template implements Serializable {
     /**
      * 创建时间
      */
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     public String getId() {
         return id;
@@ -82,6 +96,14 @@ public class Template implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getCode() {
@@ -172,11 +194,16 @@ public class Template implements Serializable {
         this.creatorId = creatorId;
     }
 
-    public Date getCreatedTime() {
+    public LocalDateTime getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
+    }
+
+    @Override
+    public String toString() {
+        return Json.toJson(this);
     }
 }

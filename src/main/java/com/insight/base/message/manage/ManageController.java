@@ -40,8 +40,11 @@ public class ManageController {
      * @return Reply
      */
     @GetMapping("/v1.0/templates")
-    public Reply getTemplates(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getTemplates(keyword, page, size);
+    public Reply getTemplates(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
+                              @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.getTemplates(loginInfo.getTenantId(), keyword, page, size);
     }
 
     /**
@@ -149,8 +152,11 @@ public class ManageController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes")
-    public Reply getScenes(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getScenes(keyword, page, size);
+    public Reply getScenes(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
+                           @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.getScenes(loginInfo.getTenantId(), keyword, page, size);
     }
 
     /**
@@ -250,7 +256,7 @@ public class ManageController {
     }
 
     /**
-     * 获取渠道模板配置列表
+     * 获取场景配置列表
      *
      * @param keyword 查询关键词
      * @param page    分页页码
@@ -258,12 +264,15 @@ public class ManageController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/configs")
-    public Reply getSceneTemplates(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getSceneTemplates(keyword, page, size);
+    public Reply getSceneTemplates(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
+                                   @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.getSceneTemplates(loginInfo.getTenantId(), keyword, page, size);
     }
 
     /**
-     * 添加渠道模板
+     * 添加场景配置
      *
      * @param info 用户关键信息
      * @param dto  渠道模板DTO
@@ -280,7 +289,7 @@ public class ManageController {
     }
 
     /**
-     * 移除渠道模板
+     * 移除场景配置
      *
      * @param info 用户关键信息
      * @param id   渠道模板ID

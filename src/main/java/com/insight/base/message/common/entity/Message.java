@@ -3,8 +3,9 @@ package com.insight.base.message.common.entity;
 import com.insight.util.Json;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -20,14 +21,29 @@ public class Message implements Serializable {
     private String id;
 
     /**
+     * 租户ID
+     */
+    private String tenantId;
+
+    /**
      * 应用ID
      */
     private String appId;
 
     /**
+     * 消息标签
+     */
+    private String tag;
+
+    /**
      * 消息类型
      */
-    private String type;
+    private Integer type;
+
+    /**
+     * 接收人，用户ID(推送)/手机号(短信)
+     */
+    private List<String> receivers;
 
     /**
      * 消息标题
@@ -40,14 +56,9 @@ public class Message implements Serializable {
     private String content;
 
     /**
-     * 自定义参数
+     * 失效日期
      */
-    private Map params;
-
-    /**
-     * 消息有效时长(小时)
-     */
-    private Integer expire;
+    private LocalDate expireDate;
 
     /**
      * 是否广播消息
@@ -77,7 +88,7 @@ public class Message implements Serializable {
     /**
      * 创建时间
      */
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     public String getId() {
         return id;
@@ -85,6 +96,14 @@ public class Message implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getAppId() {
@@ -95,12 +114,28 @@ public class Message implements Serializable {
         this.appId = appId;
     }
 
-    public String getType() {
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
+    }
+
+    public List<String> getReceivers() {
+        return receivers;
+    }
+
+    public void setReceivers(List<String> receivers) {
+        this.receivers = receivers;
     }
 
     public String getTitle() {
@@ -119,20 +154,12 @@ public class Message implements Serializable {
         this.content = content;
     }
 
-    public Map getParams() {
-        return params;
+    public LocalDate getExpireDate() {
+        return expireDate;
     }
 
-    public void setParams(Map params) {
-        this.params = params;
-    }
-
-    public Integer getExpire() {
-        return expire;
-    }
-
-    public void setExpire(Integer expire) {
-        this.expire = expire;
+    public void setExpireDate(LocalDate expireDate) {
+        this.expireDate = expireDate;
     }
 
     public Boolean getBroadcast() {
@@ -175,11 +202,11 @@ public class Message implements Serializable {
         this.creatorId = creatorId;
     }
 
-    public Date getCreatedTime() {
+    public LocalDateTime getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
     }
 

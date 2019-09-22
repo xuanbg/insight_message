@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author 宣炳刚
  * @date 2019/9/17
- * @remark
+ * @remark 场景DAL
  */
 @Mapper
 public interface SceneMapper {
@@ -19,14 +19,15 @@ public interface SceneMapper {
     /**
      * 获取消息场景列表
      *
-     * @param key 查询关键词
+     * @param tenantId 租户ID
+     * @param key      查询关键词
      * @return 消息场景列表
      */
     @Select("<script>select id, code, name, remark, creator from ims_scene " +
-            "<if test = 'key != null'>where " +
-            "code = #{key} or name like concat('%',#{key},'%')</if>" +
+            "where tenant_id = #{tenantId} <if test = 'key != null'>and " +
+            "code = #{key} or name like concat('%',#{key},'%')</if> " +
             "order by created_time desc</script>")
-    List<SceneListDto> getScenes(@Param("key") String key);
+    List<SceneListDto> getScenes(@Param("tenantId") String tenantId, @Param("key") String key);
 
     /**
      * 获取场景详情
@@ -42,8 +43,8 @@ public interface SceneMapper {
      *
      * @param scene 消息场景DTO
      */
-    @Insert("insert ims_scene(id, code, name, remark, dept_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{code}, #{name}, #{remark}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert ims_scene(id, tenant_id, code, name, remark, dept_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{code}, #{name}, #{remark}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addScene(Scene scene);
 
     /**
@@ -74,19 +75,20 @@ public interface SceneMapper {
     /**
      * 获取分渠道模板配置列表
      *
-     * @param key 查询关键词
+     * @param tenantId 租户ID
+     * @param key      查询关键词
      * @return 分渠道模配置板列表
      */
     @Select("<script>select c.id, s.id as scene_id, concat(s.code, '-', s.name) as scene, t.id as template_id, concat(t.code, '-', t.title) as template, " +
             "c.app_id, c.app_name, c.code, c.channel, c.sign from ims_scene_template c " +
-            "join ims_scene s on s.id = c.scene_id " +
+            "join ims_scene s on s.id = c.scene_id and s.tenant_id = #{tenantId} " +
             "<if test = 'key != null'>and (s.code = %{key} or s.name like concat('%',#{key},'%')) </if>" +
-            "join ims_template t on t.id = c.template_id " +
+            "join ims_template t on t.id = c.template_id and t.tenant_id = #{tenantId} " +
             "<if test = 'key != null'>and (t.code = %{key} or t.title like concat('%',#{key},'%')) </if>" +
             "<if test = 'key != null'>where c.code = %{key} or c.channel like concat('%',#{key},'%')" +
-            "or c.app_name like concat('%',#{key},'%') </if> " +
+            "or c.app_name like concat('%',#{key},'%')</if> " +
             "order by c.created_time desc</script>")
-    List<SceneTemplateListDto> getSceneTemplates(@Param("key") String key);
+    List<SceneTemplateListDto> getSceneTemplates(@Param("tenantId") String tenantId, @Param("key") String key);
 
     /**
      * 新增分渠道模板配置

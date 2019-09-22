@@ -3,14 +3,15 @@ package com.insight.base.message.common.dto;
 import com.insight.util.Json;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
  * @author 宣炳刚
- * @date 2019-08-28
- * @remark 消息模板
+ * @date 2019/9/20
+ * @remark 消息DTO
  */
-public class TemplateListDto implements Serializable {
+public class MessageListDto implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
@@ -19,19 +20,9 @@ public class TemplateListDto implements Serializable {
     private String id;
 
     /**
-     * 模板编号
-     */
-    private String code;
-
-    /**
      * 消息标签
      */
     private String tag;
-
-    /**
-     * 发送类型:0.未定义;1.仅消息(001);2.仅推送(010);3.推送+消息(011);4.仅短信(100);5.消息+短信(101);6.推送+短信(110);7.消息+推送+短信(111)
-     */
-    private Integer type;
 
     /**
      * 消息标题
@@ -39,9 +30,14 @@ public class TemplateListDto implements Serializable {
     private String title;
 
     /**
-     * 消息有效时长(小时)
+     * 失效日期
      */
-    private Integer expire;
+    private LocalDate expireDate;
+
+    /**
+     * 是否广播消息
+     */
+    private Boolean isBroadcast;
 
     /**
      * 创建人
@@ -61,28 +57,12 @@ public class TemplateListDto implements Serializable {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public String getTag() {
         return tag;
     }
 
     public void setTag(String tag) {
         this.tag = tag;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getTitle() {
@@ -93,12 +73,20 @@ public class TemplateListDto implements Serializable {
         this.title = title;
     }
 
-    public Integer getExpire() {
-        return expire;
+    public LocalDate getExpireDate() {
+        return expireDate;
     }
 
-    public void setExpire(Integer expire) {
-        this.expire = expire;
+    public void setExpireDate(LocalDate expireDate) {
+        this.expireDate = expireDate;
+    }
+
+    public Boolean getBroadcast() {
+        return isBroadcast;
+    }
+
+    public void setBroadcast(Boolean broadcast) {
+        isBroadcast = broadcast;
     }
 
     public String getCreator() {

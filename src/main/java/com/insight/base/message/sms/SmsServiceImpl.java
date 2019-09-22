@@ -5,6 +5,7 @@ import com.insight.util.Generator;
 import com.insight.util.Redis;
 import com.insight.util.ReplyHelper;
 import com.insight.util.Util;
+import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.NormalMessage;
 import com.insight.util.pojo.Reply;
 import com.insight.util.pojo.SmsCode;
@@ -39,22 +40,24 @@ public class SmsServiceImpl implements SmsService {
     /**
      * 发送短信
      *
-     * @param dto 短信DTO
+     * @param info 用户关键信息
+     * @param dto  短信DTO
      * @return Reply
      */
     @Override
-    public Reply sendMessage(NormalMessage dto) {
-        return core.sendMessage(dto);
+    public Reply sendMessage(LoginInfo info, NormalMessage dto) {
+        return core.sendMessage(info, dto);
     }
 
     /**
      * 生成短信验证码
      *
-     * @param dto 验证码DTO
+     * @param info 用户关键信息
+     * @param dto  验证码DTO
      * @return Reply
      */
     @Override
-    public Reply seedSmsCode(SmsCode dto) {
+    public Reply seedSmsCode(LoginInfo info, SmsCode dto) {
         Integer type = dto.getType();
         String mobile = dto.getMobile();
         String smsCode = Generator.randomInt(dto.getLength());
@@ -88,8 +91,8 @@ public class SmsServiceImpl implements SmsService {
         message.setAppId(dto.getAppId());
         message.setReceivers(mobile);
         message.setParams(map);
-        Reply reply = core.sendMessage(message);
-        if (!reply.getSuccess()){
+        Reply reply = core.sendMessage(info, message);
+        if (!reply.getSuccess()) {
             return reply;
         }
 

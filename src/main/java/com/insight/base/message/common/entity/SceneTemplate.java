@@ -1,7 +1,10 @@
 package com.insight.base.message.common.entity;
 
+import com.insight.util.Json;
+
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author 宣炳刚
@@ -19,27 +22,31 @@ public class SceneTemplate implements Serializable {
     /**
      * 场景ID
      */
+    @NotEmpty(message = "消息场景ID不能为空")
     private String sceneId;
 
     /**
      * 模板ID
      */
+    @NotEmpty(message = "消息模板ID不能为空")
     private String templateId;
 
     /**
      * 应用ID
      */
+    @NotEmpty(message = "应用ID不能为空")
     private String appId;
 
     /**
      * 应用名称
      */
+    @NotEmpty(message = "应用名称不能为空")
     private String appName;
 
     /**
      * 渠道编码
      */
-    private String code;
+    private String channelCode;
 
     /**
      * 渠道名称
@@ -69,7 +76,7 @@ public class SceneTemplate implements Serializable {
     /**
      * 创建时间
      */
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     public String getId() {
         return id;
@@ -111,12 +118,12 @@ public class SceneTemplate implements Serializable {
         this.appName = appName;
     }
 
-    public String getCode() {
-        return code;
+    public String getChannelCode() {
+        return channelCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setChannelCode(String channelCode) {
+        this.channelCode = channelCode;
     }
 
     public String getChannel() {
@@ -159,11 +166,16 @@ public class SceneTemplate implements Serializable {
         this.creatorId = creatorId;
     }
 
-    public Date getCreatedTime() {
+    public LocalDateTime getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
+    }
+
+    @Override
+    public String toString() {
+        return Json.toJson(this);
     }
 }

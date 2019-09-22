@@ -2,11 +2,11 @@ package com.insight.base.message.manage;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.insight.base.message.common.dto.SceneTemplateListDto;
 import com.insight.base.message.common.dto.SceneListDto;
+import com.insight.base.message.common.dto.SceneTemplateListDto;
 import com.insight.base.message.common.dto.TemplateListDto;
-import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Scene;
+import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Template;
 import com.insight.base.message.common.mapper.SceneMapper;
 import com.insight.base.message.common.mapper.TemplateMapper;
@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,15 +50,16 @@ public class ManageServiceImpl implements ManageService {
     /**
      * 获取短信模板列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param tenantId 租户ID
+     * @param keyword  查询关键词
+     * @param page     分页页码
+     * @param size     每页记录数
      * @return Reply
      */
     @Override
-    public Reply getTemplates(String keyword, int page, int size) {
+    public Reply getTemplates(String tenantId, String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<TemplateListDto> templates = templateMapper.getTemplates(keyword);
+        List<TemplateListDto> templates = templateMapper.getTemplates(tenantId, keyword);
         PageInfo<TemplateListDto> pageInfo = new PageInfo<>(templates);
 
         return ReplyHelper.success(templates, pageInfo.getTotal());
@@ -95,7 +95,7 @@ public class ManageServiceImpl implements ManageService {
         dto.setDeptId(info.getDeptId());
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
-        dto.setCreatedTime(new Date());
+        dto.setCreatedTime(LocalDateTime.now());
 
         templateMapper.addTemplate(dto);
         writeLog(info, OperateType.INSERT, "消息模板管理", id, dto);
@@ -168,15 +168,16 @@ public class ManageServiceImpl implements ManageService {
     /**
      * 获取消息场景列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param tenantId 租户ID
+     * @param keyword  查询关键词
+     * @param page     分页页码
+     * @param size     每页记录数
      * @return Reply
      */
     @Override
-    public Reply getScenes(String keyword, int page, int size) {
+    public Reply getScenes(String tenantId, String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<SceneListDto> scenes = sceneMapper.getScenes(keyword);
+        List<SceneListDto> scenes = sceneMapper.getScenes(tenantId, keyword);
         PageInfo<SceneListDto> pageInfo = new PageInfo<>(scenes);
 
         return ReplyHelper.success(scenes, pageInfo.getTotal());
@@ -212,7 +213,7 @@ public class ManageServiceImpl implements ManageService {
         dto.setDeptId(info.getDeptId());
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
-        dto.setCreatedTime(new Date());
+        dto.setCreatedTime(LocalDateTime.now());
 
         sceneMapper.addScene(dto);
         writeLog(info, OperateType.INSERT, "消息场景管理", id, dto);
@@ -285,15 +286,16 @@ public class ManageServiceImpl implements ManageService {
     /**
      * 获取渠道模板配置列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param tenantId 租户ID
+     * @param keyword  查询关键词
+     * @param page     分页页码
+     * @param size     每页记录数
      * @return Reply
      */
     @Override
-    public Reply getSceneTemplates(String keyword, int page, int size) {
+    public Reply getSceneTemplates(String tenantId, String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<SceneTemplateListDto> templates = sceneMapper.getSceneTemplates(keyword);
+        List<SceneTemplateListDto> templates = sceneMapper.getSceneTemplates(tenantId, keyword);
         PageInfo<SceneTemplateListDto> pageInfo = new PageInfo<>(templates);
 
         return ReplyHelper.success(templates, pageInfo.getTotal());
@@ -313,7 +315,7 @@ public class ManageServiceImpl implements ManageService {
         dto.setDeptId(info.getDeptId());
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
-        dto.setCreatedTime(new Date());
+        dto.setCreatedTime(LocalDateTime.now());
 
         sceneMapper.addSceneTemplate(dto);
         writeLog(info, OperateType.INSERT, "消息模板配置管理", id, dto);
@@ -356,6 +358,7 @@ public class ManageServiceImpl implements ManageService {
         threadPool.submit(() -> {
             Log log = new Log();
             log.setId(Generator.uuid());
+            log.setTenantId(info.getTenantId());
             log.setType(type);
             log.setBusiness(business);
             log.setBusinessId(id);

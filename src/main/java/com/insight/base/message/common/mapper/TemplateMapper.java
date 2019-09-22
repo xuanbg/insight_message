@@ -12,22 +12,23 @@ import java.util.Map;
 /**
  * @author 宣炳刚
  * @date 2019/9/17
- * @remark
+ * @remark 模板DAL
  */
 @Mapper
-public interface TemplateMapper {
+public interface TemplateMapper{
 
     /**
      * 获取消息模板列表
      *
-     * @param key 查询关键词
+     * @param tenantId 租户ID
+     * @param key      查询关键词
      * @return 消息模板列表
      */
     @Select("<script>select id, type, code, title, creator, created_time from ims_template " +
-            "<if test = 'key != null'>where " +
-            "code = #{key} or title like concat('%',#{key},'%')</if>" +
+            "where tenant_id = #{tenantId} " +
+            "<if test = 'key != null'>and code = #{key} or title like concat('%',#{key},'%')</if>" +
             "order by created_time desc</script>")
-    List<TemplateListDto> getTemplates(@Param("key") String key);
+    List<TemplateListDto> getTemplates(@Param("tenantId") String tenantId, @Param("key") String key);
 
     /**
      * 获取消息模板详情
@@ -44,8 +45,8 @@ public interface TemplateMapper {
      *
      * @param template 消息模板DTO
      */
-    @Insert("insert ims_template(id, app_id, type, code, title, content, expire, params, remark, dept_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{appId}, #{type}, #{code}, #{title}, #{content}, #{expire}, #{params, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
+    @Insert("insert ims_template(id, tenant_id, app_id, type, code, title, content, expire, params, remark, dept_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{appId}, #{type}, #{code}, #{title}, #{content}, #{expire}, #{params, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
             "#{remark}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addTemplate(Template template);
 
@@ -80,22 +81,23 @@ public interface TemplateMapper {
      *
      * @param log 日志DTO
      */
-    @Insert("insert iml_operate_log(id, type, business, business_id, content, dept_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{type}, #{business}, #{businessId}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
+    @Insert("insert iml_operate_log(id, tenant_id, type, business, business_id, content, dept_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{type}, #{business}, #{businessId}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
             "#{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addLog(Log log);
 
     /**
      * 获取操作日志列表
      *
-     * @param key 查询关键词
+     * @param tenantId 租户ID
+     * @param key      查询关键词
      * @return 操作日志列表
      */
-    @Select("<script>select id, type, business, business_id, dept_id, creator, creator_id, created_time from iml_operate_log" +
-            "<if test = 'key!=null'> where type = #{key} or business = #{key} or business_id = #{key} or " +
+    @Select("<script>select id, type, business, business_id, dept_id, creator, creator_id, created_time from iml_operate_log " +
+            "where tenant_id = #{tenantId} <if test = 'key!=null'>and type = #{key} or business = #{key} or business_id = #{key} or " +
             "dept_id = #{key} or creator = #{key} or creator_id = #{key}</if>" +
             "order by created_time</script>")
-    List<Log> getLogs(@Param("key") String key);
+    List<Log> getLogs(@Param("tenantId") String tenantId, @Param("key") String key);
 
     /**
      * 获取操作日志列表

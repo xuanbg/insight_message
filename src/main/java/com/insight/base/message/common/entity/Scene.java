@@ -1,7 +1,10 @@
 package com.insight.base.message.common.entity;
 
+import com.insight.util.Json;
+
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author 宣炳刚
@@ -17,13 +20,20 @@ public class Scene implements Serializable {
     private String id;
 
     /**
+     * 租户ID
+     */
+    private String tenantId;
+
+    /**
      * 场景编号
      */
+    @NotEmpty(message = "消息场景编码不能为空")
     private String code;
 
     /**
      * 场景名称
      */
+    @NotEmpty(message = "消息场景名称不能为空")
     private String name;
 
     /**
@@ -54,7 +64,7 @@ public class Scene implements Serializable {
     /**
      * 创建时间
      */
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     public String getId() {
         return id;
@@ -62,6 +72,14 @@ public class Scene implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getCode() {
@@ -120,11 +138,16 @@ public class Scene implements Serializable {
         this.creatorId = creatorId;
     }
 
-    public Date getCreatedTime() {
+    public LocalDateTime getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
+    }
+
+    @Override
+    public String toString() {
+        return Json.toJson(this);
     }
 }

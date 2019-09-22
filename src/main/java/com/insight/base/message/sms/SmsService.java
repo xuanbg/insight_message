@@ -1,5 +1,6 @@
 package com.insight.base.message.sms;
 
+import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.NormalMessage;
 import com.insight.util.pojo.Reply;
 import com.insight.util.pojo.SmsCode;
@@ -14,18 +15,20 @@ public interface SmsService {
     /**
      * 发送短信
      *
-     * @param dto 短信DTO
+     * @param info 用户关键信息
+     * @param dto  短信DTO
      * @return Reply
      */
-    Reply sendMessage(NormalMessage dto);
+    Reply sendMessage(LoginInfo info, NormalMessage dto);
 
     /**
      * 生成短信验证码
      *
-     * @param dto 验证码
+     * @param info 用户关键信息
+     * @param dto  验证码
      * @return Reply
      */
-    Reply seedSmsCode(SmsCode dto);
+    Reply seedSmsCode(LoginInfo info, SmsCode dto);
 
     /**
      * 验证短信验证码
