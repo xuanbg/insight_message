@@ -91,6 +91,7 @@ public class SmsServiceImpl implements SmsService {
         message.setAppId(dto.getAppId());
         message.setReceivers(mobile);
         message.setParams(map);
+        message.setBroadcast(false);
         Reply reply = core.sendMessage(info, message);
         if (!reply.getSuccess()) {
             return reply;

@@ -69,10 +69,9 @@ public class Core {
 
         String content = assemblyMessage(template.getContent(), dto.getParams());
         String[] receivers = dto.getReceivers().split(",");
-        Boolean isBroadcast = dto.getBroadcast();
         message.setContent(content);
         message.setReceivers(new ArrayList<>(Arrays.asList(receivers)));
-        message.setBroadcast(isBroadcast == null ? false : isBroadcast);
+        message.setBroadcast(dto.getBroadcast());
         message.setDeptId(info.getDeptId());
         message.setCreator(info.getUserName());
         message.setCreatorId(info.getUserId());
