@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 宣炳刚
@@ -54,6 +55,11 @@ public class Message implements Serializable {
      * 消息内容
      */
     private String content;
+
+    /**
+     * 推送参数
+     */
+    private Map<String, Object> params;
 
     /**
      * 失效日期
@@ -152,6 +158,14 @@ public class Message implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
     }
 
     public LocalDate getExpireDate() {

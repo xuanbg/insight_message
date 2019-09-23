@@ -3,9 +3,9 @@ package com.insight.base.message.common;
 import com.insight.base.message.common.dto.TemplateDto;
 import com.insight.base.message.common.entity.Message;
 import com.insight.base.message.common.entity.PushMessage;
-import com.insight.base.message.common.entity.Schedule;
 import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
+import com.insight.util.pojo.Schedule;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +76,7 @@ public class MessageDal {
      *
      * @param schedule 计划任务DTO
      */
-    public boolean addSchedule(Schedule schedule) {
+    public boolean addSchedule(Schedule<Message> schedule) {
         return true;
     }
 
@@ -86,7 +86,7 @@ public class MessageDal {
      * @param schedule 计划任务DTO
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateSchedule(Schedule schedule) {
+    public void updateSchedule(Schedule<Message> schedule) {
 
     }
 
