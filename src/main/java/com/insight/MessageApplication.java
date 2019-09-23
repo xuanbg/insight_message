@@ -3,6 +3,8 @@ package com.insight;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author 宣炳刚
@@ -11,6 +13,8 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  */
 @SpringBootApplication
 @EnableEurekaClient
+@EnableAsync
+@EnableTransactionManagement
 public class MessageApplication {
 
     /**
@@ -21,5 +25,4 @@ public class MessageApplication {
     public static void main(String[] args) {
         SpringApplication.run(MessageApplication.class, args);
     }
-
 }

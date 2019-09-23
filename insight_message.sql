@@ -49,6 +49,7 @@ CREATE TABLE `imm_message` (
   KEY `idx_message_app_id` (`app_id`),
   KEY `idx_message_tag` (`tag`),
   KEY `idx_message_type` (`type`),
+  KEY `idx_message_is_broadcast` (`is_broadcast`),
   KEY `idx_message_dept_id` (`dept_id`),
   KEY `idx_message_creator_id` (`creator_id`),
   KEY `idx_message_created_time` (`created_time`)
@@ -167,9 +168,10 @@ CREATE TABLE `ims_scene_template` (
 DROP TABLE IF EXISTS `imt_schedule`;
 CREATE TABLE `imt_schedule` (
   `id` char(36) NOT NULL COMMENT 'UUID主键',
-  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '类型：0、未定义；1、推送；2、短信；3、接口',
+  `method` varchar(32) NOT NULL COMMENT '调用方法',
   `task_time` datetime NOT NULL COMMENT '任务开始时间',
   `content` json DEFAULT NULL COMMENT '任务内容',
+  `count` int(10) unsigned DEFAULT NULL COMMENT '累计执行次数',
   `is_invalid` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否失效：0、正常；1、失效',
   `created_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,

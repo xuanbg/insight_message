@@ -68,10 +68,10 @@ public interface MessageMapper {
     /**
      * 推送消息
      *
-     * @param pushMessage 消息推送DTO
+     * @param list 消息推送DTO集合
      */
     @Insert("insert imm_message_push(id, message_id, user_id) values (#{id}, #{messageId}, #{userId});")
-    void pushMessage(PushMessage pushMessage);
+    void pushMessage(List<PushMessage> list);
 
     /**
      * 订阅消息

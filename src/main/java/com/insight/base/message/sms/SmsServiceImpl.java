@@ -1,6 +1,6 @@
 package com.insight.base.message.sms;
 
-import com.insight.base.message.common.Core;
+import com.insight.base.message.common.MessageCore;
 import com.insight.util.Generator;
 import com.insight.util.Redis;
 import com.insight.util.ReplyHelper;
@@ -26,14 +26,14 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SmsServiceImpl implements SmsService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Core core;
+    private final MessageCore core;
 
     /**
      * 构造方法
      *
-     * @param core Core
+     * @param core MessageCore
      */
-    public SmsServiceImpl(Core core) {
+    public SmsServiceImpl(MessageCore core) {
         this.core = core;
     }
 
