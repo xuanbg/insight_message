@@ -183,14 +183,18 @@ public class MessageCore {
             dal.deleteSchedule(schedule.getId());
         }
 
-        // 推送消息
         Message message = schedule.getContent();
-        if (message == null || push(message)) {
+        if (message == null) {
             return;
         }
 
-        // 任务失败后保存计划任务数据进行补偿
-        addSchedule(schedule);
+        try {
+            // 推送消息
+            push(message);
+        } catch (Exception ex) {
+            // 任务失败后保存计划任务数据进行补偿
+            addSchedule(schedule);
+        }
     }
 
     /**
@@ -205,14 +209,18 @@ public class MessageCore {
             dal.deleteSchedule(schedule.getId());
         }
 
-        // 发送短信
         Message message = schedule.getContent();
-        if (message == null || send(message)) {
+        if (message == null) {
             return;
         }
 
-        // 任务失败后保存计划任务数据进行补偿
-        addSchedule(schedule);
+        try {
+            // 发送短信
+            send(message);
+        } catch (Exception ex) {
+            // 任务失败后保存计划任务数据进行补偿
+            addSchedule(schedule);
+        }
     }
 
     /**
@@ -240,20 +248,16 @@ public class MessageCore {
      * 推送消息
      *
      * @param message 消息DTO
-     * @return 是否成功
      */
-    private boolean push(Message message) {
-        return true;
+    private void push(Message message) {
     }
 
     /**
      * 发送短信
      *
      * @param message 消息DTO
-     * @return 是否成功
      */
-    private boolean send(Message message) {
-        return true;
+    private void send(Message message) {
     }
 
     /**
@@ -293,7 +297,7 @@ public class MessageCore {
             message.setReceivers(list);
             message.setContent(now.toString() + "保存任务失败! 请尽快处理");
 
-            boolean send = send(message);
+            send(message);
         }
     }
 }
