@@ -1,5 +1,7 @@
 package com.insight.base.message.common;
 
+import com.insight.base.message.common.dto.LocalCall;
+import com.insight.base.message.common.dto.RpcCall;
 import com.insight.base.message.common.entity.Message;
 import com.insight.util.pojo.Schedule;
 import org.slf4j.Logger;
@@ -32,7 +34,7 @@ public class ScheduleTask {
     }
 
     /**
-     * 执行计划任务
+     * 每间隔10秒执行一次计划任务
      */
     @Scheduled(fixedDelay = 10000)
     public void execute() {
@@ -41,13 +43,16 @@ public class ScheduleTask {
         messageSchedules.forEach(this::messageTask);
 
         // 执行本地调用类型的计划任务
+        List<Schedule<LocalCall>> localSchedules = dal.getLocalSchedule();
+        localSchedules.forEach(this::localCallTask);
 
         // 执行远程调用类型的计划任务
-
+        List<Schedule<RpcCall>> rpcSchedules = dal.getRpcSchedule();
+        rpcSchedules.forEach(this::rpcCallTask);
     }
 
     /**
-     * 消息类型的计划任务执行
+     * 执行消息类型的计划任务
      *
      * @param schedule 计划任务DTO
      */
@@ -67,5 +72,23 @@ public class ScheduleTask {
 
             default:
         }
+    }
+
+    /**
+     * 执行本地调用类型的计划任务
+     *
+     * @param schedule 计划任务DTO
+     */
+    private void localCallTask(Schedule<LocalCall> schedule){
+
+    }
+
+    /**
+     * 执行远程调用类型的计划任务
+     *
+     * @param schedule 计划任务DTO
+     */
+    private void rpcCallTask(Schedule<RpcCall> schedule){
+
     }
 }

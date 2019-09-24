@@ -1,6 +1,8 @@
 package com.insight.base.message.common.mapper;
 
+import com.insight.base.message.common.dto.LocalCall;
 import com.insight.base.message.common.dto.MessageListDto;
+import com.insight.base.message.common.dto.RpcCall;
 import com.insight.base.message.common.dto.TemplateDto;
 import com.insight.base.message.common.entity.Message;
 import com.insight.base.message.common.entity.PushMessage;
@@ -118,6 +120,24 @@ public interface MessageMapper {
     @Results({@Result(property = "content", column = "content", javaType = Message.class, typeHandler = JsonTypeHandler.class)})
     @Select("select * from imt_schedule where type = 0 and task_time < now() and is_invalid = 0;")
     List<Schedule<Message>> getMessageSchedule();
+
+    /**
+     * 获取当前需要执行的本地调用类型的计划任务
+     *
+     * @return 计划任务DTO集合
+     */
+    @Results({@Result(property = "content", column = "content", javaType = LocalCall.class, typeHandler = JsonTypeHandler.class)})
+    @Select("select * from imt_schedule where type = 1 and task_time < now() and is_invalid = 0;")
+    List<Schedule<LocalCall>> getLocalSchedule();
+
+    /**
+     * 获取当前需要执行的远程调用类型的计划任务
+     *
+     * @return 计划任务DTO集合
+     */
+    @Results({@Result(property = "content", column = "content", javaType = RpcCall.class, typeHandler = JsonTypeHandler.class)})
+    @Select("select * from imt_schedule where type = 2 and task_time < now() and is_invalid = 0;")
+    List<Schedule<RpcCall>> getRpcSchedule();
 
     /**
      * 新增计划任务记录

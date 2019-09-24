@@ -1,5 +1,7 @@
 package com.insight.base.message.common;
 
+import com.insight.base.message.common.dto.LocalCall;
+import com.insight.base.message.common.dto.RpcCall;
 import com.insight.base.message.common.dto.TemplateDto;
 import com.insight.base.message.common.entity.Message;
 import com.insight.base.message.common.entity.PushMessage;
@@ -75,6 +77,24 @@ public class MessageDal {
      */
     public List<Schedule<Message>> getMessageSchedule() {
         return mapper.getMessageSchedule();
+    }
+
+    /**
+     * 获取当前需要执行的本地调用类型的计划任务
+     *
+     * @return 计划任务DTO集合
+     */
+    public List<Schedule<LocalCall>> getLocalSchedule() {
+        return mapper.getLocalSchedule();
+    }
+
+    /**
+     * 获取当前需要执行的远程调用类型的计划任务
+     *
+     * @return 计划任务DTO集合
+     */
+    public List<Schedule<RpcCall>> getRpcSchedule() {
+        return mapper.getRpcSchedule();
     }
 
     /**
