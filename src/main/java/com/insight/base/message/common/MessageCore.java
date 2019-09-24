@@ -167,6 +167,7 @@ public class MessageCore {
             dal.addMessage(message);
         } catch (Exception ex) {
             // 任务失败后保存计划任务数据进行补偿
+            logger.error("存储消息数据错误! 异常信息为: {}", ex.getMessage());
             addSchedule(schedule);
         }
     }
@@ -193,6 +194,7 @@ public class MessageCore {
             push(message);
         } catch (Exception ex) {
             // 任务失败后保存计划任务数据进行补偿
+            logger.error("推送消息发生错误! 异常信息为: {}", ex.getMessage());
             addSchedule(schedule);
         }
     }
@@ -219,6 +221,7 @@ public class MessageCore {
             send(message);
         } catch (Exception ex) {
             // 任务失败后保存计划任务数据进行补偿
+            logger.error("发生短信发送错误! 异常信息为: {}", ex.getMessage());
             addSchedule(schedule);
         }
     }
