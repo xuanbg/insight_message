@@ -257,7 +257,7 @@ public class MessageCore {
      */
     private boolean send(Message message) {
         try {
-            return true;
+            return false;
         } catch (Exception ex) {
             logger.error("发生短信发送错误! 异常信息为: {}", ex.getMessage());
             return false;
@@ -283,7 +283,7 @@ public class MessageCore {
             if (count > 99) {
                 schedule.setInvalid(true);
             } else {
-                schedule.setTaskTime(now.plusSeconds(10 + (long) Math.pow(count, 2)));
+                schedule.setTaskTime(now.plusSeconds((long) Math.pow(count, 2)));
                 schedule.setCount(count + 1);
             }
         }

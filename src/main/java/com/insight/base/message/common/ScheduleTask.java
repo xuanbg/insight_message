@@ -1,7 +1,6 @@
 package com.insight.base.message.common;
 
 import com.insight.base.message.common.entity.Message;
-import com.insight.util.Json;
 import com.insight.util.pojo.Schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,31 +34,25 @@ public class ScheduleTask {
     /**
      * 执行计划任务
      */
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 10000)
     public void execute() {
-        for (int i = 0; i < 3; i++) {
-            switch (i) {
-                case 0:
-                    List<Schedule> list = dal.getSchedule(i);
-                    list.forEach(this::messageTask);
-                    break;
+        // 执行消息类型的计划任务
+        List<Schedule<Message>> messageSchedules = dal.getMessageSchedule();
+        messageSchedules.forEach(this::messageTask);
 
-                case 1:
-                    break;
-                case 2:
-                default:
-            }
-        }
+        // 执行本地调用类型的计划任务
+
+        // 执行远程调用类型的计划任务
+
     }
 
     /**
      * 消息类型的计划任务执行
      *
-     * @param s 计划任务DTO
+     * @param schedule 计划任务DTO
      */
-    private void messageTask(Schedule s) {
-        Schedule<Message> schedule = initSchedule(s, Message.class);
-        switch (s.getMethod()) {
+    private void messageTask(Schedule<Message> schedule) {
+        switch (schedule.getMethod()) {
             case "addMessage":
                 core.addMessage(schedule);
                 return;
@@ -74,27 +67,5 @@ public class ScheduleTask {
 
             default:
         }
-    }
-
-    /**
-     * 转换成指定类型的计划任务DTO
-     *
-     * @param s    泛型计划任务DTO
-     * @param type 计划任务DTO类型
-     * @param <T>  泛型参数
-     * @return 指定类型的计划任务DTO
-     */
-    private <T> Schedule<T> initSchedule(Schedule s, Class<T> type) {
-        Schedule<T> schedule = new Schedule<>();
-        schedule.setId(s.getId());
-        schedule.setType(s.getType());
-        schedule.setMethod(s.getMethod());
-        schedule.setTaskTime(s.getTaskTime());
-        schedule.setContent(Json.clone(s.getContent(), type));
-        schedule.setCount(s.getCount());
-        schedule.setInvalid(s.getInvalid());
-        schedule.setCreatedTime(s.getCreatedTime());
-
-        return schedule;
     }
 }

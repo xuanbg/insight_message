@@ -111,14 +111,13 @@ public interface MessageMapper {
     void cancelPush(String id);
 
     /**
-     * 获取当前需要执行的计划任务
+     * 获取当前需要执行的消息类型的计划任务
      *
-     * @param type 任务类型
      * @return 计划任务DTO集合
      */
-    @Results({@Result(property = "content", column = "content", javaType = Object.class, typeHandler = JsonTypeHandler.class)})
-    @Select("select * from imt_schedule where type = #{type} and task_time < now() and is_invalid = 0;")
-    List<Schedule> getSchedule(int type);
+    @Results({@Result(property = "content", column = "content", javaType = Message.class, typeHandler = JsonTypeHandler.class)})
+    @Select("select * from imt_schedule where type = 0 and task_time < now() and is_invalid = 0;")
+    List<Schedule<Message>> getMessageSchedule();
 
     /**
      * 新增计划任务记录
