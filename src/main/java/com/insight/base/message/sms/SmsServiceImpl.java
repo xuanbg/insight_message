@@ -52,12 +52,11 @@ public class SmsServiceImpl implements SmsService {
     /**
      * 生成短信验证码
      *
-     * @param info 用户关键信息
      * @param dto  验证码DTO
      * @return Reply
      */
     @Override
-    public Reply seedSmsCode(LoginInfo info, SmsCode dto) {
+    public Reply seedSmsCode(SmsCode dto) {
         Integer type = dto.getType();
         String mobile = dto.getMobile();
         String smsCode = Generator.randomInt(dto.getLength());
@@ -92,7 +91,7 @@ public class SmsServiceImpl implements SmsService {
         message.setReceivers(mobile);
         message.setParams(map);
         message.setBroadcast(false);
-        Reply reply = core.sendMessage(info, message);
+        Reply reply = core.sendMessage(null, message);
         if (!reply.getSuccess()) {
             return reply;
         }

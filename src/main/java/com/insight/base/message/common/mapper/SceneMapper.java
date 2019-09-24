@@ -24,7 +24,7 @@ public interface SceneMapper {
      * @return 消息场景列表
      */
     @Select("<script>select id, code, name, remark, creator from ims_scene " +
-            "where tenant_id = #{tenantId} <if test = 'key != null'>and " +
+            "<if test = 'key != null'>where " +
             "code = #{key} or name like concat('%',#{key},'%')</if> " +
             "order by created_time desc</script>")
     List<SceneListDto> getScenes(@Param("tenantId") String tenantId, @Param("key") String key);
@@ -43,8 +43,8 @@ public interface SceneMapper {
      *
      * @param scene 消息场景DTO
      */
-    @Insert("insert ims_scene(id, tenant_id, code, name, remark, dept_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{tenantId}, #{code}, #{name}, #{remark}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert ims_scene(id, code, name, remark, dept_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{code}, #{name}, #{remark}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addScene(Scene scene);
 
     /**
@@ -80,8 +80,7 @@ public interface SceneMapper {
      * @return 分渠道模配置板列表
      */
     @Select("<script>select c.id, s.id as scene_id, concat(s.code, '-', s.name) as scene, t.id as template_id, concat(t.code, '-', t.title) as template, " +
-            "c.app_id, c.app_name, c.code, c.channel, c.sign from ims_scene_template c " +
-            "join ims_scene s on s.id = c.scene_id and s.tenant_id = #{tenantId} " +
+            "c.app_id, c.app_name, c.code, c.channel, c.sign from ims_scene_template c join ims_scene s on s.id = c.scene_id " +
             "<if test = 'key != null'>and (s.code = %{key} or s.name like concat('%',#{key},'%')) </if>" +
             "join ims_template t on t.id = c.template_id and t.tenant_id = #{tenantId} " +
             "<if test = 'key != null'>and (t.code = %{key} or t.title like concat('%',#{key},'%')) </if>" +

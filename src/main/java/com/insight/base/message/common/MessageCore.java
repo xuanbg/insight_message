@@ -40,8 +40,9 @@ public class MessageCore {
      * @return Reply
      */
     public Reply sendMessage(LoginInfo info, NormalMessage dto) {
+        String tenantId = info == null ? null : info.getTenantId();
         String appId = dto.getAppId();
-        TemplateDto template = dal.getTemplate(info.getTenantId(), dto.getSceneCode(), appId, dto.getChannelCode());
+        TemplateDto template = dal.getTemplate(tenantId, dto.getSceneCode(), appId, dto.getChannelCode());
         if (template == null) {
             return ReplyHelper.fail("没有可用消息模板,请检查消息参数是否正确");
         }
@@ -122,12 +123,14 @@ public class MessageCore {
         // 本地消息
         if (1 == (type & 1)) {
             message.setId(Generator.uuid());
-            message.setTenantId(info.getTenantId());
-            message.setDeptId(info.getDeptId());
-            message.setCreator(info.getUserName());
-            message.setCreatorId(info.getUserId());
-            message.setCreatedTime(LocalDateTime.now());
+            if (info != null) {
+                message.setTenantId(info.getTenantId());
+                message.setDeptId(info.getDeptId());
+                message.setCreator(info.getUserName());
+                message.setCreatorId(info.getUserId());
+            }
 
+            message.setCreatedTime(LocalDateTime.now());
             schedule.setMethod("addMessage");
             addMessage(schedule);
         }
@@ -185,18 +188,11 @@ public class MessageCore {
         }
 
         Message message = schedule.getContent();
-        if (message == null) {
+        if (message == null || push(message)) {
             return;
         }
 
-        try {
-            // 推送消息
-            push(message);
-        } catch (Exception ex) {
-            // 任务失败后保存计划任务数据进行补偿
-            logger.error("推送消息发生错误! 异常信息为: {}", ex.getMessage());
-            addSchedule(schedule);
-        }
+        addSchedule(schedule);
     }
 
     /**
@@ -212,18 +208,11 @@ public class MessageCore {
         }
 
         Message message = schedule.getContent();
-        if (message == null) {
+        if (message == null || send(message)) {
             return;
         }
 
-        try {
-            // 发送短信
-            send(message);
-        } catch (Exception ex) {
-            // 任务失败后保存计划任务数据进行补偿
-            logger.error("发生短信发送错误! 异常信息为: {}", ex.getMessage());
-            addSchedule(schedule);
-        }
+        addSchedule(schedule);
     }
 
     /**
@@ -252,7 +241,13 @@ public class MessageCore {
      *
      * @param message 消息DTO
      */
-    private void push(Message message) {
+    private boolean push(Message message) {
+        try {
+            return true;
+        } catch (Exception ex) {
+            logger.error("推送消息发生错误! 异常信息为: {}", ex.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -260,7 +255,13 @@ public class MessageCore {
      *
      * @param message 消息DTO
      */
-    private void send(Message message) {
+    private boolean send(Message message) {
+        try {
+            return true;
+        } catch (Exception ex) {
+            logger.error("发生短信发送错误! 异常信息为: {}", ex.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -268,7 +269,7 @@ public class MessageCore {
      *
      * @param schedule 计划任务DTO
      */
-    private void addSchedule(Schedule<Message> schedule) {
+    private void addSchedule(Schedule schedule) {
         LocalDateTime now = LocalDateTime.now();
         String id = schedule.getId();
         if (id == null || id.isEmpty()) {
@@ -282,7 +283,7 @@ public class MessageCore {
             if (count > 99) {
                 schedule.setInvalid(true);
             } else {
-                schedule.setTaskTime(LocalDateTime.now().plusSeconds((long) Math.pow(count, 2)));
+                schedule.setTaskTime(now.plusSeconds(10 + (long) Math.pow(count, 2)));
                 schedule.setCount(count + 1);
             }
         }

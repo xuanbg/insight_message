@@ -69,11 +69,21 @@ public class MessageDal {
     }
 
     /**
+     * 获取当前需要执行的计划任务
+     *
+     * @param type 任务类型
+     * @return 计划任务DTO集合
+     */
+    public List<Schedule> getSchedule(int type) {
+        return mapper.getSchedule(type);
+    }
+
+    /**
      * 保存计划任务到数据库
      *
      * @param schedule 计划任务DTO
      */
-    public void addSchedule(Schedule<Message> schedule) {
+    public void addSchedule(Schedule schedule) {
         mapper.addSchedule(schedule);
     }
 

@@ -91,7 +91,6 @@ CREATE TABLE `imm_message_subscribe` (
 DROP TABLE IF EXISTS `ims_scene`;
 CREATE TABLE `ims_scene` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
-  `tenant_id` char(32) NOT NULL COMMENT '租户ID',
   `code` char(8) NOT NULL COMMENT '场景遍号',
   `name` varchar(32) NOT NULL COMMENT '场景名称',
   `remark` varchar(256) DEFAULT NULL COMMENT '场景描述',
@@ -100,7 +99,6 @@ CREATE TABLE `ims_scene` (
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
   `created_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_scene_tenant_id` (`tenant_id`) USING BTREE,
   KEY `idx_scene_code` (`code`) USING BTREE,
   KEY `idx_scene_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_scene_creator_id` (`creator_id`) USING BTREE,
@@ -113,7 +111,7 @@ CREATE TABLE `ims_scene` (
 DROP TABLE IF EXISTS `ims_template`;
 CREATE TABLE `ims_template` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
-  `tenant_id` char(32) NOT NULL COMMENT '租户ID',
+  `tenant_id` char(32) DEFAULT NULL COMMENT '租户ID',
   `code` varchar(8) DEFAULT NULL COMMENT '模板编号',
   `tag` varchar(8) NOT NULL COMMENT '消息标签',
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)；5、消息+短信(101)；6、推送+短信(110)；7、消息+推送+短信(111)',
@@ -168,6 +166,7 @@ CREATE TABLE `ims_scene_template` (
 DROP TABLE IF EXISTS `imt_schedule`;
 CREATE TABLE `imt_schedule` (
   `id` char(36) NOT NULL COMMENT 'UUID主键',
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '任务类型:0.消息;1.本地调用;2.远程调用',
   `method` varchar(32) NOT NULL COMMENT '调用方法',
   `task_time` datetime NOT NULL COMMENT '任务开始时间',
   `content` json DEFAULT NULL COMMENT '任务内容',
@@ -217,21 +216,21 @@ CREATE TABLE `imu_user_tag` (
   KEY `idx_user_tag_created_time` (`created_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户标签表';
 
-INSERT INTO `insight_message`.`ims_scene`(`id`, `tenant_id`, `code`, `name`, `remark`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
-('27c3a319dc7011e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0001', '验证码登录', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a435dc7011e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0002', '验证手机号', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a589dc7011e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0003', '新用户注册', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a5d2dc7011e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0004', '设置登录密码', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a61adc7011e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0005', '设置支付密码', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a661dc7011e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0006', '手机解除绑定', NULL, NULL, '系统', '00000000000000000000000000000000', now());
+INSERT INTO `insight_message`.`ims_scene`(`id`, `code`, `name`, `remark`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
+('27c3a319dc7011e9bc200242ac110004', '0001', '验证码登录', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
+('27c3a435dc7011e9bc200242ac110004', '0002', '验证手机号', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
+('27c3a589dc7011e9bc200242ac110004', '0003', '新用户注册', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
+('27c3a5d2dc7011e9bc200242ac110004', '0004', '设置登录密码', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
+('27c3a61adc7011e9bc200242ac110004', '0005', '设置支付密码', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
+('27c3a661dc7011e9bc200242ac110004', '0006', '手机解除绑定', NULL, NULL, '系统', '00000000000000000000000000000000', now());
 
 INSERT `ims_template`(`id`, `tenant_id`, `code`, `tag`, `type`, `title`, `content`, `expire`, `remark`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
-('387e156ddc7211e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0001', '短信验证码', 4, '验证码登录', '[{code}]是您登录Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统登录验证码', NULL, '系统', '00000000000000000000000000000000', now()),
-('387e1604dc7211e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0002', '短信验证码', 4, '验证手机号', '[{code}]是您的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统验证手机号验证码', NULL, '系统', '00000000000000000000000000000000', now()),
-('387e165adc7211e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0003', '短信验证码', 4, '新用户注册', '[{code}]是您注册Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统新用户注册验证码', NULL, '系统', '00000000000000000000000000000000', now()),
-('387e16b2dc7211e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0004', '短信验证码', 4, '设置登录密码', '[{code}]是您重设Insight系统登录密码的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统设置登录密码验证码', NULL, '系统', '00000000000000000000000000000000', now()),
-('387e1706dc7211e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0005', '短信验证码', 4, '设置支付密码', '[{code}]是您设置Insight系统支付密码的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统设置支付密码验证码', NULL, '系统', '00000000000000000000000000000000', now()),
-('387e1759dc7211e9bc200242ac110004', '2564cd559cd340f0b81409723fd8632a', '0006', '短信验证码', 4, '手机解除绑定', '[{code}]是您解除Insight系统绑定手机号的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统手机解除绑定验证码', NULL, '系统', '00000000000000000000000000000000', now());
+('387e156ddc7211e9bc200242ac110004', NULL, '0001', '短信验证码', 4, '验证码登录', '[{code}]是您登录Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统登录验证码', NULL, '系统', '00000000000000000000000000000000', now()),
+('387e1604dc7211e9bc200242ac110004', NULL, '0002', '短信验证码', 4, '验证手机号', '[{code}]是您的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统验证手机号验证码', NULL, '系统', '00000000000000000000000000000000', now()),
+('387e165adc7211e9bc200242ac110004', NULL, '0003', '短信验证码', 4, '新用户注册', '[{code}]是您注册Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统新用户注册验证码', NULL, '系统', '00000000000000000000000000000000', now()),
+('387e16b2dc7211e9bc200242ac110004', NULL, '0004', '短信验证码', 4, '设置登录密码', '[{code}]是您重设Insight系统登录密码的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统设置登录密码验证码', NULL, '系统', '00000000000000000000000000000000', now()),
+('387e1706dc7211e9bc200242ac110004', NULL, '0005', '短信验证码', 4, '设置支付密码', '[{code}]是您设置Insight系统支付密码的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统设置支付密码验证码', NULL, '系统', '00000000000000000000000000000000', now()),
+('387e1759dc7211e9bc200242ac110004', NULL, '0006', '短信验证码', 4, '手机解除绑定', '[{code}]是您解除Insight系统绑定手机号的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统手机解除绑定验证码', NULL, '系统', '00000000000000000000000000000000', now());
 
 INSERT `ims_scene_template`(`id`, `scene_id`, `template_id`, `app_id`, `app_name`, `channel_code`, `channel`, `sign`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
 (replace(uuid(), '-',''), '27c3a319dc7011e9bc200242ac110004', '387e156ddc7211e9bc200242ac110004', '9dd99dd9e6df467a8207d05ea5581125', '因赛特多租户平台', NULL, NULL, 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),

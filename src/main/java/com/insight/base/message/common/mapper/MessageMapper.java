@@ -6,6 +6,7 @@ import com.insight.base.message.common.entity.Message;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.entity.SubscribeMessage;
 import com.insight.util.common.ArrayTypeHandler;
+import com.insight.util.common.JsonTypeHandler;
 import com.insight.util.pojo.Schedule;
 import org.apache.ibatis.annotations.*;
 
@@ -29,10 +30,10 @@ public interface MessageMapper {
      * @return 消息模板
      */
     @Select("select t.tag, t.type, t.title, t.content, t.expire, c.sign from ims_scene_template c " +
-            "join ims_template t on t.id = c.template_id and t.tenant_id = #{tenantId} " +
-            "join ims_scene s on s.id=c.scene_id and t.tenant_id = #{tenantId} and s.code = #{sceneCode} " +
+            "join ims_template t on t.id = c.template_id and (t.tenant_id is null or t.tenant_id = #{tenantId}) " +
+            "join ims_scene s on s.id = c.scene_id and s.code = #{sceneCode} " +
             "where c.app_id = #{appId} and (c.channel_code is null or c.channel_code = #{channelCode}) " +
-            "order by c.channel_code desc limit 1;")
+            "order by t.tenant_id desc, c.channel_code desc limit 1;")
     TemplateDto getTemplate(@Param("tenantId") String tenantId, @Param("sceneCode") String sceneCode, @Param("appId") String appId, @Param("channelCode") String channelCode);
 
     /**
@@ -110,7 +111,18 @@ public interface MessageMapper {
     void cancelPush(String id);
 
     /**
+     * 获取当前需要执行的计划任务
+     *
+     * @param type 任务类型
+     * @return 计划任务DTO集合
+     */
+    @Results({@Result(property = "content", column = "content", javaType = Object.class, typeHandler = JsonTypeHandler.class)})
+    @Select("select * from imt_schedule where type = #{type} and task_time < now() and is_invalid = 0;")
+    List<Schedule> getSchedule(int type);
+
+    /**
      * 新增计划任务记录
+     *
      * @param schedule 计划任务DTO
      */
     @Insert("insert imt_schedule (id, method, task_time, content, count, is_invalid, created_time) values " +
@@ -119,6 +131,7 @@ public interface MessageMapper {
 
     /**
      * 删除计划任务
+     *
      * @param id 计划任务ID
      */
     @Delete("delete from imt_schedule where id = #{id};")

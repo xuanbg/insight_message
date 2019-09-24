@@ -47,15 +47,12 @@ public class SmsController {
     /**
      * 生成短信验证码
      *
-     * @param info 用户关键信息
      * @param dto  验证码:0.验证手机号;1.用户注册;2.重置密码;3.修改支付密码;4.修改手机号
      * @return Reply
      */
     @PostMapping("/v1.0/messages/codes")
-    public Reply seedSmsCode(@RequestHeader("loginInfo") String info, @Valid @RequestBody SmsCode dto) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        return service.seedSmsCode(loginInfo, dto);
+    public Reply seedSmsCode(@Valid @RequestBody SmsCode dto) {
+        return service.seedSmsCode(dto);
     }
 
     /**

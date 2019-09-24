@@ -20,11 +20,6 @@ public class Scene implements Serializable {
     private String id;
 
     /**
-     * 租户ID
-     */
-    private String tenantId;
-
-    /**
      * 场景编号
      */
     @NotEmpty(message = "消息场景编码不能为空")
@@ -72,14 +67,6 @@ public class Scene implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     public String getCode() {
