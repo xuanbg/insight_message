@@ -47,13 +47,12 @@ public class MessageDal {
      * 保存消息到数据库
      *
      * @param message 消息DTO
-     * @return 是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean addMessage(Message message) {
+    public void addMessage(Message message) {
         mapper.addMessage(message);
         if (message.getBroadcast()) {
-            return true;
+            return;
         }
 
         // 构造本地消息推送列表并写入数据库
@@ -67,8 +66,6 @@ public class MessageDal {
             pushList.add(push);
         });
         mapper.pushMessage(pushList);
-
-        return true;
     }
 
     /**
@@ -76,18 +73,8 @@ public class MessageDal {
      *
      * @param schedule 计划任务DTO
      */
-    public boolean addSchedule(Schedule<Message> schedule) {
-        return true;
-    }
-
-    /**
-     * 更新计划任务
-     *
-     * @param schedule 计划任务DTO
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateSchedule(Schedule<Message> schedule) {
-
+    public void addSchedule(Schedule<Message> schedule) {
+        mapper.addSchedule(schedule);
     }
 
     /**
@@ -95,8 +82,7 @@ public class MessageDal {
      *
      * @param id 计划任务ID
      */
-    @Transactional(rollbackFor = Exception.class)
     public void deleteSchedule(String id) {
-
+        mapper.deleteSchedule(id);
     }
 }

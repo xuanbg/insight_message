@@ -6,6 +6,7 @@ import com.insight.base.message.common.entity.Message;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.entity.SubscribeMessage;
 import com.insight.util.common.ArrayTypeHandler;
+import com.insight.util.pojo.Schedule;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -70,7 +71,9 @@ public interface MessageMapper {
      *
      * @param list 消息推送DTO集合
      */
-    @Insert("insert imm_message_push(id, message_id, user_id) values (#{id}, #{messageId}, #{userId});")
+    @Insert("<script>insert imm_message_push(id, message_id, user_id) values " +
+            "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\">" +
+            "(#{item.id},#{item.messageId},#{item.userId})</foreach>;</script>")
     void pushMessage(List<PushMessage> list);
 
     /**
@@ -105,4 +108,19 @@ public interface MessageMapper {
      */
     @Delete("delete from imm_message_push where id = #{id};")
     void cancelPush(String id);
+
+    /**
+     * 新增计划任务记录
+     * @param schedule 计划任务DTO
+     */
+    @Insert("insert imt_schedule (id, method, task_time, content, count, is_invalid, created_time) values " +
+            "(#{id}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, #{count}, #{isInvalid}, #{createdTime});")
+    void addSchedule(Schedule schedule);
+
+    /**
+     * 删除计划任务
+     * @param id 计划任务ID
+     */
+    @Delete("delete from imt_schedule where id = #{id};")
+    void deleteSchedule(String id);
 }

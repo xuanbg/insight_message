@@ -50,7 +50,7 @@ public class MessageCore {
         String sign = template.getSign();
         if (sign != null && !sign.isEmpty()) {
             Map<String, Object> params = dto.getParams();
-            if (params == null){
+            if (params == null) {
                 params = new HashMap<>(4);
             }
 
@@ -157,14 +157,18 @@ public class MessageCore {
             dal.deleteSchedule(schedule.getId());
         }
 
-        // 存储消息
         Message message = schedule.getContent();
-        if (message == null || dal.addMessage(message)) {
+        if (message == null) {
             return;
         }
 
-        // 任务失败后保存计划任务数据进行补偿
-        addSchedule(schedule);
+        try {
+            // 存储消息
+            dal.addMessage(message);
+        } catch (Exception ex) {
+            // 任务失败后保存计划任务数据进行补偿
+            addSchedule(schedule);
+        }
     }
 
     /**
@@ -264,6 +268,7 @@ public class MessageCore {
             schedule.setId(Generator.uuid());
             schedule.setTaskTime(now.plusSeconds(10));
             schedule.setCount(0);
+            schedule.setInvalid(false);
             schedule.setCreatedTime(now);
         } else {
             int count = schedule.getCount();
@@ -275,18 +280,20 @@ public class MessageCore {
             }
         }
 
-        if (dal.addSchedule(schedule)) {
-            return;
+        try {
+            // 保存计划任务数据
+            dal.addSchedule(schedule);
+        } catch (Exception ex) {
+            // 保存计划任务数据失败,记录日志并发短信通知运维人员
+            logger.warn("保存任务失败! 任务数据为: {}", schedule.toString());
+
+            List<String> list = new ArrayList<>();
+            list.add("13958085903");
+            Message message = new Message();
+            message.setReceivers(list);
+            message.setContent(now.toString() + "保存任务失败! 请尽快处理");
+
+            boolean send = send(message);
         }
-
-        // 保存计划任务数据失败,记录日志并发短信通知运维人员
-        logger.warn("保存任务失败! 任务数据为: {}", schedule.toString());
-        List<String> list = new ArrayList<>();
-        list.add("13958085903");
-        Message message = new Message();
-        message.setReceivers(list);
-        message.setContent(now.toString() + "保存任务失败! 请尽快处理");
-
-        boolean send = send(message);
     }
 }
