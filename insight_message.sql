@@ -178,27 +178,6 @@ CREATE TABLE `imt_schedule` (
   KEY `idx_schedule_created_time` (`created_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务队列表';
 
--- ----------------------------
--- Table structure for imt_schedule_failed
--- ----------------------------
-DROP TABLE IF EXISTS `imt_schedule_failed`;
-CREATE TABLE `imt_schedule_failed` (
-  `id` char(32) NOT NULL COMMENT '主键(UUID)',
-  `request_id` char(32) NOT NULL COMMENT '请求ID',
-  `source` varchar(32) NOT NULL COMMENT '调用源服务名',
-  `service` varchar(32) NOT NULL COMMENT '调用目标服务名',
-  `method` varchar(8) NOT NULL COMMENT 'HTTP方法',
-  `url` varchar(256) NOT NULL COMMENT '接口URL',
-  `headers` json DEFAULT NULL COMMENT 'HTTP 请求头',
-  `params` json DEFAULT NULL COMMENT 'HTTP 请求参数',
-  `body` json DEFAULT NULL COMMENT 'HTTP 请求体',
-  `reply` json DEFAULT NULL COMMENT '返回数据包',
-  `created_time` datetime NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_schedule_failed_request_id` (`request_id`) USING BTREE,
-  KEY `idx_schedule_failed_created_time` (`created_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='失败任务日志表';
-
 
 -- ----------------------------
 -- Table structure for imu_user_device
