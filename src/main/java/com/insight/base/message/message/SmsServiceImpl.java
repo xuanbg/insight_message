@@ -1,14 +1,11 @@
-package com.insight.base.message.sms;
+package com.insight.base.message.message;
 
 import com.insight.base.message.common.MessageCore;
 import com.insight.util.Generator;
 import com.insight.util.Redis;
 import com.insight.util.ReplyHelper;
 import com.insight.util.Util;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.NormalMessage;
-import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.SmsCode;
+import com.insight.util.pojo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -52,11 +49,12 @@ public class SmsServiceImpl implements SmsService {
     /**
      * 生成短信验证码
      *
+     * @param info 用户关键信息
      * @param dto  验证码DTO
      * @return Reply
      */
     @Override
-    public Reply seedSmsCode(SmsCode dto) {
+    public Reply seedSmsCode(LoginInfo info, SmsCode dto) {
         Integer type = dto.getType();
         String mobile = dto.getMobile();
         String smsCode = Generator.randomInt(dto.getLength());
@@ -91,7 +89,7 @@ public class SmsServiceImpl implements SmsService {
         message.setReceivers(mobile);
         message.setParams(map);
         message.setBroadcast(false);
-        Reply reply = core.sendMessage(null, message);
+        Reply reply = core.sendMessage(info, message);
         if (!reply.getSuccess()) {
             return reply;
         }
@@ -133,5 +131,29 @@ public class SmsServiceImpl implements SmsService {
         Redis.deleteKey(setKey);
 
         return ReplyHelper.success();
+    }
+
+    /**
+     * 推送标准通知信息
+     *
+     * @param info 用户关键信息
+     * @param dto  标准信息DTO
+     * @return Reply
+     */
+    @Override
+    public Reply pushNotice(LoginInfo info, NormalMessage dto) {
+        return core.sendMessage(info, dto);
+    }
+
+    /**
+     * 推送自定义通知信息
+     *
+     * @param info 用户关键信息
+     * @param dto  标准信息DTO
+     * @return Reply
+     */
+    @Override
+    public Reply pushCustomNotice(LoginInfo info, CustomMessage dto) {
+        return core.sendMessage(info, dto);
     }
 }

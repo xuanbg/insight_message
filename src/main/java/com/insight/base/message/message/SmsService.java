@@ -1,9 +1,6 @@
-package com.insight.base.message.sms;
+package com.insight.base.message.message;
 
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.NormalMessage;
-import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.SmsCode;
+import com.insight.util.pojo.*;
 
 /**
  * @author 宣炳刚
@@ -16,7 +13,7 @@ public interface SmsService {
      * 发送短信
      *
      * @param info 用户关键信息
-     * @param dto  短信DTO
+     * @param dto  标准信息DTO
      * @return Reply
      */
     Reply sendMessage(LoginInfo info, NormalMessage dto);
@@ -24,10 +21,11 @@ public interface SmsService {
     /**
      * 生成短信验证码
      *
+     * @param info 用户关键信息
      * @param dto  验证码
      * @return Reply
      */
-    Reply seedSmsCode(SmsCode dto);
+    Reply seedSmsCode(LoginInfo info, SmsCode dto);
 
     /**
      * 验证短信验证码
@@ -37,4 +35,22 @@ public interface SmsService {
      * @return Reply
      */
     Reply verifySmsCode(String key, Boolean isCheck);
+
+    /**
+     * 推送标准通知信息
+     *
+     * @param info 用户关键信息
+     * @param dto  标准信息DTO
+     * @return Reply
+     */
+    Reply pushNotice(LoginInfo info, NormalMessage dto);
+
+    /**
+     * 推送自定义通知信息
+     *
+     * @param info 用户关键信息
+     * @param dto  标准信息DTO
+     * @return Reply
+     */
+    Reply pushCustomNotice(LoginInfo info, CustomMessage dto);
 }

@@ -1,11 +1,8 @@
-package com.insight.base.message.sms;
+package com.insight.base.message.message;
 
 import com.insight.util.Json;
 import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.NormalMessage;
-import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.SmsCode;
+import com.insight.util.pojo.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,12 +44,15 @@ public class SmsController {
     /**
      * 生成短信验证码
      *
+     * @param info 用户关键信息
      * @param dto  验证码:0.验证手机号;1.用户注册;2.重置密码;3.修改支付密码;4.修改手机号
      * @return Reply
      */
     @PostMapping("/v1.0/sms/codes")
-    public Reply seedSmsCode(@Valid @RequestBody SmsCode dto) {
-        return service.seedSmsCode(dto);
+    public Reply seedSmsCode(@RequestHeader(name = "loginInfo", required = false) String info, @Valid @RequestBody SmsCode dto) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.seedSmsCode(loginInfo, dto);
     }
 
     /**
@@ -69,5 +69,33 @@ public class SmsController {
         }
 
         return service.verifySmsCode(key, isCheck);
+    }
+
+    /**
+     * 推送标准通知信息
+     *
+     * @param info 用户关键信息
+     * @param dto  标准信息DTO
+     * @return Reply
+     */
+    @PostMapping("/v1.0/notices")
+    public Reply pushNotice(@RequestHeader(name = "loginInfo", required = false) String info, @Valid @RequestBody NormalMessage dto) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.pushNotice(loginInfo, dto);
+    }
+
+    /**
+     * 推送自定义通知信息
+     *
+     * @param info 用户关键信息
+     * @param dto  标准信息DTO
+     * @return Reply
+     */
+    @PostMapping("/v1.0/notices/custom")
+    public Reply pushCustomNotice(@RequestHeader("loginInfo") String info, @Valid @RequestBody CustomMessage dto) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.pushCustomNotice(loginInfo, dto);
     }
 }
