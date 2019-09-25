@@ -57,6 +57,7 @@ public class ScheduleTask {
      * @param schedule 计划任务DTO
      */
     private void messageTask(Schedule<Message> schedule) {
+        dal.deleteSchedule(schedule.getId());
         switch (schedule.getMethod()) {
             case "addMessage":
                 core.addMessage(schedule);
@@ -79,8 +80,8 @@ public class ScheduleTask {
      *
      * @param schedule 计划任务DTO
      */
-    private void localCallTask(Schedule<LocalCall> schedule){
-
+    private void localCallTask(Schedule<LocalCall> schedule) {
+        dal.deleteSchedule(schedule.getId());
     }
 
     /**
@@ -88,7 +89,7 @@ public class ScheduleTask {
      *
      * @param schedule 计划任务DTO
      */
-    private void rpcCallTask(Schedule<RpcCall> schedule){
-
+    private void rpcCallTask(Schedule<RpcCall> schedule) {
+        dal.deleteSchedule(schedule.getId());
     }
 }

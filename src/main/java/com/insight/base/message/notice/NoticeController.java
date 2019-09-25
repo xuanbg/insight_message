@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/base/message/notice")
+@RequestMapping("/base/message")
 public class NoticeController {
 }

@@ -18,7 +18,7 @@ import javax.validation.Valid;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/base/message/manage")
+@RequestMapping("/base/message")
 public class ManageController {
     private final ManageService service;
 
@@ -67,11 +67,8 @@ public class ManageController {
      */
     @PostMapping("/v1.0/templates")
     public Reply newTemplate(@RequestHeader("loginInfo") String info, @Valid @RequestBody Template dto) {
-        if (dto == null) {
-            return ReplyHelper.invalidParam();
-        }
-
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.newTemplate(loginInfo, dto);
     }
 
@@ -84,11 +81,8 @@ public class ManageController {
      */
     @PutMapping("/v1.0/templates")
     public Reply editTemplate(@RequestHeader("loginInfo") String info, @Valid @RequestBody Template dto) {
-        if (dto == null) {
-            return ReplyHelper.invalidParam();
-        }
-
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.editTemplate(loginInfo, dto);
     }
 
@@ -123,7 +117,7 @@ public class ManageController {
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.changeTemplateStatus(loginInfo, id, false);
+        return service.changeTemplateStatus(loginInfo, id, true);
     }
 
     /**
@@ -140,7 +134,7 @@ public class ManageController {
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.changeTemplateStatus(loginInfo, id, true);
+        return service.changeTemplateStatus(loginInfo, id, false);
     }
 
     /**
@@ -235,7 +229,7 @@ public class ManageController {
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.changeSceneStatus(loginInfo, id, false);
+        return service.changeSceneStatus(loginInfo, id, true);
     }
 
     /**
@@ -252,7 +246,7 @@ public class ManageController {
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.changeSceneStatus(loginInfo, id, true);
+        return service.changeSceneStatus(loginInfo, id, false);
     }
 
     /**

@@ -18,7 +18,7 @@ public class TemplateDto implements Serializable {
     private String tag;
 
     /**
-     * 发送类型:0.未定义;1.仅消息(001);2.仅推送(010);3.推送+消息(011);4.仅短信(100);5.消息+短信(101);6.推送+短信(110);7.消息+推送+短信(111)
+     * 发送类型:0.未定义;1.仅消息(001);2.仅推送(010);3.推送+消息(011);4.仅短信(100)
      */
     private Integer type;
 

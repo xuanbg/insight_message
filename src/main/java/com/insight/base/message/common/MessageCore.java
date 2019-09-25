@@ -155,11 +155,6 @@ public class MessageCore {
      */
     @Async
     public void addMessage(Schedule<Message> schedule) {
-        String id = schedule.getId();
-        if (id != null && !id.isEmpty()) {
-            dal.deleteSchedule(schedule.getId());
-        }
-
         Message message = schedule.getContent();
         if (message == null) {
             return;
@@ -182,11 +177,6 @@ public class MessageCore {
      */
     @Async
     public void pushNotice(Schedule<Message> schedule) {
-        String id = schedule.getId();
-        if (id != null && !id.isEmpty()) {
-            dal.deleteSchedule(schedule.getId());
-        }
-
         Message message = schedule.getContent();
         if (message == null || push(message)) {
             return;
@@ -202,17 +192,53 @@ public class MessageCore {
      */
     @Async
     public void sendSms(Schedule<Message> schedule) {
-        String id = schedule.getId();
-        if (id != null && !id.isEmpty()) {
-            dal.deleteSchedule(schedule.getId());
-        }
-
         Message message = schedule.getContent();
         if (message == null || send(message)) {
             return;
         }
 
         addSchedule(schedule);
+    }
+
+    /**
+     * 保存计划任务数据
+     *
+     * @param schedule 计划任务DTO
+     */
+    public void addSchedule(Schedule schedule) {
+        LocalDateTime now = LocalDateTime.now();
+        String id = schedule.getId();
+        if (id == null || id.isEmpty()) {
+            schedule.setId(Generator.uuid());
+            schedule.setTaskTime(now.plusSeconds(10));
+            schedule.setCount(0);
+            schedule.setInvalid(false);
+            schedule.setCreatedTime(now);
+        } else {
+            int count = schedule.getCount();
+            if (count > 99) {
+                schedule.setInvalid(true);
+            } else {
+                schedule.setTaskTime(now.plusSeconds((long) Math.pow(count, 2)));
+                schedule.setCount(count + 1);
+            }
+        }
+
+        try {
+            // 保存计划任务数据
+            dal.addSchedule(schedule);
+        } catch (Exception ex) {
+            // 保存计划任务数据失败,记录日志并发短信通知运维人员
+            logger.warn("保存任务失败! 任务数据为: {}", schedule.toString());
+
+            List<String> list = new ArrayList<>();
+            list.add("13958085903");
+            Message message = new Message();
+            message.setReceivers(list);
+            message.setContent(now.toString() + "保存任务失败! 请尽快处理");
+
+            send(message);
+        }
     }
 
     /**
@@ -261,47 +287,6 @@ public class MessageCore {
         } catch (Exception ex) {
             logger.error("发送短信发生错误! 异常信息为: {}", ex.getMessage());
             return false;
-        }
-    }
-
-    /**
-     * 保存计划任务数据
-     *
-     * @param schedule 计划任务DTO
-     */
-    private void addSchedule(Schedule schedule) {
-        LocalDateTime now = LocalDateTime.now();
-        String id = schedule.getId();
-        if (id == null || id.isEmpty()) {
-            schedule.setId(Generator.uuid());
-            schedule.setTaskTime(now.plusSeconds(10));
-            schedule.setCount(0);
-            schedule.setInvalid(false);
-            schedule.setCreatedTime(now);
-        } else {
-            int count = schedule.getCount();
-            if (count > 99) {
-                schedule.setInvalid(true);
-            } else {
-                schedule.setTaskTime(now.plusSeconds((long) Math.pow(count, 2)));
-                schedule.setCount(count + 1);
-            }
-        }
-
-        try {
-            // 保存计划任务数据
-            dal.addSchedule(schedule);
-        } catch (Exception ex) {
-            // 保存计划任务数据失败,记录日志并发短信通知运维人员
-            logger.warn("保存任务失败! 任务数据为: {}", schedule.toString());
-
-            List<String> list = new ArrayList<>();
-            list.add("13958085903");
-            Message message = new Message();
-            message.setReceivers(list);
-            message.setContent(now.toString() + "保存任务失败! 请尽快处理");
-
-            send(message);
         }
     }
 }

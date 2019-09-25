@@ -1,14 +1,12 @@
 package com.insight.base.message.common.mapper;
 
-import com.insight.base.message.common.dto.LocalCall;
-import com.insight.base.message.common.dto.MessageListDto;
-import com.insight.base.message.common.dto.RpcCall;
-import com.insight.base.message.common.dto.TemplateDto;
+import com.insight.base.message.common.dto.*;
 import com.insight.base.message.common.entity.Message;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.entity.SubscribeMessage;
 import com.insight.util.common.ArrayTypeHandler;
 import com.insight.util.common.JsonTypeHandler;
+import com.insight.util.pojo.Log;
 import com.insight.util.pojo.Schedule;
 import org.apache.ibatis.annotations.*;
 
@@ -113,9 +111,30 @@ public interface MessageMapper {
     void cancelPush(String id);
 
     /**
+     * 获取任务列表
+     *
+     * @param key 查询关键词
+     * @return 任务列表
+     */
+    @Select("<script>select id, type, method, task_time, count, is_invalid, created_time from imt_schedule " +
+            "<if test = 'key != null'>where type = #{key} or method = #{key} </if>" +
+            "order by task_time</script>")
+    List<ScheduleListDto> getSchedules(@Param("key") String key);
+
+    /**
+     * 获取任务详情
+     *
+     * @param id 计划任务ID
+     * @return 计划任务DTO
+     */
+    @Results({@Result(property = "content", column = "content", javaType = Object.class, typeHandler = JsonTypeHandler.class)})
+    @Select("select * from imt_schedule where id = #{id};")
+    Schedule getSchedule(String id);
+
+    /**
      * 获取当前需要执行的消息类型的计划任务
      *
-     * @return 计划任务DTO集合
+     * @return DTO集合
      */
     @Results({@Result(property = "content", column = "content", javaType = Message.class, typeHandler = JsonTypeHandler.class)})
     @Select("select * from imt_schedule where type = 0 and task_time < now() and is_invalid = 0;")
@@ -149,10 +168,37 @@ public interface MessageMapper {
     void addSchedule(Schedule schedule);
 
     /**
+     * 更新任务执行时间为当前时间
+     *
+     * @param id 计划任务ID
+     */
+    @Update("update imt_schedule set task_time = now(), is_invalid = 0 where id = #{id};")
+    void editSchedule(String id);
+
+    /**
+     * 禁用/启用计划任务
+     *
+     * @param id     计划任务ID
+     * @param status 禁用/启用状态
+     */
+    @Update("update imt_schedule is_invalid = #{status} where id = #{id};")
+    void changeScheduleStatus(String id, boolean status);
+
+    /**
      * 删除计划任务
      *
      * @param id 计划任务ID
      */
     @Delete("delete from imt_schedule where id = #{id};")
     void deleteSchedule(String id);
+
+    /**
+     * 记录操作日志
+     *
+     * @param log 日志DTO
+     */
+    @Insert("insert iml_operate_log(id, tenant_id, type, business, business_id, content, dept_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{type}, #{business}, #{businessId}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
+            "#{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    void addLog(Log log);
 }

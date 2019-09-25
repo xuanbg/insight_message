@@ -2,6 +2,7 @@ package com.insight.base.message.manage;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.insight.base.message.common.MessageDal;
 import com.insight.base.message.common.dto.SceneListDto;
 import com.insight.base.message.common.dto.SceneTemplateListDto;
 import com.insight.base.message.common.dto.TemplateListDto;
@@ -9,10 +10,8 @@ import com.insight.base.message.common.entity.Scene;
 import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Template;
 import com.insight.base.message.common.mapper.SceneMapper;
-import com.insight.base.message.common.mapper.TemplateMapper;
 import com.insight.util.Generator;
 import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.Log;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.OperateType;
 import com.insight.util.pojo.Reply;
@@ -22,8 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author 宣炳刚
@@ -33,18 +30,18 @@ import java.util.concurrent.Executors;
 @Service
 public class ManageServiceImpl implements ManageService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final TemplateMapper templateMapper;
-    private final SceneMapper sceneMapper;
+    private final MessageDal dal;
+    private final SceneMapper mapper;
 
     /**
      * 构造方法
      *
-     * @param templateMapper TemplateMapper
-     * @param sceneMapper    SceneMapper
+     * @param dal    TemplateMapper
+     * @param mapper SceneMapper
      */
-    public ManageServiceImpl(TemplateMapper templateMapper, SceneMapper sceneMapper) {
-        this.templateMapper = templateMapper;
-        this.sceneMapper = sceneMapper;
+    public ManageServiceImpl(MessageDal dal, SceneMapper mapper) {
+        this.dal = dal;
+        this.mapper = mapper;
     }
 
     /**
@@ -59,7 +56,7 @@ public class ManageServiceImpl implements ManageService {
     @Override
     public Reply getTemplates(String tenantId, String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<TemplateListDto> templates = templateMapper.getTemplates(tenantId, keyword);
+        List<TemplateListDto> templates = mapper.getTemplates(tenantId, keyword);
         PageInfo<TemplateListDto> pageInfo = new PageInfo<>(templates);
 
         return ReplyHelper.success(templates, pageInfo.getTotal());
@@ -73,7 +70,7 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply getTemplate(String id) {
-        Template template = templateMapper.getTemplate(id);
+        Template template = mapper.getTemplate(id);
         if (template == null) {
             return ReplyHelper.fail("ID不存在,未读取数据");
         }
@@ -97,8 +94,8 @@ public class ManageServiceImpl implements ManageService {
         dto.setCreatorId(info.getUserId());
         dto.setCreatedTime(LocalDateTime.now());
 
-        templateMapper.addTemplate(dto);
-        writeLog(info, OperateType.INSERT, "消息模板管理", id, dto);
+        mapper.addTemplate(dto);
+        dal.writeLog(info, OperateType.INSERT, "消息模板管理", id, dto);
 
         return ReplyHelper.created(id);
     }
@@ -113,13 +110,13 @@ public class ManageServiceImpl implements ManageService {
     @Override
     public Reply editTemplate(LoginInfo info, Template dto) {
         String id = dto.getId();
-        Template template = templateMapper.getTemplate(id);
+        Template template = mapper.getTemplate(id);
         if (template == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
         }
 
-        templateMapper.editTemplate(dto);
-        writeLog(info, OperateType.UPDATE, "消息模板管理", id, dto);
+        mapper.editTemplate(dto);
+        dal.writeLog(info, OperateType.UPDATE, "消息模板管理", id, dto);
 
         return ReplyHelper.success();
     }
@@ -133,13 +130,13 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply deleteTemplate(LoginInfo info, String id) {
-        Template template = templateMapper.getTemplate(id);
+        Template template = mapper.getTemplate(id);
         if (template == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
         }
 
-        templateMapper.deleteTemplate(id);
-        writeLog(info, OperateType.DELETE, "消息模板管理", id, template);
+        mapper.deleteTemplate(id);
+        dal.writeLog(info, OperateType.DELETE, "消息模板管理", id, template);
 
         return ReplyHelper.success();
     }
@@ -154,13 +151,13 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply changeTemplateStatus(LoginInfo info, String id, boolean status) {
-        Template template = templateMapper.getTemplate(id);
+        Template template = mapper.getTemplate(id);
         if (template == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
         }
 
-        templateMapper.changeTemplateStatus(id, status);
-        writeLog(info, OperateType.UPDATE, "消息模板管理", id, template);
+        mapper.changeTemplateStatus(id, status);
+        dal.writeLog(info, OperateType.UPDATE, "消息模板管理", id, template);
 
         return ReplyHelper.success();
     }
@@ -177,7 +174,7 @@ public class ManageServiceImpl implements ManageService {
     @Override
     public Reply getScenes(String tenantId, String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<SceneListDto> scenes = sceneMapper.getScenes(tenantId, keyword);
+        List<SceneListDto> scenes = mapper.getScenes(tenantId, keyword);
         PageInfo<SceneListDto> pageInfo = new PageInfo<>(scenes);
 
         return ReplyHelper.success(scenes, pageInfo.getTotal());
@@ -191,7 +188,7 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply getScene(String id) {
-        Scene scene = sceneMapper.getScene(id);
+        Scene scene = mapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
         }
@@ -215,8 +212,8 @@ public class ManageServiceImpl implements ManageService {
         dto.setCreatorId(info.getUserId());
         dto.setCreatedTime(LocalDateTime.now());
 
-        sceneMapper.addScene(dto);
-        writeLog(info, OperateType.INSERT, "消息场景管理", id, dto);
+        mapper.addScene(dto);
+        dal.writeLog(info, OperateType.INSERT, "消息场景管理", id, dto);
 
         return ReplyHelper.created(id);
     }
@@ -231,13 +228,13 @@ public class ManageServiceImpl implements ManageService {
     @Override
     public Reply editScene(LoginInfo info, Scene dto) {
         String id = dto.getId();
-        Scene scene = sceneMapper.getScene(id);
+        Scene scene = mapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
         }
 
-        sceneMapper.editScene(dto);
-        writeLog(info, OperateType.UPDATE, "消息场景管理", id, dto);
+        mapper.editScene(dto);
+        dal.writeLog(info, OperateType.UPDATE, "消息场景管理", id, dto);
 
         return ReplyHelper.success();
     }
@@ -251,13 +248,13 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply deleteScene(LoginInfo info, String id) {
-        Scene scene = sceneMapper.getScene(id);
+        Scene scene = mapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
         }
 
-        sceneMapper.deleteScene(id);
-        writeLog(info, OperateType.DELETE, "消息场景管理", id, scene);
+        mapper.deleteScene(id);
+        dal.writeLog(info, OperateType.DELETE, "消息场景管理", id, scene);
 
         return ReplyHelper.success();
     }
@@ -272,13 +269,13 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply changeSceneStatus(LoginInfo info, String id, boolean status) {
-        Scene scene = sceneMapper.getScene(id);
+        Scene scene = mapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
         }
 
-        sceneMapper.changeSceneStatus(id, status);
-        writeLog(info, OperateType.UPDATE, "消息场景管理", id, scene);
+        mapper.changeSceneStatus(id, status);
+        dal.writeLog(info, OperateType.UPDATE, "消息场景管理", id, scene);
 
         return ReplyHelper.success();
     }
@@ -295,7 +292,7 @@ public class ManageServiceImpl implements ManageService {
     @Override
     public Reply getSceneTemplates(String tenantId, String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<SceneTemplateListDto> templates = sceneMapper.getSceneTemplates(tenantId, keyword);
+        List<SceneTemplateListDto> templates = mapper.getSceneTemplates(tenantId, keyword);
         PageInfo<SceneTemplateListDto> pageInfo = new PageInfo<>(templates);
 
         return ReplyHelper.success(templates, pageInfo.getTotal());
@@ -317,8 +314,8 @@ public class ManageServiceImpl implements ManageService {
         dto.setCreatorId(info.getUserId());
         dto.setCreatedTime(LocalDateTime.now());
 
-        sceneMapper.addSceneTemplate(dto);
-        writeLog(info, OperateType.INSERT, "消息模板配置管理", id, dto);
+        mapper.addSceneTemplate(dto);
+        dal.writeLog(info, OperateType.INSERT, "消息模板配置管理", id, dto);
 
         return ReplyHelper.created(id);
     }
@@ -332,43 +329,14 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply removeSceneTemplate(LoginInfo info, String id) {
-        Scene scene = sceneMapper.getScene(id);
+        Scene scene = mapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
         }
 
-        sceneMapper.deleteSceneTemplate(id);
-        writeLog(info, OperateType.DELETE, "消息模板配置管理", id, scene);
+        mapper.deleteSceneTemplate(id);
+        dal.writeLog(info, OperateType.DELETE, "消息模板配置管理", id, scene);
 
         return ReplyHelper.success();
-    }
-
-
-    /**
-     * 记录操作日志
-     *
-     * @param info     用户关键信息
-     * @param type     操作类型
-     * @param business 业务名称
-     * @param id       业务ID
-     * @param content  日志内容
-     */
-    private void writeLog(LoginInfo info, OperateType type, String business, String id, Object content) {
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        threadPool.submit(() -> {
-            Log log = new Log();
-            log.setId(Generator.uuid());
-            log.setTenantId(info.getTenantId());
-            log.setType(type);
-            log.setBusiness(business);
-            log.setBusinessId(id);
-            log.setContent(content);
-            log.setDeptId(info.getDeptId());
-            log.setCreator(info.getUserName());
-            log.setCreatorId(info.getUserId());
-            log.setCreatedTime(LocalDateTime.now());
-
-            templateMapper.addLog(log);
-        });
     }
 }

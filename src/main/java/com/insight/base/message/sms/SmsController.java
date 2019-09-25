@@ -17,7 +17,7 @@ import javax.validation.Valid;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/base/message/sms")
+@RequestMapping("/base/message")
 public class SmsController {
     private final SmsService service;
 
@@ -37,7 +37,7 @@ public class SmsController {
      * @param dto  短信DTO
      * @return Reply
      */
-    @PostMapping("/v1.0/messages")
+    @PostMapping("/v1.0/sms")
     public Reply sendMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody NormalMessage dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
@@ -50,7 +50,7 @@ public class SmsController {
      * @param dto  验证码:0.验证手机号;1.用户注册;2.重置密码;3.修改支付密码;4.修改手机号
      * @return Reply
      */
-    @PostMapping("/v1.0/messages/codes")
+    @PostMapping("/v1.0/sms/codes")
     public Reply seedSmsCode(@Valid @RequestBody SmsCode dto) {
         return service.seedSmsCode(dto);
     }
@@ -62,7 +62,7 @@ public class SmsController {
      * @param isCheck 是否检验模式:true.检验模式,验证后验证码不失效;false.验证模式,验证后验证码失效
      * @return Reply
      */
-    @GetMapping("/v1.0/messages/codes/{key}/status")
+    @GetMapping("/v1.0/sms/codes/{key}/status")
     public Reply verifySmsCode(@PathVariable String key, @RequestParam(defaultValue = "true") Boolean isCheck) {
         if (key == null || key.isEmpty()) {
             return ReplyHelper.invalidParam();

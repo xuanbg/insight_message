@@ -99,6 +99,7 @@ public class SmsServiceImpl implements SmsService {
         String key = Util.md5(type + mobile + smsCode);
         Redis.set("VerifyCode:" + key, mobile, dto.getMinutes(), TimeUnit.MINUTES);
         Redis.add("VerifyCodeSet:" + mobile, key);
+        Redis.setExpire("VerifyCodeSet:" + mobile, 30, TimeUnit.MINUTES);
         logger.info("手机号[{}]的{}类短信验证码为: {}", mobile, type, smsCode);
 
         return ReplyHelper.success();

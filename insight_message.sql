@@ -114,7 +114,7 @@ CREATE TABLE `ims_template` (
   `tenant_id` char(32) DEFAULT NULL COMMENT '租户ID',
   `code` varchar(8) DEFAULT NULL COMMENT '模板编号',
   `tag` varchar(8) NOT NULL COMMENT '消息标签',
-  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)；5、消息+短信(101)；6、推送+短信(110)；7、消息+推送+短信(111)',
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)',
   `title` varchar(64) DEFAULT NULL COMMENT '消息标题',
   `content` varchar(1024) NOT NULL COMMENT '消息内容',
   `expire` int(10) unsigned DEFAULT NULL COMMENT '消息有效时长(小时)',
