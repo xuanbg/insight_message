@@ -3,6 +3,9 @@ package com.insight.base.message.common;
 import com.insight.base.message.common.dto.LocalCall;
 import com.insight.base.message.common.dto.RpcCall;
 import com.insight.base.message.common.entity.Message;
+import com.insight.util.Generator;
+import com.insight.util.common.LockHandler;
+import com.insight.util.pojo.Param;
 import com.insight.util.pojo.Schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +22,10 @@ import java.util.List;
 @Component
 public class ScheduleTask {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final LockHandler handler = new LockHandler();
     private final MessageCore core;
     private final MessageDal dal;
+    private final Param param = new Param("Message:Schedule");
 
     /**
      * 构造方法
@@ -38,17 +43,26 @@ public class ScheduleTask {
      */
     @Scheduled(fixedDelay = 10000)
     public void execute() {
-        // 执行消息类型的计划任务
-        List<Schedule<Message>> messageSchedules = dal.getMessageSchedule();
-        messageSchedules.forEach(this::messageTask);
+        param.setValue(Generator.uuid());
+        if (handler.tryLock(param)) {
+            try {
+                // 执行消息类型的计划任务
+                List<Schedule<Message>> messageSchedules = dal.getMessageSchedule();
+                messageSchedules.forEach(this::messageTask);
 
-        // 执行本地调用类型的计划任务
-        List<Schedule<LocalCall>> localSchedules = dal.getLocalSchedule();
-        localSchedules.forEach(this::localCallTask);
+                // 执行本地调用类型的计划任务
+                List<Schedule<LocalCall>> localSchedules = dal.getLocalSchedule();
+                localSchedules.forEach(this::localCallTask);
 
-        // 执行远程调用类型的计划任务
-        List<Schedule<RpcCall>> rpcSchedules = dal.getRpcSchedule();
-        rpcSchedules.forEach(this::rpcCallTask);
+                // 执行远程调用类型的计划任务
+                List<Schedule<RpcCall>> rpcSchedules = dal.getRpcSchedule();
+                rpcSchedules.forEach(this::rpcCallTask);
+            } catch (Exception ex) {
+                logger.error("计划任务发生错误! 异常信息为: {}", ex.getMessage());
+            } finally {
+                handler.releaseLock(param);
+            }
+        }
     }
 
     /**
