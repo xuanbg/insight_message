@@ -15,15 +15,15 @@ import javax.validation.Valid;
 @CrossOrigin
 @RestController
 @RequestMapping("/base/message")
-public class SmsController {
-    private final SmsService service;
+public class MessageController {
+    private final MessageService service;
 
     /**
      * 构造方法
      *
-     * @param service SmsService
+     * @param service MessageService
      */
-    public SmsController(SmsService service) {
+    public MessageController(MessageService service) {
         this.service = service;
     }
 

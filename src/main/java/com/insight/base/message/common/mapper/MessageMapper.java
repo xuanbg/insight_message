@@ -1,13 +1,16 @@
 package com.insight.base.message.common.mapper;
 
-import com.insight.base.message.common.dto.*;
-import com.insight.base.message.common.entity.Message;
+import com.insight.base.message.common.dto.MessageListDto;
+import com.insight.base.message.common.dto.ScheduleListDto;
+import com.insight.base.message.common.dto.TemplateDto;
+import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.entity.SubscribeMessage;
 import com.insight.util.common.ArrayTypeHandler;
 import com.insight.util.common.JsonTypeHandler;
 import com.insight.util.pojo.Log;
 import com.insight.util.pojo.Schedule;
+import com.insight.util.pojo.ScheduleCall;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -55,7 +58,7 @@ public interface MessageMapper {
      */
     @Results({@Result(property = "receivers", column = "receivers", javaType = String.class, typeHandler = ArrayTypeHandler.class)})
     @Select("select * from imm_message where id = #{id};")
-    List<Message> getMessage(String id);
+    List<InsightMessage> getMessage(String id);
 
     /**
      * 新增消息
@@ -65,7 +68,7 @@ public interface MessageMapper {
     @Insert("insert imm_message(id, tenant_id, app_id, tag, type, receivers, title, content, expire_date, is_broadcast, dept_id, creator, creator_id, created_time) values " +
             "(#{id}, #{tenantId}, #{appId}, #{tag}, #{type}, #{receivers, typeHandler = com.insight.util.common.ArrayTypeHandler}, " +
             "#{title}, #{content}, #{expireDate}, #{isBroadcast}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
-    void addMessage(Message message);
+    void addMessage(InsightMessage message);
 
     /**
      * 推送消息
@@ -92,7 +95,7 @@ public interface MessageMapper {
      */
     @Update("update imm_message set app_id = #{appId}, tag = #{tag}, type = #{type}, receivers = #{receivers, typeHandler = com.insight.util.common.ArrayTypeHandler}, " +
             "content = #{content}, expire_date = #{expireDate}, is_broadcast = #{isBroadcast} where id = #{id};")
-    void editMessage(Message message);
+    void editMessage(InsightMessage message);
 
     /**
      * 删除消息
@@ -136,35 +139,35 @@ public interface MessageMapper {
      *
      * @return DTO集合
      */
-    @Results({@Result(property = "content", column = "content", javaType = Message.class, typeHandler = JsonTypeHandler.class)})
+    @Results({@Result(property = "content", column = "content", javaType = InsightMessage.class, typeHandler = JsonTypeHandler.class)})
     @Select("select * from imt_schedule where type = 0 and task_time < now() and is_invalid = 0;")
-    List<Schedule<Message>> getMessageSchedule();
+    List<Schedule<InsightMessage>> getMessageSchedule();
 
     /**
      * 获取当前需要执行的本地调用类型的计划任务
      *
      * @return 计划任务DTO集合
      */
-    @Results({@Result(property = "content", column = "content", javaType = LocalCall.class, typeHandler = JsonTypeHandler.class)})
+    @Results({@Result(property = "content", column = "content", javaType = ScheduleCall.class, typeHandler = JsonTypeHandler.class)})
     @Select("select * from imt_schedule where type = 1 and task_time < now() and is_invalid = 0;")
-    List<Schedule<LocalCall>> getLocalSchedule();
+    List<Schedule<ScheduleCall>> getLocalSchedule();
 
     /**
      * 获取当前需要执行的远程调用类型的计划任务
      *
      * @return 计划任务DTO集合
      */
-    @Results({@Result(property = "content", column = "content", javaType = RpcCall.class, typeHandler = JsonTypeHandler.class)})
+    @Results({@Result(property = "content", column = "content", javaType = ScheduleCall.class, typeHandler = JsonTypeHandler.class)})
     @Select("select * from imt_schedule where type = 2 and task_time < now() and is_invalid = 0;")
-    List<Schedule<RpcCall>> getRpcSchedule();
+    List<Schedule<ScheduleCall>> getRpcSchedule();
 
     /**
      * 新增计划任务记录
      *
      * @param schedule 计划任务DTO
      */
-    @Insert("insert imt_schedule (id, method, task_time, content, count, is_invalid, created_time) values " +
-            "(#{id}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, #{count}, #{isInvalid}, #{createdTime});")
+    @Insert("insert imt_schedule (id, type, method, task_time, content, count, is_invalid, created_time) values " +
+            "(#{id}, #{type}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, #{count}, #{isInvalid}, #{createdTime});")
     void addSchedule(Schedule schedule);
 
     /**

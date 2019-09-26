@@ -21,26 +21,64 @@ public class TopicExchangeConfig {
      * @return TopicExchange
      */
     @Bean
-    public TopicExchange userExchange() {
+    public TopicExchange exchange() {
         return new TopicExchange("amq.topic");
     }
 
     /**
-     * 新增用户队列
+     * 新增消息发送队列
      *
      * @return Queue
      */
     @Bean
-    public Queue userQueue() {
-        return new Queue("auth.user");
+    public Queue messageQueue() {
+        return new Queue("schedule.message");
     }
 
     /**
-     * 默认绑定
+     * 新增本地调用队列
+     *
+     * @return Queue
+     */
+    @Bean
+    public Queue localQueue() {
+        return new Queue("schedule.local");
+    }
+
+    /**
+     * 新增远程调用队列
+     *
+     * @return Queue
+     */
+    @Bean
+    public Queue remoteQueue() {
+        return new Queue("schedule.remote");
+    }
+
+    /**
+     * 消息发送绑定
      * @return Binding
      */
     @Bean
-    public Binding binding(){
-        return BindingBuilder.bind(userQueue()).to(userExchange()).with("auth.addUser");
+    public Binding manageBinding(){
+        return BindingBuilder.bind(messageQueue()).to(exchange()).with("schedule.message");
+    }
+
+    /**
+     * 本地调用绑定
+     * @return Binding
+     */
+    @Bean
+    public Binding localBinding(){
+        return BindingBuilder.bind(localQueue()).to(exchange()).with("schedule.local");
+    }
+
+    /**
+     * 远程调用绑定
+     * @return Binding
+     */
+    @Bean
+    public Binding remoteBinding(){
+        return BindingBuilder.bind(remoteQueue()).to(exchange()).with("schedule.remote");
     }
 }

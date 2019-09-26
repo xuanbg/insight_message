@@ -83,6 +83,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     public Reply newSchedule(Schedule dto) {
         String id = Generator.uuid();
         dto.setId(id);
+        if (dto.getTaskTime() == null){
+            dto.setTaskTime(LocalDateTime.now().plusSeconds(10));
+        }
+
+        dto.setCount(0);
         dto.setInvalid(false);
         dto.setCreatedTime(LocalDateTime.now());
         mapper.addSchedule(dto);

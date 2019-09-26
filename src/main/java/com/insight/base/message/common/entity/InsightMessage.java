@@ -13,7 +13,7 @@ import java.util.Map;
  * @date 2019/9/20
  * @remark 消息DTO
  */
-public class Message implements Serializable {
+public class InsightMessage implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**

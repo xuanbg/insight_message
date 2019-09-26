@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @remark 短信服务
  */
 @Service
-public class SmsServiceImpl implements SmsService {
+public class MessageServiceImpl implements MessageService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final MessageCore core;
 
@@ -30,7 +30,7 @@ public class SmsServiceImpl implements SmsService {
      *
      * @param core MessageCore
      */
-    public SmsServiceImpl(MessageCore core) {
+    public MessageServiceImpl(MessageCore core) {
         this.core = core;
     }
 

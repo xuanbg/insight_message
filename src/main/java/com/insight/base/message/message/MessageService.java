@@ -7,7 +7,7 @@ import com.insight.util.pojo.*;
  * @date 2019-08-28
  * @remark 短信服务接口
  */
-public interface SmsService {
+public interface MessageService {
 
     /**
      * 发送短信

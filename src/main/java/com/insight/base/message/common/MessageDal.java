@@ -1,16 +1,11 @@
 package com.insight.base.message.common;
 
-import com.insight.base.message.common.dto.LocalCall;
-import com.insight.base.message.common.dto.RpcCall;
 import com.insight.base.message.common.dto.TemplateDto;
-import com.insight.base.message.common.entity.Message;
+import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.OperateType;
-import com.insight.util.pojo.Schedule;
+import com.insight.util.pojo.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +52,7 @@ public class MessageDal {
      * @param message 消息DTO
      */
     @Transactional(rollbackFor = Exception.class)
-    public void addMessage(Message message) {
+    public void addMessage(InsightMessage message) {
         mapper.addMessage(message);
         if (message.getBroadcast()) {
             return;
@@ -81,7 +76,7 @@ public class MessageDal {
      *
      * @return 计划任务DTO集合
      */
-    public List<Schedule<Message>> getMessageSchedule() {
+    public List<Schedule<InsightMessage>> getMessageSchedule() {
         return mapper.getMessageSchedule();
     }
 
@@ -90,7 +85,7 @@ public class MessageDal {
      *
      * @return 计划任务DTO集合
      */
-    public List<Schedule<LocalCall>> getLocalSchedule() {
+    public List<Schedule<ScheduleCall>> getLocalSchedule() {
         return mapper.getLocalSchedule();
     }
 
@@ -99,7 +94,7 @@ public class MessageDal {
      *
      * @return 计划任务DTO集合
      */
-    public List<Schedule<RpcCall>> getRpcSchedule() {
+    public List<Schedule<ScheduleCall>> getRpcSchedule() {
         return mapper.getRpcSchedule();
     }
 
