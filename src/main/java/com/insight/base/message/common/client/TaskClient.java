@@ -2,7 +2,6 @@ package com.insight.base.message.common.client;
 
 import com.insight.util.pojo.Reply;
 import feign.RequestLine;
-import org.springframework.cloud.openfeign.FeignClient;
 
 import java.net.URI;
 
@@ -11,7 +10,6 @@ import java.net.URI;
  * @date 2019-08-31
  * @remark 消息中心Feign客户端
  */
-@FeignClient()
 public interface TaskClient {
 
     /**
