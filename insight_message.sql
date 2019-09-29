@@ -21,7 +21,7 @@ CREATE TABLE `iml_operate_log` (
   KEY `idx_operate_log_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_operate_log_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_operate_log_created_time` (`created_time`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='操作日志记录表';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='操作日志记录表';
 
 
 -- ----------------------------
@@ -53,7 +53,7 @@ CREATE TABLE `imm_message` (
   KEY `idx_message_dept_id` (`dept_id`),
   KEY `idx_message_creator_id` (`creator_id`),
   KEY `idx_message_created_time` (`created_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='消息表';
 
 -- ----------------------------
 -- Table structure for imm_message_push
@@ -68,7 +68,7 @@ CREATE TABLE `imm_message_push` (
   PRIMARY KEY (`id`),
   KEY `idx_message_push_message_id` (`message_id`),
   KEY `idx_message_push_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息推送表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='消息推送表';
 
 -- ----------------------------
 -- Table structure for imm_message_subscribe
@@ -82,7 +82,7 @@ CREATE TABLE `imm_message_subscribe` (
   PRIMARY KEY (`id`),
   KEY `idx_message_subscribe_message_id` (`message_id`),
   KEY `idx_message_subscribe_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息订阅表,只能订阅广播消息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='消息订阅表,只能订阅广播消息';
 
 
 -- ----------------------------
@@ -103,7 +103,7 @@ CREATE TABLE `ims_scene` (
   KEY `idx_scene_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_scene_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_scene_created_time` (`created_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信发送场景表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='短信发送场景表';
 
 -- ----------------------------
 -- Table structure for ims_template
@@ -130,7 +130,7 @@ CREATE TABLE `ims_template` (
   KEY `idx_template_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_template_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_template_created_time` (`created_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息模板表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='消息模板表';
 
 -- ----------------------------
 -- Table structure for ims_scene_template
@@ -157,7 +157,7 @@ CREATE TABLE `ims_scene_template` (
   KEY `idx_scene_template_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_scene_template_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_scene_template_created_time` (`created_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='场景模板配置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='场景模板配置表';
 
 
 -- ----------------------------
@@ -175,7 +175,7 @@ CREATE TABLE `imt_schedule` (
   `created_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_schedule_created_time` (`created_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务队列表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='任务队列表';
 
 
 -- ----------------------------
@@ -190,7 +190,7 @@ CREATE TABLE `imu_user_device` (
   PRIMARY KEY (`id`),
   KEY `idx_user_device_user_id` (`user_id`),
   KEY `idx_user_device_device_id` (`device_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户设备表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='用户设备表';
 
 -- ----------------------------
 -- Table structure for imu_user_tag
@@ -214,7 +214,7 @@ CREATE TABLE `imu_user_tag` (
   KEY `idx_user_tag_dept_id` (`dept_id`),
   KEY `idx_user_tag_creator_id` (`creator_id`),
   KEY `idx_user_tag_created_time` (`created_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户标签表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='用户标签表';
 
 INSERT INTO `insight_message`.`ims_scene`(`id`, `code`, `name`, `remark`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
 ('27c3a319dc7011e9bc200242ac110004', '0001', '验证码登录', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
