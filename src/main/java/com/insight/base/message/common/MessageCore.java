@@ -139,6 +139,7 @@ public class MessageCore {
      */
     public void sendMessage(LoginInfo info, InsightMessage message) {
         Schedule<InsightMessage> schedule = new Schedule<>();
+        schedule.setType(0);
         schedule.setContent(message);
         int type = message.getType();
 
