@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 /**
  * @author 宣炳刚
  * @date 2019/9/23
- * @remark
+ * @remark 消息数据处理DAL
  */
 @Component
 public class MessageDal {

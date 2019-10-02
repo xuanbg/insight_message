@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author 宣炳刚
  * @date 2019/9/24
- * @remark 计划任务核心类
+ * @remark 计划任务执行类
  */
 @Component
 public class ScheduleTask {

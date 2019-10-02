@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 /**
  * @author 宣炳刚
  * @date 2019-09-03
- * @remark
+ * @remark 队列监听类
  */
 @Component
 public class Listener {
@@ -24,7 +24,7 @@ public class Listener {
     /**
      * 构造方法
      *
-     * @param core MessageCore
+     * @param core Core
      */
     public Listener(Core core) {
         this.core = core;

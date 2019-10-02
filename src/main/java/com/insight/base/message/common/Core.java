@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * @author 宣炳刚
  * @date 2019/10/2
- * @remark
+ * @remark 计划任务核心代码
  */
 @Component
 @Import(FeignClientsConfiguration.class)
