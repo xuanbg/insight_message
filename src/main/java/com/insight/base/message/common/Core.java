@@ -3,6 +3,7 @@ package com.insight.base.message.common;
 import com.insight.base.message.common.client.TaskClient;
 import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.util.Generator;
+import com.insight.util.Redis;
 import com.insight.util.http.HttpUtil;
 import com.insight.util.pojo.Reply;
 import com.insight.util.pojo.Schedule;
@@ -30,11 +31,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 宣炳刚
  * @date 2019/10/2
- * @remark 计划任务核心代码
+ * @remark 计划任务异步执行核心类
  */
 @Component
 @Import(FeignClientsConfiguration.class)
@@ -241,12 +243,19 @@ public class Core {
             // 保存计划任务数据失败,记录日志并发短信通知运维人员
             logger.warn("保存任务失败! 任务数据为: {}", schedule.toString());
 
+            String key = "Config:Warning";
+            boolean isWarning = Redis.hasKey(key);
+            if (isWarning) {
+                return;
+            }
+
             List<String> list = new ArrayList<>();
             list.add("13958085903");
             InsightMessage message = new InsightMessage();
             message.setReceivers(list);
             message.setContent(now.toString() + "保存任务失败! 请尽快处理");
 
+            Redis.set(key, now.toString(), 24, TimeUnit.HOURS);
             send(message);
         }
     }
