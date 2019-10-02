@@ -18,7 +18,10 @@ import feign.jackson.JacksonEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
+import org.springframework.cloud.openfeign.FeignClientsConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
@@ -33,14 +36,23 @@ import java.util.Map;
  * @date 2019/10/2
  * @remark
  */
+@Component
+@Import(FeignClientsConfiguration.class)
 public class Core {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Decoder decoder = new JacksonDecoder();
-    private Encoder encoder = new JacksonEncoder();
-    private EurekaClient client;
+    private final Decoder decoder = new JacksonDecoder();
+    private final Encoder encoder = new JacksonEncoder();
+    private final EurekaClient client;
     private final MessageDal dal;
 
-    public Core(MessageDal dal) {
+    /**
+     * 构造方法
+     *
+     * @param client EurekaClient
+     * @param dal    MessageDal
+     */
+    public Core(EurekaClient client, MessageDal dal) {
+        this.client = client;
         this.dal = dal;
     }
 
@@ -186,14 +198,14 @@ public class Core {
                 default:
                     return;
             }
-            if (result == null || result.isEmpty() || result.contains("error")){
+            if (result == null || result.isEmpty() || result.contains("error")) {
                 logger.error("本地调用发生错误! 错误信息为: {}", result);
                 addSchedule(schedule);
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             logger.error("本地调用发生错误! 异常信息为: {}", ex.getMessage());
             addSchedule(schedule);
-        }finally {
+        } finally {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         }
     }

@@ -9,8 +9,6 @@ import com.insight.util.ReplyHelper;
 import com.insight.util.pojo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignClientsConfiguration;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -25,7 +23,6 @@ import java.util.Map;
  * @remark 消息核心类
  */
 @Component
-@Import(FeignClientsConfiguration.class)
 public class MessageCore {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final MessageMapper mapper;
