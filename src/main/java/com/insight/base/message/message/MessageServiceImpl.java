@@ -35,18 +35,6 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
-     * 发送短信
-     *
-     * @param info 用户关键信息
-     * @param dto  短信DTO
-     * @return Reply
-     */
-    @Override
-    public Reply sendMessage(LoginInfo info, NormalMessage dto) {
-        return core.sendMessage(info, dto);
-    }
-
-    /**
      * 生成短信验证码
      *
      * @param info 用户关键信息
@@ -131,6 +119,18 @@ public class MessageServiceImpl implements MessageService {
         Redis.deleteKey(setKey);
 
         return ReplyHelper.success();
+    }
+
+    /**
+     * 发送短信
+     *
+     * @param info 用户关键信息
+     * @param dto  短信DTO
+     * @return Reply
+     */
+    @Override
+    public Reply sendMessage(LoginInfo info, NormalMessage dto) {
+        return core.sendMessage(info, dto);
     }
 
     /**

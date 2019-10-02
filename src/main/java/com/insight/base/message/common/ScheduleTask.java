@@ -2,6 +2,7 @@ package com.insight.base.message.common;
 
 import com.insight.base.message.common.client.RabbitClient;
 import com.insight.base.message.common.entity.InsightMessage;
+import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
 import com.insight.util.common.LockHandler;
 import com.insight.util.pojo.LockParam;
@@ -23,16 +24,16 @@ import java.util.List;
 public class ScheduleTask {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final LockHandler handler = new LockHandler();
-    private final MessageDal dal;
     private final LockParam param = new LockParam("Message:Schedule");
+    private final MessageMapper mapper;
 
     /**
      * 构造方法
      *
-     * @param dal    MessageMapper
+     * @param mapper MessageMapper
      */
-    public ScheduleTask(MessageDal dal) {
-        this.dal = dal;
+    public ScheduleTask(MessageMapper mapper) {
+        this.mapper = mapper;
     }
 
     /**
@@ -44,15 +45,15 @@ public class ScheduleTask {
         if (handler.tryLock(param)) {
             try {
                 // 执行消息类型的计划任务
-                List<Schedule<InsightMessage>> messageSchedules = dal.getMessageSchedule();
+                List<Schedule<InsightMessage>> messageSchedules = mapper.getMessageSchedule();
                 messageSchedules.forEach(this::messageTask);
 
                 // 执行本地调用类型的计划任务
-                List<Schedule<ScheduleCall>> localSchedules = dal.getLocalSchedule();
+                List<Schedule<ScheduleCall>> localSchedules = mapper.getLocalSchedule();
                 localSchedules.forEach(this::localCallTask);
 
                 // 执行远程调用类型的计划任务
-                List<Schedule<ScheduleCall>> rpcSchedules = dal.getRpcSchedule();
+                List<Schedule<ScheduleCall>> rpcSchedules = mapper.getRpcSchedule();
                 rpcSchedules.forEach(this::rpcCallTask);
             } catch (Exception ex) {
                 logger.error("计划任务发生错误! 异常信息为: {}", ex.getMessage());
@@ -68,7 +69,7 @@ public class ScheduleTask {
      * @param schedule 计划任务DTO
      */
     private void messageTask(Schedule<InsightMessage> schedule) {
-        dal.deleteSchedule(schedule.getId());
+        mapper.deleteSchedule(schedule.getId());
         RabbitClient.sendTopic("schedule.message", schedule);
     }
 
@@ -78,7 +79,7 @@ public class ScheduleTask {
      * @param schedule 计划任务DTO
      */
     private void localCallTask(Schedule<ScheduleCall> schedule) {
-        dal.deleteSchedule(schedule.getId());
+        mapper.deleteSchedule(schedule.getId());
         RabbitClient.sendTopic("schedule.local", schedule);
     }
 
@@ -88,7 +89,7 @@ public class ScheduleTask {
      * @param schedule 计划任务DTO
      */
     private void rpcCallTask(Schedule<ScheduleCall> schedule) {
-        dal.deleteSchedule(schedule.getId());
+        mapper.deleteSchedule(schedule.getId());
         RabbitClient.sendTopic("schedule.remote", schedule);
     }
 }

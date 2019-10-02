@@ -28,20 +28,6 @@ public class MessageController {
     }
 
     /**
-     * 发送短信
-     *
-     * @param info 用户关键信息
-     * @param dto  短信DTO
-     * @return Reply
-     */
-    @PostMapping("/v1.0/sms")
-    public Reply sendMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody NormalMessage dto) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        return service.sendMessage(loginInfo, dto);
-    }
-
-    /**
      * 生成短信验证码
      *
      * @param info 用户关键信息
@@ -69,6 +55,20 @@ public class MessageController {
         }
 
         return service.verifySmsCode(key, isCheck);
+    }
+
+    /**
+     * 发送短信
+     *
+     * @param info 用户关键信息
+     * @param dto  短信DTO
+     * @return Reply
+     */
+    @PostMapping("/v1.0/sms")
+    public Reply sendMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody NormalMessage dto) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.sendMessage(loginInfo, dto);
     }
 
     /**

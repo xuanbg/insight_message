@@ -10,15 +10,6 @@ import com.insight.util.pojo.*;
 public interface MessageService {
 
     /**
-     * 发送短信
-     *
-     * @param info 用户关键信息
-     * @param dto  标准信息DTO
-     * @return Reply
-     */
-    Reply sendMessage(LoginInfo info, NormalMessage dto);
-
-    /**
      * 生成短信验证码
      *
      * @param info 用户关键信息
@@ -35,6 +26,15 @@ public interface MessageService {
      * @return Reply
      */
     Reply verifySmsCode(String key, Boolean isCheck);
+
+    /**
+     * 发送短信
+     *
+     * @param info 用户关键信息
+     * @param dto  标准信息DTO
+     * @return Reply
+     */
+    Reply sendMessage(LoginInfo info, NormalMessage dto);
 
     /**
      * 推送标准通知信息

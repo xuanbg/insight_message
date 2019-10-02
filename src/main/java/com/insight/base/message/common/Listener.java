@@ -19,14 +19,14 @@ import java.net.URISyntaxException;
  */
 @Component
 public class Listener {
-    private final MessageCore core;
+    private final Core core;
 
     /**
      * 构造方法
      *
      * @param core MessageCore
      */
-    public Listener(MessageCore core) {
+    public Listener(Core core) {
         this.core = core;
     }
 
@@ -64,13 +64,13 @@ public class Listener {
     }
 
     /**
-     * 从队列订阅本地调用类型的计划任务
+     * 从队列订阅远程调用类型的计划任务
      *
      * @param schedule 计划任务DTO
      */
     @RabbitHandler
     @RabbitListener(queues = "schedule.remote")
-    public void receiveRemoteCall(Schedule<ScheduleCall> schedule, Channel channel, Message message) {
+    public void receiveRemoteCall(Schedule<ScheduleCall> schedule, Channel channel, Message message) throws IOException {
         core.remoteCall(schedule, channel, message);
     }
 }
