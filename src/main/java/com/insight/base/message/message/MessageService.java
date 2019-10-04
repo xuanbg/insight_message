@@ -28,29 +28,20 @@ public interface MessageService {
     Reply verifySmsCode(String key, Boolean isCheck);
 
     /**
-     * 发送短信
+     * 发送送标准消息
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
      * @return Reply
      */
-    Reply sendMessage(LoginInfo info, NormalMessage dto);
+    Reply sendNormalMessage(LoginInfo info, NormalMessage dto);
 
     /**
-     * 推送标准通知信息
+     * 发送自定义消息
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
      * @return Reply
      */
-    Reply pushNotice(LoginInfo info, NormalMessage dto);
-
-    /**
-     * 推送自定义通知信息
-     *
-     * @param info 用户关键信息
-     * @param dto  标准信息DTO
-     * @return Reply
-     */
-    Reply pushCustomNotice(LoginInfo info, CustomMessage dto);
+    Reply sendCustomMessage(LoginInfo info, CustomMessage dto);
 }

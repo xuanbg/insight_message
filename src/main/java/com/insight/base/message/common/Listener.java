@@ -49,6 +49,8 @@ public class Listener {
 
             case "sendSms":
                 core.sendSms(schedule, channel, message);
+
+            default:
         }
     }
 

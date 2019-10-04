@@ -4,15 +4,17 @@ import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
-import com.insight.util.pojo.*;
+import com.insight.util.pojo.Log;
+import com.insight.util.pojo.LoginInfo;
+import com.insight.util.pojo.OperateType;
+import com.insight.util.pojo.Schedule;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author 宣炳刚
@@ -75,22 +77,20 @@ public class MessageDal {
      * @param id       业务ID
      * @param content  日志内容
      */
+    @Async
     public void writeLog(LoginInfo info, OperateType type, String business, String id, Object content) {
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        threadPool.submit(() -> {
-            Log log = new Log();
-            log.setId(Generator.uuid());
-            log.setTenantId(info.getTenantId());
-            log.setType(type);
-            log.setBusiness(business);
-            log.setBusinessId(id);
-            log.setContent(content);
-            log.setDeptId(info.getDeptId());
-            log.setCreator(info.getUserName());
-            log.setCreatorId(info.getUserId());
-            log.setCreatedTime(LocalDateTime.now());
+        Log log = new Log();
+        log.setId(Generator.uuid());
+        log.setTenantId(info.getTenantId());
+        log.setType(type);
+        log.setBusiness(business);
+        log.setBusinessId(id);
+        log.setContent(content);
+        log.setDeptId(info.getDeptId());
+        log.setCreator(info.getUserName());
+        log.setCreatorId(info.getUserId());
+        log.setCreatedTime(LocalDateTime.now());
 
-            mapper.addLog(log);
-        });
+        mapper.addLog(log);
     }
 }

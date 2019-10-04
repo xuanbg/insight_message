@@ -58,44 +58,30 @@ public class MessageController {
     }
 
     /**
-     * 发送短信
-     *
-     * @param info 用户关键信息
-     * @param dto  短信DTO
-     * @return Reply
-     */
-    @PostMapping("/v1.0/sms")
-    public Reply sendMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody NormalMessage dto) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        return service.sendMessage(loginInfo, dto);
-    }
-
-    /**
-     * 推送标准通知信息
+     * 发送送标准消息
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
      * @return Reply
      */
-    @PostMapping("/v1.0/notices")
-    public Reply pushNotice(@RequestHeader(name = "loginInfo", required = false) String info, @Valid @RequestBody NormalMessage dto) {
+    @PostMapping("/v1.0/messages")
+    public Reply sendNormalMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody NormalMessage dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.pushNotice(loginInfo, dto);
+        return service.sendNormalMessage(loginInfo, dto);
     }
 
     /**
-     * 推送自定义通知信息
+     * 发送自定义消息
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
      * @return Reply
      */
-    @PostMapping("/v1.0/notices/custom")
-    public Reply pushCustomNotice(@RequestHeader("loginInfo") String info, @Valid @RequestBody CustomMessage dto) {
+    @PostMapping("/v1.0/messages/custom")
+    public Reply sendCustomMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody CustomMessage dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.pushCustomNotice(loginInfo, dto);
+        return service.sendCustomMessage(loginInfo, dto);
     }
 }
