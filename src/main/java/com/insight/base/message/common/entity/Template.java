@@ -28,7 +28,6 @@ public class Template implements Serializable {
     /**
      * 模板编号
      */
-    @NotEmpty(message = "消息模板编码不能为空")
     private String code;
 
     /**

@@ -49,7 +49,7 @@ public class ScheduleController {
      * @return Reply
      */
     @GetMapping("/v1.0/schedules/{id}")
-    public Reply getSchedule(String id) {
+    public Reply getSchedule(@PathVariable String id) {
         return service.getSchedule(id);
     }
 

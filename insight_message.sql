@@ -139,11 +139,11 @@ DROP TABLE IF EXISTS `ims_scene_template`;
 CREATE TABLE `ims_scene_template` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
   `scene_id` char(32) NOT NULL COMMENT '场景ID',
-  `template_id` char(32) NOT NULL COMMENT '模板ID',
   `app_id` char(32) DEFAULT NULL COMMENT '应用ID',
   `app_name` varchar(64) DEFAULT NULL COMMENT '应用名称',
   `channel_code` char(4) DEFAULT NULL COMMENT '渠道编码',
   `channel` varchar(64) DEFAULT NULL COMMENT '渠道名称',
+  `template_id` char(32) NOT NULL COMMENT '模板ID',
   `sign` varchar(16) DEFAULT NULL COMMENT '消息签名',
   `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
   `creator` varchar(64) NOT NULL COMMENT '创建人',
@@ -216,13 +216,13 @@ CREATE TABLE `imu_user_tag` (
   KEY `idx_user_tag_created_time` (`created_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='用户标签表';
 
-INSERT INTO `insight_message`.`ims_scene`(`id`, `code`, `name`, `remark`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
-('27c3a319dc7011e9bc200242ac110004', '0001', '验证码登录', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a435dc7011e9bc200242ac110004', '0002', '验证手机号', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a589dc7011e9bc200242ac110004', '0003', '新用户注册', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a5d2dc7011e9bc200242ac110004', '0004', '设置登录密码', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a61adc7011e9bc200242ac110004', '0005', '设置支付密码', NULL, NULL, '系统', '00000000000000000000000000000000', now()),
-('27c3a661dc7011e9bc200242ac110004', '0006', '手机解除绑定', NULL, NULL, '系统', '00000000000000000000000000000000', now());
+INSERT INTO `insight_message`.`ims_scene`(`id`, `code`, `name`, `creator`, `creator_id`, `created_time`) VALUES 
+('27c3a319dc7011e9bc200242ac110004', '0001', '验证码登录', '系统', '00000000000000000000000000000000', now()),
+('27c3a435dc7011e9bc200242ac110004', '0002', '验证手机号', '系统', '00000000000000000000000000000000', now()),
+('27c3a589dc7011e9bc200242ac110004', '0003', '新用户注册', '系统', '00000000000000000000000000000000', now()),
+('27c3a5d2dc7011e9bc200242ac110004', '0004', '设置登录密码', '系统', '00000000000000000000000000000000', now()),
+('27c3a61adc7011e9bc200242ac110004', '0005', '设置支付密码', '系统', '00000000000000000000000000000000', now()),
+('27c3a661dc7011e9bc200242ac110004', '0006', '手机解除绑定', '系统', '00000000000000000000000000000000', now());
 
 INSERT `ims_template`(`id`, `tenant_id`, `code`, `tag`, `type`, `title`, `content`, `expire`, `remark`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
 ('387e156ddc7211e9bc200242ac110004', NULL, '0001', '短信验证码', 4, '验证码登录', '[{code}]是您登录Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统登录验证码', NULL, '系统', '00000000000000000000000000000000', now()),
@@ -232,10 +232,10 @@ INSERT `ims_template`(`id`, `tenant_id`, `code`, `tag`, `type`, `title`, `conten
 ('387e1706dc7211e9bc200242ac110004', NULL, '0005', '短信验证码', 4, '设置支付密码', '[{code}]是您设置Insight系统支付密码的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统设置支付密码验证码', NULL, '系统', '00000000000000000000000000000000', now()),
 ('387e1759dc7211e9bc200242ac110004', NULL, '0006', '短信验证码', 4, '手机解除绑定', '[{code}]是您解除Insight系统绑定手机号的验证码,请在{minutes}分钟内使用【{sign}】', NULL, 'Insight系统手机解除绑定验证码', NULL, '系统', '00000000000000000000000000000000', now());
 
-INSERT `ims_scene_template`(`id`, `scene_id`, `template_id`, `app_id`, `app_name`, `channel_code`, `channel`, `sign`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
-(replace(uuid(), '-',''), '27c3a319dc7011e9bc200242ac110004', '387e156ddc7211e9bc200242ac110004', '9dd99dd9e6df467a8207d05ea5581125', '因赛特多租户平台', NULL, NULL, 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a435dc7011e9bc200242ac110004', '387e1604dc7211e9bc200242ac110004', '9dd99dd9e6df467a8207d05ea5581125', '因赛特多租户平台', NULL, NULL, 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a589dc7011e9bc200242ac110004', '387e165adc7211e9bc200242ac110004', '9dd99dd9e6df467a8207d05ea5581125', '因赛特多租户平台', NULL, NULL, 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a5d2dc7011e9bc200242ac110004', '387e16b2dc7211e9bc200242ac110004', '9dd99dd9e6df467a8207d05ea5581125', '因赛特多租户平台', NULL, NULL, 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a61adc7011e9bc200242ac110004', '387e1706dc7211e9bc200242ac110004', '9dd99dd9e6df467a8207d05ea5581125', '因赛特多租户平台', NULL, NULL, 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a661dc7011e9bc200242ac110004', '387e1759dc7211e9bc200242ac110004', '9dd99dd9e6df467a8207d05ea5581125', '因赛特多租户平台', NULL, NULL, 'Insight', NULL, '系统', '00000000000000000000000000000000', now());
+INSERT `ims_scene_template`(`id`, `scene_id`, `app_id`, `app_name`, `template_id`, `sign`, `dept_id`, `creator`, `creator_id`, `created_time`) VALUES 
+(replace(uuid(), '-',''), '27c3a319dc7011e9bc200242ac110004', NULL, '通用验证码登录场景模板', '387e156ddc7211e9bc200242ac110004', 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
+(replace(uuid(), '-',''), '27c3a435dc7011e9bc200242ac110004', NULL, '通用验证手机号场景模板', '387e1604dc7211e9bc200242ac110004', 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
+(replace(uuid(), '-',''), '27c3a589dc7011e9bc200242ac110004', NULL, '通用新用户注册场景模板', '387e165adc7211e9bc200242ac110004', 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
+(replace(uuid(), '-',''), '27c3a5d2dc7011e9bc200242ac110004', NULL, '通用设置登录密码场景模板', '387e16b2dc7211e9bc200242ac110004', 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
+(replace(uuid(), '-',''), '27c3a61adc7011e9bc200242ac110004', NULL, '通用设置支付密码场景模板', '387e1706dc7211e9bc200242ac110004', 'Insight', NULL, '系统', '00000000000000000000000000000000', now()),
+(replace(uuid(), '-',''), '27c3a661dc7011e9bc200242ac110004', NULL, '通用手机解除绑定场景模板', '387e1759dc7211e9bc200242ac110004', 'Insight', NULL, '系统', '00000000000000000000000000000000', now());

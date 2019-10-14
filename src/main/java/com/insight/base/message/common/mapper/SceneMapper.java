@@ -29,7 +29,7 @@ public interface SceneMapper {
      * @return 消息模板列表
      */
     @Select("<script>select id, type, code, title, creator, created_time from ims_template " +
-            "where tenant_id = #{tenantId} " +
+            "where (tenant_id = #{tenantId} or (#{tenantId} = '2564cd559cd340f0b81409723fd8632a' and tenant_id is null)) " +
             "<if test = 'key != null'>and code = #{key} or title like concat('%',#{key},'%')</if>" +
             "order by created_time desc</script>")
     List<TemplateListDto> getTemplates(@Param("tenantId") String tenantId, @Param("key") String key);
@@ -169,7 +169,7 @@ public interface SceneMapper {
     @Select("<script>select c.id, s.id as scene_id, concat(s.code, '-', s.name) as scene, t.id as template_id, concat(t.code, '-', t.title) as template, " +
             "c.app_id, c.app_name, c.code, c.channel, c.sign from ims_scene_template c join ims_scene s on s.id = c.scene_id " +
             "<if test = 'key != null'>and (s.code = %{key} or s.name like concat('%',#{key},'%')) </if>" +
-            "join ims_template t on t.id = c.template_id and t.tenant_id = #{tenantId} " +
+            "join ims_template t on t.id = c.template_id and (t.tenant_id = #{tenantId} or (#{tenantId} = '2564cd559cd340f0b81409723fd8632a' and tenant_id is null)) " +
             "<if test = 'key != null'>and (t.code = %{key} or t.title like concat('%',#{key},'%')) </if>" +
             "<if test = 'key != null'>where c.code = %{key} or c.channel like concat('%',#{key},'%')" +
             "or c.app_name like concat('%',#{key},'%')</if> " +
@@ -181,8 +181,8 @@ public interface SceneMapper {
      *
      * @param config 渠道模板配置DTO
      */
-    @Insert("INSERT ims_scene_template(id, scene_id, template_id, app_id, app_name, code, channel, sign, dept_id, creator, creator_id, created_time) VALUES " +
-            "(#{id}, #{sceneId}, #{templateId}, #{appId}, #{appName}, #{code}, #{channel}, #{sign}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("INSERT ims_scene_template(id, scene_id, app_id, app_name, code, channel, template_id, sign, dept_id, creator, creator_id, created_time) VALUES " +
+            "(#{id}, #{sceneId}, #{appId}, #{appName}, #{code}, #{channel}, #{templateId}, #{sign}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addSceneTemplate(SceneTemplate config);
 
     /**

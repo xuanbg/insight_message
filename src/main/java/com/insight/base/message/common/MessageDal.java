@@ -3,7 +3,6 @@ package com.insight.base.message.common;
 import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.mapper.MessageMapper;
-import com.insight.util.Generator;
 import com.insight.util.pojo.Log;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.OperateType;
@@ -15,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.insight.util.Generator.newCode;
+import static com.insight.util.Generator.uuid;
 
 /**
  * @author 宣炳刚
@@ -35,6 +37,24 @@ public class MessageDal {
     }
 
     /**
+     * 获取消息模板编码
+     *
+     * @param tenantId 租户ID
+     * @return 消息模板编码
+     */
+    public String getTemplateCode(String tenantId) {
+        while (true) {
+            String code = newCode("#4", "Codes:Template:" + tenantId);
+            int count = mapper.getTemplateCount(tenantId, code);
+            if (count > 0) {
+                continue;
+            }
+
+            return code;
+        }
+    }
+
+    /**
      * 保存消息到数据库
      *
      * @param message 消息DTO
@@ -50,7 +70,7 @@ public class MessageDal {
         List<PushMessage> pushList = new ArrayList<>();
         message.getReceivers().forEach(i -> {
             PushMessage push = new PushMessage();
-            push.setId(Generator.uuid());
+            push.setId(uuid());
             push.setMessageId(message.getId());
             push.setUserId(i);
             push.setRead(false);
@@ -80,7 +100,7 @@ public class MessageDal {
     @Async
     public void writeLog(LoginInfo info, OperateType type, String business, String id, Object content) {
         Log log = new Log();
-        log.setId(Generator.uuid());
+        log.setId(uuid());
         log.setTenantId(info.getTenantId());
         log.setType(type);
         log.setBusiness(business);

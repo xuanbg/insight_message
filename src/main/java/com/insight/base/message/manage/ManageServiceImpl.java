@@ -10,7 +10,6 @@ import com.insight.base.message.common.entity.Scene;
 import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Template;
 import com.insight.base.message.common.mapper.SceneMapper;
-import com.insight.util.Generator;
 import com.insight.util.ReplyHelper;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.OperateType;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.insight.util.Generator.uuid;
 
 /**
  * @author 宣炳刚
@@ -87,8 +88,11 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply newTemplate(LoginInfo info, Template dto) {
-        String id = Generator.uuid();
+        String id = uuid();
+        String tenantId = info.getTenantId();
         dto.setId(id);
+        dto.setTenantId(tenantId);
+        dto.setCode(dal.getTemplateCode(tenantId));
         dto.setDeptId(info.getDeptId());
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
@@ -205,7 +209,7 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply newScene(LoginInfo info, Scene dto) {
-        String id = Generator.uuid();
+        String id = uuid();
         dto.setId(id);
         dto.setDeptId(info.getDeptId());
         dto.setCreator(info.getUserName());
@@ -307,7 +311,7 @@ public class ManageServiceImpl implements ManageService {
      */
     @Override
     public Reply addSceneTemplate(LoginInfo info, SceneTemplate dto) {
-        String id = Generator.uuid();
+        String id = uuid();
         dto.setId(id);
         dto.setDeptId(info.getDeptId());
         dto.setCreator(info.getUserName());
