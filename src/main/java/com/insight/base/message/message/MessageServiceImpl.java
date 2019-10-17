@@ -103,23 +103,29 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public Reply verifySmsCode(String key, Boolean isCheck) {
-        String mobile = Redis.get("VerifyCode:" + key);
+        String codeKey = "VerifyCode:" + key;
+        String mobile = Redis.get(codeKey);
         if (mobile == null || mobile.isEmpty()) {
             return ReplyHelper.fail("验证码错误");
         }
 
         if (isCheck) {
+            // 每验证一次有效时间减少15秒,以避免暴力破解
+            long expire = Redis.getExpire(codeKey, TimeUnit.SECONDS);
+            Redis.setExpire(codeKey, expire - 15, TimeUnit.SECONDS);
+
             return ReplyHelper.success();
         }
 
-        // 清理已通过验证的验证码对应手机号的全部验证码
+        // 清理验证码对应手机号缓存
         String setKey = "VerifyCodeSet:" + mobile;
+        Redis.deleteKey(setKey);
+
+        // 清理已通过验证的验证码对应手机号的全部验证码
         List<String> keys = Redis.getMembers(setKey);
         for (String k : keys) {
             Redis.deleteKey("VerifyCode:" + k);
         }
-
-        Redis.deleteKey(setKey);
 
         return ReplyHelper.success();
     }
