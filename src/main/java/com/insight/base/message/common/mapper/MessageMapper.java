@@ -8,9 +8,7 @@ import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.entity.SubscribeMessage;
 import com.insight.util.common.ArrayTypeHandler;
 import com.insight.util.common.JsonTypeHandler;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.Schedule;
-import com.insight.util.pojo.ScheduleCall;
+import com.insight.util.pojo.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -36,18 +34,16 @@ public interface MessageMapper {
     /**
      * 获取适用消息模板
      *
-     * @param tenantId    租户ID
-     * @param sceneCode   场景编码
-     * @param appId       应用ID
-     * @param channelCode 渠道编码
+     * @param info 用户关键信息
+     * @param dto  标准信息DTO
      * @return 消息模板
      */
     @Select("select t.tag, t.type, t.title, t.content, t.expire, c.sign from ims_scene_template c " +
-            "join ims_template t on t.id = c.template_id and (t.tenant_id is null or t.tenant_id = #{tenantId}) " +
-            "join ims_scene s on s.id = c.scene_id and s.code = #{sceneCode} " +
-            "where (c.app_id is null or c.app_id = #{appId}) and (c.channel_code is null or c.channel_code = #{channelCode}) " +
+            "join ims_template t on t.id = c.template_id and (t.tenant_id is null or t.tenant_id = #{info.tenantId}) " +
+            "join ims_scene s on s.id = c.scene_id and s.code = #{dto.sceneCode} " +
+            "where (c.app_id is null or c.app_id = #{info.appId}) and (c.channel_code is null or c.channel_code = #{dto.channelCode}) " +
             "order by t.tenant_id desc, c.app_id desc, c.channel_code desc limit 1;")
-    TemplateDto getTemplate(@Param("tenantId") String tenantId, @Param("sceneCode") String sceneCode, @Param("appId") String appId, @Param("channelCode") String channelCode);
+    TemplateDto getTemplate(@Param("info") LoginInfo info, @Param("dto")NormalMessage dto);
 
     /**
      * 获取消息列表

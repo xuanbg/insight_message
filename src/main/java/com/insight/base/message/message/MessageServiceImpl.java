@@ -76,7 +76,6 @@ public class MessageServiceImpl implements MessageService {
         // 组装标准消息
         NormalMessage message = new NormalMessage();
         message.setSceneCode(sceneCode);
-        message.setAppId(dto.getAppId());
         message.setReceivers(mobile);
         message.setParams(map);
         message.setBroadcast(false);
@@ -139,9 +138,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public Reply sendNormalMessage(LoginInfo info, NormalMessage dto) {
-        String tenantId = info == null ? null : info.getTenantId();
-        String appId = dto.getAppId();
-        TemplateDto template = mapper.getTemplate(tenantId, dto.getSceneCode(), appId, dto.getChannelCode());
+        TemplateDto template = mapper.getTemplate(info, dto);
         if (template == null) {
             return ReplyHelper.fail("没有可用消息模板,请检查消息参数是否正确");
         }
@@ -159,7 +156,6 @@ public class MessageServiceImpl implements MessageService {
 
         // 组装消息
         InsightMessage message = new InsightMessage();
-        message.setAppId(appId);
         message.setTag(template.getTag());
         message.setType(template.getType());
         message.setTitle(template.getTitle());
@@ -193,7 +189,6 @@ public class MessageServiceImpl implements MessageService {
     public Reply sendCustomMessage(LoginInfo info, CustomMessage dto) {
         // 组装消息
         InsightMessage message = new InsightMessage();
-        message.setAppId(dto.getAppId());
         message.setTag(dto.getTag());
         message.setType(dto.getType());
 
@@ -222,18 +217,13 @@ public class MessageServiceImpl implements MessageService {
         int type = message.getType();
 
         // 本地消息
-        if (1 == (type & 1)) {
+        if (1 == (type & 1) && info != null) {
             message.setId(Generator.uuid());
-            if (info == null) {
-                message.setTenantId("2564cd559cd340f0b81409723fd8632a");
-                message.setCreator("系统");
-                message.setCreatorId("00000000000000000000000000000000");
-            } else {
-                message.setTenantId(info.getTenantId());
-                message.setDeptId(info.getDeptId());
-                message.setCreator(info.getUserName());
-                message.setCreatorId(info.getUserId());
-            }
+            message.setTenantId(info.getTenantId());
+            message.setAppId(info.getAppId());
+            message.setDeptId(info.getDeptId());
+            message.setCreator(info.getUserName());
+            message.setCreatorId(info.getUserId());
 
             message.setCreatedTime(LocalDateTime.now());
             schedule.setMethod("addMessage");
