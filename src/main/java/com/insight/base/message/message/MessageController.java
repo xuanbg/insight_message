@@ -65,7 +65,7 @@ public class MessageController {
      * @return Reply
      */
     @PostMapping("/v1.0/messages")
-    public Reply sendNormalMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody NormalMessage dto) {
+    public Reply sendNormalMessage(@RequestHeader(value = "loginInfo", required = false) String info, @Valid @RequestBody NormalMessage dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.sendNormalMessage(loginInfo, dto);
