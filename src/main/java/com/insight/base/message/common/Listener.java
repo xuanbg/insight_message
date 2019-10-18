@@ -50,6 +50,9 @@ public class Listener {
             case "sendSms":
                 core.sendSms(schedule, channel, message);
 
+            case "sendMail":
+                core.sendMail(schedule, channel, message);
+
             default:
         }
     }

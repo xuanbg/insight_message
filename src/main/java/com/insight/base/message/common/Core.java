@@ -16,11 +16,15 @@ import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.context.annotation.Import;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -45,16 +49,25 @@ public class Core {
     private final Decoder decoder = new JacksonDecoder();
     private final Encoder encoder = new JacksonEncoder();
     private final EurekaClient client;
+    private final JavaMailSender mailSender;
     private final MessageDal dal;
+
+    /**
+     * 邮件发件人
+     */
+    @Value("${insight.mail.sender}")
+    private String sender;
 
     /**
      * 构造方法
      *
-     * @param client EurekaClient
-     * @param dal    MessageDal
+     * @param client     EurekaClient
+     * @param mailSender JavaMailSender
+     * @param dal        MessageDal
      */
-    public Core(EurekaClient client, MessageDal dal) {
+    public Core(EurekaClient client, JavaMailSender mailSender, MessageDal dal) {
         this.client = client;
+        this.mailSender = mailSender;
         this.dal = dal;
     }
 
@@ -68,20 +81,11 @@ public class Core {
     @Async
     public void addMessage(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         InsightMessage msg = schedule.getContent();
-        if (msg == null) {
-            return;
+        if (msg != null && !addMessage(msg)) {
+            addSchedule(schedule);
         }
 
-        try {
-            // 存储消息
-            dal.addMessage(msg);
-        } catch (Exception ex) {
-            // 任务失败后保存计划任务数据进行补偿
-            logger.error("存储消息发生错误! 异常信息为: {}", ex.getMessage());
-            addSchedule(schedule);
-        } finally {
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        }
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 
     /**
@@ -94,7 +98,7 @@ public class Core {
     @Async
     public void pushNotice(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         InsightMessage msg = schedule.getContent();
-        if (msg != null && !push(msg)) {
+        if (msg != null && !pushNotice(msg)) {
             addSchedule(schedule);
         }
 
@@ -111,7 +115,24 @@ public class Core {
     @Async
     public void sendSms(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         InsightMessage msg = schedule.getContent();
-        if (msg != null && !send(msg)) {
+        if (msg != null && !sendSms(msg)) {
+            addSchedule(schedule);
+        }
+
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+
+    /**
+     * 发送邮件给用户,使用补偿机制保证发送成功
+     *
+     * @param schedule 计划任务DTO
+     * @param channel  队列通道
+     * @param message  队列消息
+     */
+    @Async
+    public void sendMail(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
+        InsightMessage msg = schedule.getContent();
+        if (msg != null && !sendMail(msg)) {
             addSchedule(schedule);
         }
 
@@ -256,7 +277,7 @@ public class Core {
             message.setContent(now.toString() + "保存任务失败! 请尽快处理");
 
             Redis.set(key, now.toString(), 24, TimeUnit.HOURS);
-            send(message);
+            sendSms(message);
         }
     }
 
@@ -280,11 +301,28 @@ public class Core {
     }
 
     /**
-     * 推送消息
+     * 存储消息
      *
      * @param message 消息DTO
+     * @return 是否存储成功
      */
-    private boolean push(InsightMessage message) {
+    private boolean addMessage(InsightMessage message) {
+        try {
+            dal.addMessage(message);
+            return true;
+        } catch (Exception ex) {
+            logger.error("存储消息发生错误! 异常信息为: {}", ex.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 推送通知
+     *
+     * @param message 消息DTO
+     * @return 是否推送成功
+     */
+    private boolean pushNotice(InsightMessage message) {
         try {
             return true;
         } catch (Exception ex) {
@@ -297,12 +335,37 @@ public class Core {
      * 发送短信
      *
      * @param message 消息DTO
+     * @return 是否发送成功
      */
-    private boolean send(InsightMessage message) {
+    private boolean sendSms(InsightMessage message) {
         try {
             return true;
         } catch (Exception ex) {
             logger.error("发送短信发生错误! 异常信息为: {}", ex.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 发送邮件
+     *
+     * @param message 消息DTO
+     * @return 是否发送成功
+     */
+    private boolean sendMail(InsightMessage message) {
+        try {
+            List<String> list = message.getReceivers();
+            String receivers = StringUtils.join(list.toArray(), ";");
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setFrom(sender);
+            mail.setTo(receivers);
+            mail.setSubject(message.getTitle());
+            mail.setText(message.getContent());
+
+            mailSender.send(mail);
+            return true;
+        } catch (Exception ex) {
+            logger.error("发送邮件发生错误! 异常信息为: {}", ex.getMessage());
             return false;
         }
     }

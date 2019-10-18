@@ -241,6 +241,12 @@ public class MessageServiceImpl implements MessageService {
             schedule.setMethod("sendSms");
             RabbitClient.sendTopic("schedule.message", schedule);
         }
+
+        // 发送邮件
+        if (8 == (type & 8)) {
+            schedule.setMethod("sendMail");
+            RabbitClient.sendTopic("schedule.message", schedule);
+        }
     }
 
     /**
