@@ -38,8 +38,6 @@
   - [新增消息场景](#新增消息场景)
   - [编辑消息场景](#编辑消息场景)
   - [删除消息场景](#删除消息场景)
-  - [禁用消息场景](#禁用消息场景)
-  - [启用消息场景](#启用消息场景)
 - [场景配置管理](#场景配置管理)
   - [获取场景配置列表](#获取场景配置列表)
   - [添加场景配置](#添加场景配置)
@@ -137,7 +135,7 @@ Insight 消息中心提供消息发送和计划任务调度的能力。用户可
 
 请求参数示例：
 
-```shell
+```sh
 curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f568f5b0a44f7/status?isCheck=false" \
  -H 'Accept: application/json' \
  -H 'Accept-Encoding: gzip, identity' \
@@ -273,7 +271,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 请求参数示例：
 
-```shell
+```sh
 curl "http://192.168.236.8:6200/base/message/v1.0/schedules" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
@@ -334,7 +332,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules" \
 
 请求参数示例：
 
-```shell
+```sh
 curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b24ec42c3db06" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
@@ -409,7 +407,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 |类型|字段|字段说明|
 | ------------ | ------------ | ------------ |
-|String||任务ID|
+|String|-|任务ID|
 
 请求参数示例：
 
@@ -470,7 +468,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|String||是|任务ID|
+|String|-|是|任务ID|
 
 请求参数示例：
 
@@ -504,7 +502,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|String||是|任务ID|
+|String|-|是|任务ID|
 
 请求参数示例：
 
@@ -538,7 +536,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|String||是|任务ID|
+|String|-|是|任务ID|
 
 请求参数示例：
 
@@ -572,7 +570,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|String||是|任务ID|
+|String|-|是|任务ID|
 
 请求参数示例：
 
@@ -598,7 +596,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 ### 获取消息模板列表
 
-根据关键词(可选)分页查询租户的消息模板，关键词可精确匹配模板编号或模糊匹配模板标题。
+根据关键词(可选)分页查询当前租户的消息模板，关键词可精确匹配模板编号或模糊匹配模板标题。
 
 请求方法：**GET**
 
@@ -627,7 +625,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 请求示例：
 
-```shell
+```sh
 curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
@@ -672,25 +670,34 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|String||是|消息模板ID|
+|String|id|是|消息模板ID|
 
 接口返回数据类型：
 
 |类型|字段|字段说明|
 | ------------ | ------------ | ------------ |
-||||
+|String|id|UUID主键|
+|String|tenantId|租户ID|
+|String|code|模板编号|
+|String|tag|消息标签|
+|Integer|type|发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件|
+|String|title|消息标题|
+|String|content|消息内容模板|
+|Integer|expire|消息有效时长(小时)|
+|String|remark|备注|
+|Boolean|invalid|是否失效|
+|String|deptId|创建人部门ID|
+|String|creator|创建人|
+|Date|createdTime|创建时间|
 
 请求参数示例：
 
-```json
-{
-  "tag": null,
-  "type": 4,
-  "title": "验证码登录",
-  "expire": null,
-  "creator": "系统",
-  "createdTime": "2019-09-29 17:46:39"
-}
+```sh
+curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc200242ac110004" \
+     -H 'Accept: application/json' \
+     -H 'Accept-Encoding: gzip, identity' \
+     -H 'Authorization: eyJpZCI6Ijc0MDc0ZmJkZjVmODQ3ZWZhM2ZjZDY2NmNlOWIzYjViIiwic2VjcmV0IjoiNWU1MzQxNTQ1Y2IwNDIyODliZDljNzNlYjlmMDk3ODUifQ==' \
+     -H 'Content-Type: application/json'
 ```
 
 返回结果示例：
@@ -700,7 +707,22 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
   "success": true,
   "code": 200,
   "message": "请求成功",
-  "data": null,
+  "data": {
+    "id": "387e156ddc7211e9bc200242ac110004",
+    "tenantId": null,
+    "code": "0001",
+    "tag": "短信验证码",
+    "type": 4,
+    "title": "验证码登录",
+    "content": "[{code}]是您登录Insight系统的验证码,请在{minutes}分钟内使用【{sign}】",
+    "expire": null,
+    "remark": "Insight系统登录验证码",
+    "deptId": null,
+    "creator": "系统",
+    "creatorId": "00000000000000000000000000000000",
+    "createdTime": "2019-09-29 17:46:39",
+    "invalid": false
+  },
   "option": null
 }
 ```
@@ -709,7 +731,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 ### 新增消息模板
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+为当前租户新增一个消息模板
 
 请求方法：**POST**
 
@@ -719,18 +741,21 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|tag|是|消息标签|
+|Integer|type|是|发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件|
+|String|title|是|消息标题|
+|String|content|是|消息内容模板|
+|Integer|expire|否|消息有效时长(小时)|
+|String|remark|否|备注|
 
 请求参数示例：
 
 ```json
 {
+  "tag": "邮件验证码",
+  "type": 8,
+  "title": "请验证您的邮箱",
+  "content": "亲爱的{user}，请点击{url}验证您的邮箱。请勿回复此邮件，谢谢。"
 }
 ```
 
@@ -739,9 +764,9 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 ```json
 {
   "success": true,
-  "code": 200,
-  "message": "请求成功",
-  "data": null,
+  "code": 201,
+  "message": "创建数据成功",
+  "data": "8fe3a826a0b642e79c87766ae892f8e6",
   "option": null
 }
 ```
@@ -760,18 +785,24 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|id|是|UUID主键|
+|String|tag|是|消息标签|
+|Integer|type|是|发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件|
+|String|title|是|消息标题|
+|String|content|是|消息内容模板|
+|Integer|expire|否|消息有效时长(小时)|
+|String|remark|否|备注|
 
 请求参数示例：
 
 ```json
 {
+  "id": "8fe3a826a0b642e79c87766ae892f8e6",
+  "tag": "邮箱验证",
+  "type": 8,
+  "title": "请验证您的邮箱",
+  "content": "亲爱的{user}，请点击{url}验证您的邮箱。请勿回复此邮件，谢谢。",
+  "remark": "Insight系统验证邮件"
 }
 ```
 
@@ -801,12 +832,12 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|String||是|消息模板ID|
+|String|-|是|消息模板ID|
 
 请求参数示例：
 
 ```json
-"387e156ddc7211e9bc200242ac110004"
+"8fe3a826a0b642e79c87766ae892f8e6"
 ```
 
 返回结果示例：
@@ -835,7 +866,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|String||是|消息模板ID|
+|String|-|是|消息模板ID|
 
 请求参数示例：
 
@@ -869,7 +900,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|String||是|消息模板ID|
+|String|-|是|消息模板ID|
 
 请求参数示例：
 
@@ -895,7 +926,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 ### 获取消息场景列表
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+根据关键词(可选)分页查询消息场景，关键词可精确匹配场景编号或模糊匹配场景名称。
 
 请求方法：**GET**
 
@@ -905,19 +936,28 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
+|String|keyword|否|查询关键词|
+|Integer|page|否|分页页码|
+|Integer|size|否|每页记录数|
 
 接口返回数据类型：
 
 |类型|字段|字段说明|
 | ------------ | ------------ | ------------ |
-||||
+|String|id|UUID主键|
+|String|code|场景编号|
+|String|name|场景名称|
+|String|remark|备注|
+|String|creator|创建人|
 
 请求参数示例：
 
-```json
-{
-}
+```sh
+curl "http://192.168.236.8:6200/base/message/v1.0/scenes?keyword=0001" \
+     -H 'Accept: application/json' \
+     -H 'Accept-Encoding: gzip, identity' \
+     -H 'Authorization: eyJpZCI6ImY0YzUzZGU3ZjJkZDRlNDk5YWZlNzgyMTRhZTI0MWEyIiwic2VjcmV0IjoiYjQ4NzcxMTIwNDQzNDFjY2EwNjE2NWIxZDM1Y2ZjNmUifQ==' \
+     -H 'Content-Type: application/json'
 ```
 
 返回结果示例：
@@ -927,8 +967,16 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
   "success": true,
   "code": 200,
   "message": "请求成功",
-  "data": null,
-  "option": null
+  "data": [
+    {
+      "id": "27c3a319dc7011e9bc200242ac110004",
+      "code": "0001",
+      "name": "验证码登录",
+      "remark": null,
+      "creator": "系统"
+    }
+  ],
+  "option": 1
 }
 ```
 
@@ -936,7 +984,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 ### 获取消息场景详情
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+获取指定ID的消息场景详情。
 
 请求方法：**GET**
 
@@ -946,19 +994,28 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
+|String|id|是|消息场景ID|
 
 接口返回数据类型：
 
 |类型|字段|字段说明|
 | ------------ | ------------ | ------------ |
-||||
+|String|id|UUID主键|
+|String|code|场景编号|
+|String|name|场景名称|
+|String|remark|备注|
+|String|creator|创建人|
+|String|creatorId|创建人ID|
+|Date|createdTime|创建时间|
 
 请求参数示例：
 
-```json
-{
-}
+```sh
+curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc200242ac110004" \
+     -H 'Accept: application/json' \
+     -H 'Accept-Encoding: gzip, identity' \
+     -H 'Authorization: eyJpZCI6ImY0YzUzZGU3ZjJkZDRlNDk5YWZlNzgyMTRhZTI0MWEyIiwic2VjcmV0IjoiYjQ4NzcxMTIwNDQzNDFjY2EwNjE2NWIxZDM1Y2ZjNmUifQ==' \
+     -H 'Content-Type: application/json'
 ```
 
 返回结果示例：
@@ -968,7 +1025,15 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
   "success": true,
   "code": 200,
   "message": "请求成功",
-  "data": null,
+  "data": {
+    "id": "27c3a319dc7011e9bc200242ac110004",
+    "code": "0001",
+    "name": "验证码登录",
+    "remark": null,
+    "creator": "系统",
+    "creatorId": "00000000000000000000000000000000",
+    "createdTime": "2019-09-29 17:46:39"
+  },
   "option": null
 }
 ```
@@ -977,7 +1042,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 ### 新增消息场景
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+新建一个消息场景，编码不可重复。
 
 请求方法：**POST**
 
@@ -987,18 +1052,16 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|code|是|场景编号|
+|String|name|是|场景名称|
+|String|remark|否|备注|
 
 请求参数示例：
 
 ```json
 {
+  "code": "0001",
+  "name": "验证码登录"
 }
 ```
 
@@ -1007,9 +1070,9 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 ```json
 {
   "success": true,
-  "code": 200,
-  "message": "请求成功",
-  "data": null,
+  "code": 201,
+  "message": "创建数据成功",
+  "data": "b88e3c0ffa59420689d146ef705cb76b",
   "option": null
 }
 ```
@@ -1018,7 +1081,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 ### 编辑消息场景
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+修改指定ID的消息场景编码、名称和备注。编码不可重复
 
 请求方法：**PUT**
 
@@ -1028,18 +1091,19 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|id|是|场景ID|
+|String|code|是|场景编号|
+|String|name|是|场景名称|
+|String|remark|否|备注|
 
 请求参数示例：
 
 ```json
 {
+  "id": "b88e3c0ffa59420689d146ef705cb76b",
+  "code": "0001",
+  "name": "验证码登录",
+  "remark": "aaa"
 }
 ```
 
@@ -1059,7 +1123,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 ### 删除消息场景
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+删除指定ID的消息场景，仅限无配置消息模板参数的场景。
 
 请求方法：**DELETE**
 
@@ -1069,101 +1133,12 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|-|是|消息场景ID|
 
 请求参数示例：
 
 ```json
-{
-}
-```
-
-返回结果示例：
-
-```json
-{
-  "success": true,
-  "code": 200,
-  "message": "请求成功",
-  "data": null,
-  "option": null
-}
-```
-
-[回目录](#目录)
-
-### 禁用消息场景
-
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
-
-请求方法：**PUT**
-
-接口URL：**/base/message/v1.0/scenes/disable**
-
-请求参数如下：
-
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
-
-请求参数示例：
-
-```json
-{
-}
-```
-
-返回结果示例：
-
-```json
-{
-  "success": true,
-  "code": 200,
-  "message": "请求成功",
-  "data": null,
-  "option": null
-}
-```
-
-[回目录](#目录)
-
-### 启用消息场景
-
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
-
-请求方法：**PUT**
-
-接口URL：**/base/message/v1.0/scenes/enable**
-
-请求参数如下：
-
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
-
-请求参数示例：
-
-```json
-{
-}
+"b88e3c0ffa59420689d146ef705cb76b"
 ```
 
 返回结果示例：

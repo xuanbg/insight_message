@@ -28,7 +28,9 @@ public interface MessageMapper {
      * @param code     模板编码
      * @return 模板数量
      */
-    @Select("select count(*) from ims_template where tenant_id = #{tenantId} and code = #{code};")
+    @Select("<script>select count(*) from ims_template where code = #{code} and " +
+            "<if test = 'tenantId != null'>tenant_id = #{tenantId}</if>" +
+            "<if test = 'tenantId == null'>tenant_id is null</if>;</script>")
     int getTemplateCount(@Param("tenantId") String tenantId, @Param("code") String code);
 
     /**
@@ -41,9 +43,9 @@ public interface MessageMapper {
     @Select("select t.tag, t.type, t.title, t.content, t.expire, c.sign from ims_scene_template c " +
             "join ims_template t on t.id = c.template_id and (t.tenant_id is null or t.tenant_id = #{info.tenantId}) " +
             "join ims_scene s on s.id = c.scene_id and s.code = #{dto.sceneCode} " +
-            "where (c.app_id is null or c.app_id = #{info.appId}) and (c.channel_code is null or c.channel_code = #{dto.channelCode}) " +
-            "order by t.tenant_id desc, c.app_id desc, c.channel_code desc limit 1;")
-    TemplateDto getTemplate(@Param("info") LoginInfo info, @Param("dto")NormalMessage dto);
+            "where (c.app_id is null or c.app_id = #{info.appId}) and (c.partner_code is null or c.partner_code = #{dto.partnerCode}) " +
+            "order by t.tenant_id desc, c.app_id desc, c.partner_code desc limit 1;")
+    TemplateDto getTemplate(@Param("info") LoginInfo info, @Param("dto") NormalMessage dto);
 
     /**
      * 获取消息列表
@@ -210,4 +212,31 @@ public interface MessageMapper {
             "(#{id}, #{tenantId}, #{type}, #{business}, #{businessId}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
             "#{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addLog(Log log);
+
+    /**
+     * 获取操作日志列表
+     *
+     * @param tenantId 租户ID
+     * @param business 业务类型
+     * @param key      查询关键词
+     * @return 操作日志列表
+     */
+    @Select("<script>select id, type, business, business_id, dept_id, creator, creator_id, created_time " +
+            "from iml_operate_log where business = #{business} " +
+            "<if test = 'tenantId != null'>and tenant_id = #{tenantId} </if>" +
+            "<if test = 'tenantId == null'>and tenant_id is null </if>" +
+            "<if test = 'key!=null'>and (type = #{key} or business = #{key} or business_id = #{key} or " +
+            "dept_id = #{key} or creator = #{key} or creator_id = #{key}) </if>" +
+            "order by created_time</script>")
+    List<Log> getLogs(@Param("tenantId") String tenantId, @Param("business") String business, @Param("key") String key);
+
+    /**
+     * 获取操作日志列表
+     *
+     * @param id 日志ID
+     * @return 操作日志列表
+     */
+    @Results({@Result(property = "content", column = "content", javaType = Object.class, typeHandler = JsonTypeHandler.class)})
+    @Select("select * from iml_operate_log where id = #{id};")
+    Log getLog(String id);
 }

@@ -44,7 +44,7 @@ public class MessageDal {
      */
     public String getTemplateCode(String tenantId) {
         while (true) {
-            String code = newCode("#4", "Codes:Template:" + tenantId);
+            String code = newCode("#4", "Codes:Template:" + tenantId, false);
             int count = mapper.getTemplateCount(tenantId, code);
             if (count > 0) {
                 continue;
@@ -112,5 +112,27 @@ public class MessageDal {
         log.setCreatedTime(LocalDateTime.now());
 
         mapper.addLog(log);
+    }
+
+    /**
+     * 获取操作日志列表
+     *
+     * @param tenantId 租户ID
+     * @param business 业务类型
+     * @param key      查询关键词
+     * @return 操作日志列表
+     */
+    public List<Log> getLogs(String tenantId, String business, String key) {
+        return mapper.getLogs(tenantId, business, key);
+    }
+
+    /**
+     * 获取操作日志列表
+     *
+     * @param id 日志ID
+     * @return 操作日志列表
+     */
+    public Log getLog(String id) {
+        return mapper.getLog(id);
     }
 }

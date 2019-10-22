@@ -37,16 +37,6 @@ public class Scene implements Serializable {
     private String remark;
 
     /**
-     * 是否失效:0.正常;1.失效
-     */
-    private Boolean isInvalid;
-
-    /**
-     * 创建人部门ID
-     */
-    private String deptId;
-
-    /**
      * 创建人
      */
     private String creator;
@@ -91,22 +81,6 @@ public class Scene implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public Boolean getInvalid() {
-        return isInvalid;
-    }
-
-    public void setInvalid(Boolean invalid) {
-        isInvalid = invalid;
-    }
-
-    public String getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(String deptId) {
-        this.deptId = deptId;
     }
 
     public String getCreator() {

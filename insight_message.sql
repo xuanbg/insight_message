@@ -5,7 +5,7 @@
 DROP TABLE IF EXISTS `iml_operate_log`;
 CREATE TABLE `iml_operate_log` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
-  `tenant_id` char(32) NOT NULL COMMENT '租户ID',
+  `tenant_id` char(32) DEFAULT NULL COMMENT '租户ID',
   `type` varchar(16) NOT NULL COMMENT '类型',
   `business_id` char(32) DEFAULT NULL COMMENT '业务ID',
   `business` varchar(16) DEFAULT NULL COMMENT '业务名称',
@@ -18,6 +18,7 @@ CREATE TABLE `iml_operate_log` (
   KEY `idx_operate_log_tenant_id` (`tenant_id`) USING BTREE,
   KEY `idx_operate_log_type` (`type`) USING BTREE,
   KEY `idx_operate_log_business_id` (`business_id`) USING BTREE,
+  KEY `idx_operate_log_business` (`business`) USING BTREE,
   KEY `idx_operate_log_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_operate_log_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_operate_log_created_time` (`created_time`) USING BTREE
@@ -94,13 +95,11 @@ CREATE TABLE `ims_scene` (
   `code` char(8) NOT NULL COMMENT '场景遍号',
   `name` varchar(32) NOT NULL COMMENT '场景名称',
   `remark` varchar(256) DEFAULT NULL COMMENT '场景描述',
-  `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
   `creator` varchar(64) NOT NULL COMMENT '创建人',
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
   `created_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_scene_code` (`code`) USING BTREE,
-  KEY `idx_scene_dept_id` (`dept_id`) USING BTREE,
+  UNIQUE KEY `idx_scene_code` (`code`) USING BTREE,
   KEY `idx_scene_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_scene_created_time` (`created_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='短信发送场景表';
@@ -141,8 +140,8 @@ CREATE TABLE `ims_scene_template` (
   `scene_id` char(32) NOT NULL COMMENT '场景ID',
   `app_id` char(32) DEFAULT NULL COMMENT '应用ID',
   `app_name` varchar(64) DEFAULT NULL COMMENT '应用名称',
-  `channel_code` char(4) DEFAULT NULL COMMENT '渠道编码',
-  `channel` varchar(64) DEFAULT NULL COMMENT '渠道名称',
+  `partner_code` char(4) DEFAULT NULL COMMENT '合作伙伴编码',
+  `partner` varchar(64) DEFAULT NULL COMMENT '合作伙伴名称',
   `template_id` char(32) NOT NULL COMMENT '模板ID',
   `sign` varchar(16) DEFAULT NULL COMMENT '消息签名',
   `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
@@ -153,7 +152,7 @@ CREATE TABLE `ims_scene_template` (
   KEY `idx_scene_template_scene_id` (`scene_id`) USING BTREE,
   KEY `idx_scene_template_template_id` (`template_id`) USING BTREE,
   KEY `idx_scene_template_app_id` (`app_id`) USING BTREE,
-  KEY `idx_scene_template_channel_code` (`channel_code`) USING BTREE,
+  KEY `idx_scene_template_partner_code` (`partner_code`) USING BTREE,
   KEY `idx_scene_template_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_scene_template_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_scene_template_created_time` (`created_time`) USING BTREE

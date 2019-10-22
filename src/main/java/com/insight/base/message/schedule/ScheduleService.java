@@ -64,4 +64,23 @@ public interface ScheduleService {
      * @return Reply
      */
     Reply changeScheduleStatus(LoginInfo info, String id, boolean status);
+
+    /**
+     * 获取日志列表
+     *
+     * @param tenantId 租户ID
+     * @param keyword  查询关键词
+     * @param page     分页页码
+     * @param size     每页记录数
+     * @return Reply
+     */
+    Reply getScheduleLogs(String tenantId, String keyword, int page, int size);
+
+    /**
+     * 获取日志详情
+     *
+     * @param id 日志ID
+     * @return Reply
+     */
+    Reply getScheduleLog(String id);
 }

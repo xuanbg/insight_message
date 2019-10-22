@@ -1,8 +1,7 @@
-package com.insight.base.message.manage;
+package com.insight.base.message.scene;
 
-import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Scene;
-import com.insight.base.message.common.entity.Template;
+import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.Reply;
 
@@ -11,63 +10,7 @@ import com.insight.util.pojo.Reply;
  * @date 2019-08-28
  * @remark 消息管理服务接口
  */
-public interface ManageService {
-
-    /**
-     * 获取短信模板列表
-     *
-     * @param tenantId 租户ID
-     * @param keyword  查询关键词
-     * @param page     分页页码
-     * @param size     每页记录数
-     * @return Reply
-     */
-    Reply getTemplates(String tenantId, String keyword, int page, int size);
-
-    /**
-     * 获取短信模板
-     *
-     * @param id 短信模板ID
-     * @return Reply
-     */
-    Reply getTemplate(String id);
-
-    /**
-     * 新增短信模板
-     *
-     * @param info 用户关键信息
-     * @param dto  短信模板DTO
-     * @return Reply
-     */
-    Reply newTemplate(LoginInfo info, Template dto);
-
-    /**
-     * 编辑短信模板
-     *
-     * @param info 用户关键信息
-     * @param dto  短信模板DTO
-     * @return Reply
-     */
-    Reply editTemplate(LoginInfo info, Template dto);
-
-    /**
-     * 删除短信模板
-     *
-     * @param info 用户关键信息
-     * @param id   短信模板ID
-     * @return Reply
-     */
-    Reply deleteTemplate(LoginInfo info, String id);
-
-    /**
-     * 改变短信模板禁用/启用状态
-     *
-     * @param info   用户关键信息
-     * @param id     短信模板ID
-     * @param status 禁用/启用状态
-     * @return Reply
-     */
-    Reply changeTemplateStatus(LoginInfo info, String id, boolean status);
+public interface SceneService {
 
     /**
      * 获取场景列表
@@ -116,17 +59,7 @@ public interface ManageService {
     Reply deleteScene(LoginInfo info, String id);
 
     /**
-     * 改变场景禁用/启用状态
-     *
-     * @param info   用户关键信息
-     * @param id     场景ID
-     * @param status 禁用/启用状态
-     * @return Reply
-     */
-    Reply changeSceneStatus(LoginInfo info, String id, boolean status);
-
-    /**
-     * 获取渠道模板配置列表
+     * 获取场景模板配置列表
      *
      * @param tenantId 租户ID
      * @param keyword  查询关键词
@@ -153,4 +86,23 @@ public interface ManageService {
      * @return Reply
      */
     Reply removeSceneTemplate(LoginInfo info, String id);
+
+    /**
+     * 获取日志列表
+     *
+     * @param tenantId 租户ID
+     * @param keyword  查询关键词
+     * @param page     分页页码
+     * @param size     每页记录数
+     * @return Reply
+     */
+    Reply getSceneLogs(String tenantId, String keyword, int page, int size);
+
+    /**
+     * 获取日志详情
+     *
+     * @param id 日志ID
+     * @return Reply
+     */
+    Reply getSceneLog(String id);
 }

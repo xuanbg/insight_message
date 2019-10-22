@@ -1,13 +1,12 @@
 package com.insight.base.message.common.mapper;
 
-import com.insight.base.message.common.dto.SceneTemplateListDto;
 import com.insight.base.message.common.dto.SceneListDto;
+import com.insight.base.message.common.dto.SceneTemplateListDto;
 import com.insight.base.message.common.dto.TemplateListDto;
-import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Scene;
+import com.insight.base.message.common.entity.SceneTemplate;
 import com.insight.base.message.common.entity.Template;
 import com.insight.util.common.JsonTypeHandler;
-import com.insight.util.pojo.Log;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -28,9 +27,10 @@ public interface SceneMapper {
      * @param key      查询关键词
      * @return 消息模板列表
      */
-    @Select("<script>select id, type, code, title, creator, created_time from ims_template " +
-            "where (tenant_id = #{tenantId} or (#{tenantId} = '2564cd559cd340f0b81409723fd8632a' and tenant_id is null)) " +
-            "<if test = 'key != null'>and code = #{key} or title like concat('%',#{key},'%')</if>" +
+    @Select("<script>select id, type, code, title, creator, created_time from ims_template where " +
+            "<if test = 'tenantId != null'>tenant_id = #{tenantId} </if>" +
+            "<if test = 'tenantId == null'>tenant_id is null </if>" +
+            "<if test = 'key != null'>and (code = #{key} or title like concat('%',#{key},'%'))</if>" +
             "order by created_time desc</script>")
     List<TemplateListDto> getTemplates(@Param("tenantId") String tenantId, @Param("key") String key);
 
@@ -49,9 +49,8 @@ public interface SceneMapper {
      *
      * @param template 消息模板DTO
      */
-    @Insert("insert ims_template(id, tenant_id, app_id, type, code, title, content, expire, params, remark, dept_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{tenantId}, #{appId}, #{type}, #{code}, #{title}, #{content}, #{expire}, #{params, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
-            "#{remark}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert ims_template(id, tenant_id, code, tag, type, title, content, expire, remark, dept_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{code}, #{tag}, #{type}, #{title}, #{content}, #{expire}, #{remark}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addTemplate(Template template);
 
     /**
@@ -59,8 +58,7 @@ public interface SceneMapper {
      *
      * @param template 消息模板DTO
      */
-    @Update("update ims_template set app_id = #{appId}, type = #{type}, code = #{code}, title = #{title}, content = #{content}, expire = #{expire}, " +
-            "params = #{params, typeHandler = com.insight.util.common.JsonTypeHandler}, remark = #{remark} where id = #{id};")
+    @Update("update ims_template set tag = #{tag}, type = #{type}, title = #{title}, content = #{content}, expire = #{expire}, remark = #{remark} where id = #{id};")
     void editTemplate(Template template);
 
     /**
@@ -79,29 +77,6 @@ public interface SceneMapper {
      */
     @Update("update ims_template set is_invalid = #{status} where id = #{id};")
     void changeTemplateStatus(@Param("id") String id, @Param("status") boolean status);
-
-    /**
-     * 获取操作日志列表
-     *
-     * @param tenantId 租户ID
-     * @param key      查询关键词
-     * @return 操作日志列表
-     */
-    @Select("<script>select id, type, business, business_id, dept_id, creator, creator_id, created_time from iml_operate_log " +
-            "where tenant_id = #{tenantId} <if test = 'key!=null'>and type = #{key} or business = #{key} or business_id = #{key} or " +
-            "dept_id = #{key} or creator = #{key} or creator_id = #{key}</if>" +
-            "order by created_time</script>")
-    List<Log> getLogs(@Param("tenantId") String tenantId, @Param("key") String key);
-
-    /**
-     * 获取操作日志列表
-     *
-     * @param id 日志ID
-     * @return 操作日志列表
-     */
-    @Results({@Result(property = "content", column = "content", javaType = Object.class, typeHandler = JsonTypeHandler.class)})
-    @Select("select * from iml_operate_log where id = #{id};")
-    Log getLog(String id);
 
     /**
      * 获取消息场景列表
@@ -126,12 +101,21 @@ public interface SceneMapper {
     Scene getScene(String id);
 
     /**
+     * 获取指定编码的场景数量
+     *
+     * @param code 消息场景编码
+     * @return 场景数量
+     */
+    @Select("select count(*) from ims_scene where code = #{code};")
+    int getSceneCount(String code);
+
+    /**
      * 新增消息场景
      *
      * @param scene 消息场景DTO
      */
-    @Insert("insert ims_scene(id, code, name, remark, dept_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{code}, #{name}, #{remark}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert ims_scene(id, code, name, remark, creator, creator_id, created_time) values " +
+            "(#{id}, #{code}, #{name}, #{remark}, #{creator}, #{creatorId}, #{createdTime});")
     void addScene(Scene scene);
 
     /**
@@ -151,28 +135,19 @@ public interface SceneMapper {
     void deleteScene(String id);
 
     /**
-     * 禁用/启用消息场景
-     *
-     * @param id     消息场景ID
-     * @param status 禁用/启用状态
-     */
-    @Update("update ims_scene set is_invalid = #{status} where id = #{id};")
-    void changeSceneStatus(@Param("id") String id, @Param("status") boolean status);
-
-    /**
-     * 获取分渠道模板配置列表
+     * 获取场景模板配置列表
      *
      * @param tenantId 租户ID
      * @param key      查询关键词
-     * @return 分渠道模配置板列表
+     * @return 场景模板配置列表
      */
     @Select("<script>select c.id, s.id as scene_id, concat(s.code, '-', s.name) as scene, t.id as template_id, concat(t.code, '-', t.title) as template, " +
             "c.app_id, c.app_name, c.code, c.channel, c.sign from ims_scene_template c join ims_scene s on s.id = c.scene_id " +
             "<if test = 'key != null'>and (s.code = %{key} or s.name like concat('%',#{key},'%')) </if>" +
-            "join ims_template t on t.id = c.template_id and (t.tenant_id = #{tenantId} or (#{tenantId} = '2564cd559cd340f0b81409723fd8632a' and tenant_id is null)) " +
-            "<if test = 'key != null'>and (t.code = %{key} or t.title like concat('%',#{key},'%')) </if>" +
-            "<if test = 'key != null'>where c.code = %{key} or c.channel like concat('%',#{key},'%')" +
-            "or c.app_name like concat('%',#{key},'%')</if> " +
+            "join ims_template t on t.id = c.template_id and " +
+            "<if test = 'tenantId != null'>tenant_id = #{tenantId} </if>" +
+            "<if test = 'tenantId == null'>tenant_id is null </if>" +
+            "<if test = 'key != null'>where c.app_name like concat('%',#{key},'%') or c.partner_code = %{key} or c.partner like concat('%',#{key},'%') </if> " +
             "order by c.created_time desc</script>")
     List<SceneTemplateListDto> getSceneTemplates(@Param("tenantId") String tenantId, @Param("key") String key);
 

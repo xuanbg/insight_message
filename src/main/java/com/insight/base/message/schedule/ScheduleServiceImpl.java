@@ -7,10 +7,7 @@ import com.insight.base.message.common.dto.ScheduleListDto;
 import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
 import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.OperateType;
-import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.Schedule;
+import com.insight.util.pojo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -154,5 +151,39 @@ public class ScheduleServiceImpl implements ScheduleService {
         dal.writeLog(info, OperateType.UPDATE, "计划任务管理", id, schedule);
 
         return ReplyHelper.success();
+    }
+
+    /**
+     * 获取日志列表
+     *
+     * @param tenantId 租户ID
+     * @param keyword  查询关键词
+     * @param page     分页页码
+     * @param size     每页记录数
+     * @return Reply
+     */
+    @Override
+    public Reply getScheduleLogs(String tenantId, String keyword, int page, int size) {
+        PageHelper.startPage(page, size);
+        List<Log> logs = mapper.getLogs(tenantId, "计划任务管理", keyword);
+        PageInfo<Log> pageInfo = new PageInfo<>(logs);
+
+        return ReplyHelper.success(logs, pageInfo.getTotal());
+    }
+
+    /**
+     * 获取日志详情
+     *
+     * @param id 日志ID
+     * @return Reply
+     */
+    @Override
+    public Reply getScheduleLog(String id) {
+        Log log = mapper.getLog(id);
+        if (log == null) {
+            return ReplyHelper.fail("ID不存在,未读取数据");
+        }
+
+        return ReplyHelper.success(log);
     }
 }
