@@ -44,7 +44,7 @@ public class MessageDal {
      */
     public String getTemplateCode(String tenantId) {
         while (true) {
-            String code = newCode("#4", "Codes:Template:" + tenantId, false);
+            String code = newCode("#4", "Template:" + tenantId, false);
             int count = mapper.getTemplateCount(tenantId, code);
             if (count > 0) {
                 continue;
