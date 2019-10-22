@@ -34,24 +34,22 @@ public class SceneTemplate implements Serializable {
     /**
      * 应用ID
      */
-    @NotEmpty(message = "应用ID不能为空")
     private String appId;
 
     /**
      * 应用名称
      */
-    @NotEmpty(message = "应用名称不能为空")
     private String appName;
 
     /**
-     * 渠道编码
+     * 合作伙伴编码
      */
-    private String channelCode;
+    private String partnerCode;
 
     /**
-     * 渠道名称
+     * 合作伙伴名称
      */
-    private String channel;
+    private String partner;
 
     /**
      * 签名
@@ -118,20 +116,20 @@ public class SceneTemplate implements Serializable {
         this.appName = appName;
     }
 
-    public String getChannelCode() {
-        return channelCode;
+    public String getPartnerCode() {
+        return partnerCode;
     }
 
-    public void setChannelCode(String channelCode) {
-        this.channelCode = channelCode;
+    public void setPartnerCode(String partnerCode) {
+        this.partnerCode = partnerCode;
     }
 
-    public String getChannel() {
-        return channel;
+    public String getPartner() {
+        return partner;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setPartner(String partner) {
+        this.partner = partner;
     }
 
     public String getSign() {

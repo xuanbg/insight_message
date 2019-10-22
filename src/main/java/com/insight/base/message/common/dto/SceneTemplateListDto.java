@@ -28,16 +28,6 @@ public class SceneTemplateListDto implements Serializable {
     private String scene;
 
     /**
-     * 模板ID
-     */
-    private String templateId;
-
-    /**
-     * 模板名称
-     */
-    private String template;
-
-    /**
      * 应用ID
      */
     private String appId;
@@ -48,14 +38,24 @@ public class SceneTemplateListDto implements Serializable {
     private String appName;
 
     /**
-     * 渠道编码
+     * 合作伙伴编码
      */
-    private String code;
+    private String partnerCode;
 
     /**
-     * 渠道名称
+     * 合作伙伴名称
      */
-    private String channel;
+    private String partner;
+
+    /**
+     * 模板ID
+     */
+    private String templateId;
+
+    /**
+     * 模板名称
+     */
+    private String template;
 
     /**
      * 签名
@@ -68,22 +68,6 @@ public class SceneTemplateListDto implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getChannel() {
-        return channel;
-    }
-
-    public void setChannel(String channel) {
-        this.channel = channel;
     }
 
     public String getSceneId() {
@@ -100,6 +84,38 @@ public class SceneTemplateListDto implements Serializable {
 
     public void setScene(String scene) {
         this.scene = scene;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getPartnerCode() {
+        return partnerCode;
+    }
+
+    public void setPartnerCode(String partnerCode) {
+        this.partnerCode = partnerCode;
+    }
+
+    public String getPartner() {
+        return partner;
+    }
+
+    public void setPartner(String partner) {
+        this.partner = partner;
     }
 
     public String getTemplateId() {

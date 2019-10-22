@@ -88,7 +88,7 @@ public class SceneServiceImpl implements SceneService {
     @Override
     public Reply newScene(LoginInfo info, Scene dto) {
         int count = mapper.getSceneCount(dto.getCode());
-        if (count > 0){
+        if (count > 0) {
             return ReplyHelper.invalidParam("场景编码已存在");
         }
 
@@ -120,7 +120,7 @@ public class SceneServiceImpl implements SceneService {
         }
 
         int count = mapper.getSceneCount(dto.getCode());
-        if (count > 0){
+        if (count > 0) {
             return ReplyHelper.invalidParam("场景编码已存在");
         }
 
@@ -144,6 +144,11 @@ public class SceneServiceImpl implements SceneService {
             return ReplyHelper.fail("ID不存在,未删除数据");
         }
 
+        int count = mapper.getConfigCount(id);
+        if (count > 0){
+            return ReplyHelper.fail("该消息场景下配置有模板,请先删除配置");
+        }
+
         mapper.deleteScene(id);
         dal.writeLog(info, OperateType.DELETE, "消息场景管理", id, scene);
 
@@ -154,15 +159,16 @@ public class SceneServiceImpl implements SceneService {
      * 获取场景模板配置列表
      *
      * @param tenantId 租户ID
+     * @param sceneId  场景ID
      * @param keyword  查询关键词
      * @param page     分页页码
      * @param size     每页记录数
      * @return Reply
      */
     @Override
-    public Reply getSceneTemplates(String tenantId, String keyword, int page, int size) {
+    public Reply getSceneTemplates(String tenantId, String sceneId, String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<SceneTemplateListDto> templates = mapper.getSceneTemplates(tenantId, keyword);
+        List<SceneTemplateListDto> templates = mapper.getSceneTemplates(tenantId, sceneId, keyword);
         PageInfo<SceneTemplateListDto> pageInfo = new PageInfo<>(templates);
 
         return ReplyHelper.success(templates, pageInfo.getTotal());
@@ -199,13 +205,13 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply removeSceneTemplate(LoginInfo info, String id) {
-        Scene scene = mapper.getScene(id);
-        if (scene == null) {
+        SceneTemplate config = mapper.getSceneTemplate(id);
+        if (config == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
         }
 
         mapper.deleteSceneTemplate(id);
-        dal.writeLog(info, OperateType.DELETE, "消息场景管理", id, scene);
+        dal.writeLog(info, OperateType.DELETE, "消息场景管理", id, config);
 
         return ReplyHelper.success();
     }

@@ -138,26 +138,46 @@ public interface SceneMapper {
      * 获取场景模板配置列表
      *
      * @param tenantId 租户ID
+     * @param sceneId  场景ID
      * @param key      查询关键词
      * @return 场景模板配置列表
      */
-    @Select("<script>select c.id, s.id as scene_id, concat(s.code, '-', s.name) as scene, t.id as template_id, concat(t.code, '-', t.title) as template, " +
-            "c.app_id, c.app_name, c.code, c.channel, c.sign from ims_scene_template c join ims_scene s on s.id = c.scene_id " +
-            "<if test = 'key != null'>and (s.code = %{key} or s.name like concat('%',#{key},'%')) </if>" +
-            "join ims_template t on t.id = c.template_id and " +
-            "<if test = 'tenantId != null'>tenant_id = #{tenantId} </if>" +
-            "<if test = 'tenantId == null'>tenant_id is null </if>" +
-            "<if test = 'key != null'>where c.app_name like concat('%',#{key},'%') or c.partner_code = %{key} or c.partner like concat('%',#{key},'%') </if> " +
+    @Select("<script>select c.id, s.id as scene_id, concat(s.code, '-', s.name) as scene, c.app_id, c.app_name, c.partner_code, c.partner, " +
+            "t.id as template_id, concat(t.code, '-', t.title) as template, c.sign from ims_scene_template c join ims_scene s on s.id = c.scene_id " +
+            "join ims_template t on t.id = c.template_id " +
+            "<if test = 'tenantId != null'>and tenant_id = #{tenantId} </if>" +
+            "<if test = 'tenantId == null'>and tenant_id is null </if>" +
+            "where c.scene_id = #{sceneId} " +
+            "<if test = 'key != null'>and (s.code = #{key} or s.name like concat('%',#{key},'%') or c.app_name like concat('%',#{key},'%') " +
+            "or c.partner_code = #{key} or c.partner like concat('%',#{key},'%')) </if> " +
             "order by c.created_time desc</script>")
-    List<SceneTemplateListDto> getSceneTemplates(@Param("tenantId") String tenantId, @Param("key") String key);
+    List<SceneTemplateListDto> getSceneTemplates(@Param("tenantId") String tenantId, @Param("sceneId") String sceneId, @Param("key") String key);
+
+    /**
+     * 获取消息场景配置数量
+     *
+     * @param id 消息场景ID
+     * @return 配置数量
+     */
+    @Select("select count(*) from ims_scene_template where scene_id = #{id};")
+    int getConfigCount(String id);
+
+    /**
+     * 获取场景模板配置详情
+     *
+     * @param id 配置ID
+     * @return 配置详情
+     */
+    @Select("select * from ims_scene_template where id = #{id};")
+    SceneTemplate getSceneTemplate(String id);
 
     /**
      * 新增分渠道模板配置
      *
      * @param config 渠道模板配置DTO
      */
-    @Insert("INSERT ims_scene_template(id, scene_id, app_id, app_name, code, channel, template_id, sign, dept_id, creator, creator_id, created_time) VALUES " +
-            "(#{id}, #{sceneId}, #{appId}, #{appName}, #{code}, #{channel}, #{templateId}, #{sign}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("INSERT ims_scene_template(id, scene_id, app_id, app_name, partner_code, partner, template_id, sign, dept_id, creator, creator_id, created_time) VALUES " +
+            "(#{id}, #{sceneId}, #{appId}, #{appName}, #{partnerCode}, #{partner}, #{templateId}, #{sign}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addSceneTemplate(SceneTemplate config);
 
     /**

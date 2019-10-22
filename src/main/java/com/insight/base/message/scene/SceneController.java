@@ -111,17 +111,18 @@ public class SceneController {
     /**
      * 获取场景模板配置列表
      *
+     * @param id      场景ID
      * @param keyword 查询关键词
      * @param page    分页页码
      * @param size    每页记录数
      * @return Reply
      */
-    @GetMapping("/v1.0/scenes/configs")
-    public Reply getSceneTemplates(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
+    @GetMapping("/v1.0/scenes/{id}/configs")
+    public Reply getSceneTemplates(@RequestHeader("loginInfo") String info, @PathVariable("id") String id, @RequestParam(required = false) String keyword,
                                    @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.getSceneTemplates(loginInfo.getTenantId(), keyword, page, size);
+        return service.getSceneTemplates(loginInfo.getTenantId(), id, keyword, page, size);
     }
 
     /**
@@ -169,7 +170,7 @@ public class SceneController {
      */
     @GetMapping("/v1.0/scenes/logs")
     public Reply getSceneLogs(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
-                         @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+                              @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.getSceneLogs(loginInfo.getTenantId(), keyword, page, size);

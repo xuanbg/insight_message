@@ -62,12 +62,13 @@ public interface SceneService {
      * 获取场景模板配置列表
      *
      * @param tenantId 租户ID
+     * @param sceneId  场景ID
      * @param keyword  查询关键词
      * @param page     分页页码
      * @param size     每页记录数
      * @return Reply
      */
-    Reply getSceneTemplates(String tenantId, String keyword, int page, int size);
+    Reply getSceneTemplates(String tenantId, String sceneId, String keyword, int page, int size);
 
     /**
      * 添加渠道模板
