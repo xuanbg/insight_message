@@ -10,6 +10,7 @@ import com.insight.util.pojo.Schedule;
 import com.insight.util.pojo.ScheduleCall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class ScheduleTask {
     /**
      * 每间隔10秒执行一次计划任务
      */
-//    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000)
     public void execute() {
         param.setValue(Generator.uuid());
         if (handler.tryLock(param)) {
