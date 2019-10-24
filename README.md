@@ -169,18 +169,23 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|sceneCode|场景编码|
+|String|partnerCode|合作伙伴编码|
+|String|receivers|接收人,多个接收人使用逗号分隔|
+|Map\<String, Object>|params|自定义参数|
+|Boolean|isBroadcast|是否广播消息|
 
 请求参数示例：
 
 ```json
 {
+  "scene": "0001",
+  "receivers": "13958085903",
+  "param": {
+    "code": "123456",
+    "minutes": 5
+  },
+  "isBroadcast": false
 }
 ```
 
@@ -210,18 +215,25 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|tag|是|消息标签|
+|Integer|type|是|发送类型:0.未定义;1.仅消息;2.仅通知;3.推送+消息;4.仅短信;8.仅邮件|
+|String|receivers|是|接收人,多个接收人使用逗号分隔|
+|String|title|是|消息标题|
+|String|content|是|消息内容|
+|Map\<String, Object>|params|否|自定义参数|
+|Boolean|isBroadcast|是|是否广播消息|
+|Date|expireDate|否|消息失效日期|
 
 请求参数示例：
 
 ```json
 {
+  "tag": "验证邮件",
+  "type": 1,
+  "receivers": "abc@insight.com",
+  "title": "验证邮件",
+  "content": "亲爱的用户，请点击https://www.insight.com/verify/2214d验证您的邮箱。请勿回复此邮件，谢谢。",
+  "broadcast": false
 }
 ```
 
@@ -401,7 +413,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 |Integer|type|是|任务类型:0.消息发送;1.本地调用;2.远程调用|
 |String|method|是|调用方法|
 |Date|taskTime|否|下次执行时间|
-|\<T>|content|是|任务内容,泛型|
+|\<T>|content|是|任务内容,泛型([InsightMessage](#InsightMessage)\|[ScheduleCall](#ScheduleCall))|
 
 接口返回数据类型：
 
@@ -1317,52 +1329,37 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 [回目录](#目录)
 
-### Schedule
+### InsightMessage
 
 |类型|字段|字段说明|
 | ------------ | ------------ | ------------ |
-|String|id||
-|Integer|code||
-|String|message||
-|Object|data||
-|Object|option||
-
-[回目录](#目录)
-
-### SmsCode
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|Integer|type|验证码类型:0.验证手机号;1.注册用户账号;2.重置密码;3.修改支付密码;4.修改手机号|
-|String|mobile|手机号|
-|Integer|length|验证码长度|
-|Integer|minutes|验证码有效时间(分钟)|
-
-[回目录](#目录)
-
-### NormalMessage
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|sceneCode|场景编码|
-|String|partnerCode|合作伙伴编码|
-|String|receivers|接收人,多个接收人使用逗号分隔|
-|Map\<String, Object>|params|自定义参数|
-|Boolean|isBroadcast|是否广播消息|
-
-[回目录](#目录)
-
-### CustomMessage
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
+|String|id|UUID主键|
+|String|tenantId|租户ID|
+|String|appId|应用ID|
 |String|tag|消息标签|
-|Integer|type|发送类型:0.未定义;1.仅消息;2.仅通知;3.推送+消息;4.仅短信;8.仅邮件|
-|String|receivers|接收人,多个接收人使用逗号分隔|
+|Integer|type|消息类型|
+|List\<String>|receivers|接收人，用户ID(推送)/手机号(短信)/Email地址|
 |String|title|消息标题|
 |String|content|消息内容|
-|Map\<String, Object>|params|自定义参数|
+|Map\<String, Object>|params|推送参数|
+|Date|expireDate|失效日期|
 |Boolean|isBroadcast|是否广播消息|
-|Date|expireDate|消息失效日期|
+|Boolean|isInvalid|是否失效|
+|String|deptId|创建人部门ID|
+|String|creator|创建人|
+|String|creatorId|创建人ID|
+|Date|createdTime|创建时间|
+
+[回目录](#目录)
+
+### ScheduleCall
+
+|类型|字段|字段说明|
+| ------------ | ------------ | ------------ |
+|String|method|请求方法,GET/POST/PUT/DELETE|
+|String|service|服务名/域名|
+|String|url|URL|
+|Map\<String, String>|headers|请求头数据|
+|Object|body|请求体数据|
 
 [回目录](#目录)
