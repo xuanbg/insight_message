@@ -37,7 +37,7 @@ public class InsightMessage implements Serializable {
     private String tag;
 
     /**
-     * 消息类型
+     * 消息类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
      */
     private Integer type;
 
@@ -70,11 +70,6 @@ public class InsightMessage implements Serializable {
      * 是否广播消息
      */
     private Boolean isBroadcast;
-
-    /**
-     * 是否失效
-     */
-    private Boolean isInvalid;
 
     /**
      * 创建人部门ID
@@ -182,14 +177,6 @@ public class InsightMessage implements Serializable {
 
     public void setBroadcast(Boolean broadcast) {
         isBroadcast = broadcast;
-    }
-
-    public Boolean getInvalid() {
-        return isInvalid;
-    }
-
-    public void setInvalid(Boolean invalid) {
-        isInvalid = invalid;
     }
 
     public String getDeptId() {

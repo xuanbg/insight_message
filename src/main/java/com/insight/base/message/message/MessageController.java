@@ -84,4 +84,52 @@ public class MessageController {
 
         return service.sendCustomMessage(loginInfo, dto);
     }
+
+    /**
+     * 获取用户消息列表
+     *
+     * @param info    用户关键信息
+     * @param keyword 查询关键词
+     * @param page    分页页码
+     * @param size    每页记录数
+     * @return Reply
+     */
+    @GetMapping("/v1.0/messages")
+    public Reply getUserMessages(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
+                                 @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.getUserMessages(loginInfo, keyword, page, size);
+    }
+
+    /**
+     * 获取用户消息详情
+     *
+     * @param info 用户关键信息
+     * @param id   消息ID
+     * @return Reply
+     */
+    @GetMapping("/v1.0/messages/{id}")
+    public Reply getUserMessage(@RequestHeader("loginInfo") String info, @PathVariable String id) {
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
+        return service.getUserMessage(id, loginInfo.getUserId());
+    }
+
+    /**
+     * 删除用户消息
+     *
+     * @param info 用户关键信息
+     * @param id   消息ID
+     * @return Reply
+     */
+    @DeleteMapping("/v1.0/messages")
+    public Reply deleteUserMessage(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+        if (id == null || id.isEmpty()) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.deleteUserMessage(id, loginInfo.getUserId());
+    }
 }

@@ -44,4 +44,33 @@ public interface MessageService {
      * @return Reply
      */
     Reply sendCustomMessage(LoginInfo info, CustomMessage dto);
+
+    /**
+     * 获取用户消息列表
+     *
+     * @param info    用户关键信息
+     * @param keyword 查询关键词
+     * @param page    分页页码
+     * @param size    每页记录数
+     * @return Reply
+     */
+    Reply getUserMessages(LoginInfo info, String keyword, int page, int size);
+
+    /**
+     * 获取用户消息详情
+     *
+     * @param messageId 消息ID
+     * @param userId    用户ID
+     * @return Reply
+     */
+    Reply getUserMessage(String messageId, String userId);
+
+    /**
+     * 删除用户消息
+     *
+     * @param messageId 消息ID
+     * @param userId    用户ID
+     * @return Reply
+     */
+    Reply deleteUserMessage(String messageId, String userId);
 }

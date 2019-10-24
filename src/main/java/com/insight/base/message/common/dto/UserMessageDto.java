@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * @date 2019/9/20
  * @remark 消息DTO
  */
-public class MessageListDto implements Serializable {
+public class UserMessageDto implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
@@ -29,14 +29,34 @@ public class MessageListDto implements Serializable {
     private String title;
 
     /**
+     * 消息内容
+     */
+    private String content;
+
+    /**
      * 是否已读
      */
     private Boolean isRead;
 
     /**
+     * 是否广播消息
+     */
+    private Boolean isBroadcast;
+
+    /**
+     * 创建人部门ID
+     */
+    private String deptId;
+
+    /**
      * 创建人
      */
     private String creator;
+
+    /**
+     * 创建人ID
+     */
+    private String creatorId;
 
     /**
      * 创建时间
@@ -67,6 +87,14 @@ public class MessageListDto implements Serializable {
         this.title = title;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public Boolean getRead() {
         return isRead;
     }
@@ -75,12 +103,36 @@ public class MessageListDto implements Serializable {
         isRead = read;
     }
 
+    public Boolean getBroadcast() {
+        return isBroadcast;
+    }
+
+    public void setBroadcast(Boolean broadcast) {
+        isBroadcast = broadcast;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
     public String getCreator() {
         return creator;
     }
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 
     public LocalDateTime getCreatedTime() {

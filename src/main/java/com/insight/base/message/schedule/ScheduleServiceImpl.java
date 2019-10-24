@@ -4,8 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.insight.base.message.common.MessageDal;
 import com.insight.base.message.common.dto.ScheduleListDto;
+import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
+import com.insight.util.Json;
 import com.insight.util.ReplyHelper;
 import com.insight.util.pojo.*;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +28,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final MessageDal dal;
     private final MessageMapper mapper;
+    private static final List<String> MATCH_LIST = new ArrayList<>();
+
+    static {
+        MATCH_LIST.add("addMessage");
+        MATCH_LIST.add("pushNotice");
+        MATCH_LIST.add("sendSms");
+        MATCH_LIST.add("sendMail");
+    }
 
     /**
      * 构造方法
@@ -78,17 +89,34 @@ public class ScheduleServiceImpl implements ScheduleService {
      */
     @Override
     public Reply newSchedule(Schedule dto) {
+        if (dto.getType() > 0) {
+            ScheduleCall call = Json.clone(dto.getContent(), ScheduleCall.class);
+            if (call == null || call.getMethod() == null || call.getService() == null || call.getUrl() == null) {
+                return ReplyHelper.invalidParam();
+            }
+        } else {
+            boolean match = MATCH_LIST.stream().anyMatch(i -> i.equals(dto.getMethod()));
+            if (!match) {
+                return ReplyHelper.invalidParam("调用方法错误");
+            }
+
+            InsightMessage message = Json.clone(dto.getContent(), InsightMessage.class);
+            if (message == null){
+                return ReplyHelper.invalidParam();
+            }
+        }
+
         String id = Generator.uuid();
         dto.setId(id);
-        if (dto.getTaskTime() == null){
+        if (dto.getTaskTime() == null) {
             dto.setTaskTime(LocalDateTime.now().plusSeconds(10));
         }
 
         dto.setCount(0);
         dto.setInvalid(false);
         dto.setCreatedTime(LocalDateTime.now());
-        mapper.addSchedule(dto);
 
+        mapper.addSchedule(dto);
         return ReplyHelper.created(id);
     }
 

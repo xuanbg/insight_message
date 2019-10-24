@@ -3,10 +3,10 @@ package com.insight.base.message.common.mapper;
 import com.insight.base.message.common.dto.MessageListDto;
 import com.insight.base.message.common.dto.ScheduleListDto;
 import com.insight.base.message.common.dto.TemplateDto;
+import com.insight.base.message.common.dto.UserMessageDto;
 import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.entity.SubscribeMessage;
-import com.insight.util.common.ArrayTypeHandler;
 import com.insight.util.common.JsonTypeHandler;
 import com.insight.util.pojo.*;
 import org.apache.ibatis.annotations.*;
@@ -50,32 +50,41 @@ public interface MessageMapper {
     /**
      * 获取消息列表
      *
-     * @param key 查询关键词
+     * @param info 用户关键信息
+     * @param key  查询关键词
      * @return 消息列表
      */
-    @Select("<script>select id, tag, title, expire_date, is_broadcast, creator, created_time from imm_message " +
-            "<if test = 'key != null'>where tag = #{key} or title like concat('%',#{key},'%') </if>" +
-            "order by created_time desc</script>")
-    List<MessageListDto> getMessages(@Param("key") String key);
+    @Select("<script>select m.id, m.tag, m.title, case when r.message_id is null then 0 else 1 end as is_read, m.creator, m.created_time from imm_message m " +
+            "left join (select message_id, is_read, is_invalid from imm_message_push where user_id = #{info.userId} union all " +
+            "select message_id, 1 as is_read, is_invalid from imm_message_subscribe where user_id = #{info.userId}) r on r.message_id = m.id " +
+            "where m.app_id = #{info.appId} and m.expire_date > now() and (r.is_invalid = 0 or r.is_invalid is null) " +
+            "<if test = 'info.tenantId != null'>and m.tenant_id = #{info.tenantId} </if>" +
+            "<if test = 'info.tenantId == null'>and m.tenant_id is null </if>" +
+            "<if test = 'key != null'>and (m.tag = #{key} or m.title like concat('%',#{key},'%')) </if>" +
+            "order by m.created_time desc</script>")
+    List<MessageListDto> getMessages(@Param("info") LoginInfo info, @Param("key") String key);
 
     /**
      * 获取消息详情
      *
-     * @param id 消息ID
+     * @param messageId 消息ID
+     * @param userId    用户ID
      * @return 消息详情
      */
-    @Results({@Result(property = "receivers", column = "receivers", javaType = String.class, typeHandler = ArrayTypeHandler.class)})
-    @Select("select * from imm_message where id = #{id};")
-    List<InsightMessage> getMessage(String id);
+    @Select("select m.id, m.tag, m.title, m.content, case when r.message_id is null then 0 else 1 end as is_read, m.is_broadcast, " +
+            "m.dept_id, m.creator, m.creator_id, m.created_time from imm_message m " +
+            "left join (select message_id, is_read from imm_message_push where message_id = #{messageId} and user_id = #{userId} union all " +
+            "select message_id, 1 as is_read from imm_message_subscribe where message_id = #{messageId} and user_id = #{userId}) r on r.message_id = m.id " +
+            "where m.id = #{messageId};")
+    UserMessageDto getMessage(@Param("messageId") String messageId, @Param("userId") String userId);
 
     /**
      * 新增消息
      *
      * @param message 消息DTO
      */
-    @Insert("insert imm_message(id, tenant_id, app_id, tag, type, receivers, title, content, expire_date, is_broadcast, dept_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{tenantId}, #{appId}, #{tag}, #{type}, #{receivers, typeHandler = com.insight.util.common.ArrayTypeHandler}, " +
-            "#{title}, #{content}, #{expireDate}, #{isBroadcast}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert imm_message(id, tenant_id, app_id, tag, title, content, expire_date, is_broadcast, dept_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{appId}, #{tag}, #{title}, #{content}, #{expireDate}, #{isBroadcast}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
     void addMessage(InsightMessage message);
 
     /**
@@ -89,12 +98,39 @@ public interface MessageMapper {
     void pushMessage(List<PushMessage> list);
 
     /**
+     * 设置用户消息为已读
+     *
+     * @param messageId 消息ID
+     * @param userId    用户ID
+     */
+    @Update("update imm_message_push set is_read = 1, read_time = now() where message_id = #{messageId} and user_id = #{userId};")
+    void readMessage(@Param("messageId") String messageId, @Param("userId") String userId);
+
+    /**
      * 订阅消息
      *
      * @param subscribeMessage 消息订阅DTO
      */
     @Insert("insert imm_message_subscribe(id, message_id, user_id, created_time) values (#{id}, #{messageId}, #{userId}, #{createdTime});")
     void subscribeMessage(SubscribeMessage subscribeMessage);
+
+    /**
+     * 删除用户消息
+     *
+     * @param messageId 消息ID
+     * @param userId    用户ID
+     */
+    @Update("update imm_message_push set is_invalid = 1 where message_id = #{messageId} and user_id = #{userId};")
+    void deleteUserMessage(@Param("messageId") String messageId, @Param("userId") String userId);
+
+    /**
+     * 删除用户消息
+     *
+     * @param messageId 消息ID
+     * @param userId    用户ID
+     */
+    @Update("update imm_message_subscribe set is_invalid = 1 where message_id = #{messageId} and user_id = #{userId};")
+    void unsubscribeMessage(@Param("messageId") String messageId, @Param("userId") String userId);
 
     /**
      * 编辑消息

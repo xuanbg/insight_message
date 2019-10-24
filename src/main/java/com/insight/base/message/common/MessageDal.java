@@ -2,6 +2,7 @@ package com.insight.base.message.common;
 
 import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.entity.PushMessage;
+import com.insight.base.message.common.entity.SubscribeMessage;
 import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.pojo.Log;
 import com.insight.util.pojo.LoginInfo;
@@ -61,6 +62,12 @@ public class MessageDal {
      */
     @Transactional(rollbackFor = Exception.class)
     public void addMessage(InsightMessage message) {
+        String id = message.getId();
+        if (id == null || id.isEmpty()){
+            message.setId(uuid());
+        }
+
+        message.setCreatedTime(LocalDateTime.now());
         mapper.addMessage(message);
         if (message.getBroadcast()) {
             return;
@@ -77,6 +84,28 @@ public class MessageDal {
             pushList.add(push);
         });
         mapper.pushMessage(pushList);
+    }
+
+    /**
+     * 设置消息为已读
+     *
+     * @param messageId   消息ID
+     * @param userId      用户ID
+     * @param isBroadcast 是否广播消息
+     */
+    @Async
+    public void readMessage(String messageId, String userId, boolean isBroadcast) {
+        if (isBroadcast) {
+            SubscribeMessage subscribe = new SubscribeMessage();
+            subscribe.setId(uuid());
+            subscribe.setMessageId(messageId);
+            subscribe.setUserId(userId);
+            subscribe.setCreatedTime(LocalDateTime.now());
+
+            mapper.subscribeMessage(subscribe);
+        } else {
+            mapper.readMessage(messageId, userId);
+        }
     }
 
     /**

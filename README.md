@@ -1334,6 +1334,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 |类型|字段|字段说明|
 | ------------ | ------------ | ------------ |
 |String|id|UUID主键|
+|String|messageId|消息ID|
 |String|tenantId|租户ID|
 |String|appId|应用ID|
 |String|tag|消息标签|
@@ -1344,7 +1345,6 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 |Map\<String, Object>|params|推送参数|
 |Date|expireDate|失效日期|
 |Boolean|isBroadcast|是否广播消息|
-|Boolean|isInvalid|是否失效|
 |String|deptId|创建人部门ID|
 |String|creator|创建人|
 |String|creatorId|创建人ID|

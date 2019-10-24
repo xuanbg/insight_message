@@ -1,7 +1,12 @@
 package com.insight.base.message.message;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.insight.base.message.common.MessageDal;
 import com.insight.base.message.common.client.RabbitClient;
+import com.insight.base.message.common.dto.MessageListDto;
 import com.insight.base.message.common.dto.TemplateDto;
+import com.insight.base.message.common.dto.UserMessageDto;
 import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
@@ -25,14 +30,17 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class MessageServiceImpl implements MessageService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final MessageDal dal;
     private final MessageMapper mapper;
 
     /**
      * 构造方法
      *
+     * @param dal    MessageDal
      * @param mapper MessageMapper
      */
-    public MessageServiceImpl(MessageMapper mapper) {
+    public MessageServiceImpl(MessageDal dal, MessageMapper mapper) {
+        this.dal = dal;
         this.mapper = mapper;
     }
 
@@ -200,6 +208,73 @@ public class MessageServiceImpl implements MessageService {
         message.setExpireDate(dto.getExpireDate());
         message.setBroadcast(dto.getBroadcast());
         sendMessage(info, message);
+
+        return ReplyHelper.success();
+    }
+
+    /**
+     * 获取用户消息列表
+     *
+     * @param info    用户关键信息
+     * @param keyword 查询关键词
+     * @param page    分页页码
+     * @param size    每页记录数
+     * @return Reply
+     */
+    @Override
+    public Reply getUserMessages(LoginInfo info, String keyword, int page, int size) {
+        PageHelper.startPage(page, size);
+        List<MessageListDto> scenes = mapper.getMessages(info, keyword);
+        PageInfo<MessageListDto> pageInfo = new PageInfo<>(scenes);
+
+        return ReplyHelper.success(scenes, pageInfo.getTotal());
+    }
+
+    /**
+     * 获取用户消息详情
+     *
+     * @param messageId 消息ID
+     * @param userId    用户ID
+     * @return Reply
+     */
+    @Override
+    public Reply getUserMessage(String messageId, String userId) {
+        UserMessageDto message = mapper.getMessage(messageId, userId);
+        if (message == null) {
+            return ReplyHelper.fail("ID不存在,未读取数据");
+        }
+
+        if (!message.getRead()) {
+            dal.readMessage(message.getId(), userId, message.getBroadcast());
+            message.setRead(true);
+        }
+
+        return ReplyHelper.success(message);
+    }
+
+    /**
+     * 删除用户消息
+     *
+     * @param messageId 消息ID
+     * @param userId    用户ID
+     * @return Reply
+     */
+    @Override
+    public Reply deleteUserMessage(String messageId, String userId) {
+        UserMessageDto message = mapper.getMessage(messageId, userId);
+        if (message == null) {
+            return ReplyHelper.fail("ID不存在,未删除数据");
+        }
+
+        if (message.getBroadcast()) {
+            if (!message.getRead()) {
+                dal.readMessage(message.getId(), userId, true);
+            }
+
+            mapper.unsubscribeMessage(messageId, userId);
+        } else {
+            mapper.deleteUserMessage(messageId, userId);
+        }
 
         return ReplyHelper.success();
     }
