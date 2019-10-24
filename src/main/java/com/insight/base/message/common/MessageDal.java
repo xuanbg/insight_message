@@ -127,10 +127,10 @@ public class MessageDal {
     }
 
     /**
-     * 获取操作日志列表
+     * 获取操作日志
      *
      * @param id 日志ID
-     * @return 操作日志列表
+     * @return 操作日志
      */
     public Log getLog(String id) {
         return mapper.getLog(id);

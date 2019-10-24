@@ -822,7 +822,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
 
 ### 删除消息模板
 
-删除指定ID的消息模板。
+删除指定ID的消息模板，仅限未配置到场景的模板。如模板已配置到场景，需先删除相应配置。
 
 请求方法：**DELETE**
 
@@ -1123,7 +1123,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 ### 删除消息场景
 
-删除指定ID的消息场景，仅限无配置消息模板参数的场景。
+删除指定ID的消息场景，仅限无配置消息模板参数的场景。如场景已配置模板，需先删除配置。
 
 请求方法：**DELETE**
 
@@ -1159,29 +1159,44 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 ### 获取场景配置列表
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+根据关键词(可选)分页查询指定场景ID的配置列表，关键词精确匹配场景编码|合作伙伴编码，模糊匹配场景名称|应用名称|合作伙伴名称。
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/scenes/configs**
+接口URL：**/base/message/v1.0/scenes/{id}/configs**
 
 请求参数如下：
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
+|String|id|是|消息场景ID|
+|String|keyword|否|查询关键词|
+|Integer|page|否|分页页码|
+|Integer|size|否|每页记录数|
 
 接口返回数据类型：
 
 |类型|字段|字段说明|
 | ------------ | ------------ | ------------ |
-||||
+|String|id|UUID主键|
+|String|sceneId|场景ID|
+|String|scene|场景名称|
+|String|appId|应用ID|
+|String|appName|应用名称|
+|String|partnerCode|合作伙伴编码|
+|String|partner|合作伙伴名称|
+|String|templateId|模板ID|
+|String|template|模板名称|
+|String|sign|签名|
 
 请求参数示例：
 
-```json
-{
-}
+```sh
+curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc200242ac110004/configs?keyword=0001" \
+     -H 'Accept: application/json' \
+     -H 'Accept-Encoding: gzip, identity' \
+     -H 'Authorization: eyJpZCI6ImE4N2NiNjFlNmU2YTRhNDNiODY1NmExMWViM2E0YTQ2Iiwic2VjcmV0IjoiMTA2YmIxY2FhNWJjNDc4MTk0MTdmNDkwYTI4NWE1YjAifQ==' \
+     -H 'Content-Type: application/json'
 ```
 
 返回结果示例：
@@ -1191,8 +1206,21 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
   "success": true,
   "code": 200,
   "message": "请求成功",
-  "data": null,
-  "option": null
+  "data": [
+    {
+      "id": "d172f49ff24311e99eca0242ac110003",
+      "sceneId": "27c3a319dc7011e9bc200242ac110004",
+      "scene": "0001-验证码登录",
+      "appId": null,
+      "appName": null,
+      "partnerCode": null,
+      "partner": null,
+      "templateId": "387e156ddc7211e9bc200242ac110004",
+      "template": "0001-验证码登录",
+      "sign": "Insight"
+    }
+  ],
+  "option": 1
 }
 ```
 
@@ -1210,18 +1238,20 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|sceneId|是|场景ID|
+|String|appId|否|应用ID|
+|String|appName|否|应用名称|
+|String|partnerCode|否|合作伙伴编码|
+|String|partner|否|合作伙伴名称|
+|String|templateId|是|模板ID|
+|String|sign|否|签名|
 
 请求参数示例：
 
 ```json
 {
+  "sceneId": "1b68365b879147818107707699b10134",
+  "templateId": "93cb8cf5870c4261a067f898baf07276"
 }
 ```
 
@@ -1230,9 +1260,9 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 ```json
 {
   "success": true,
-  "code": 200,
-  "message": "请求成功",
-  "data": null,
+  "code": 201,
+  "message": "创建数据成功",
+  "data": "1d6bf020a31b4ff2b6f62f1a9300e87f",
   "option": null
 }
 ```
@@ -1241,7 +1271,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 ### 移除场景配置
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+删除指定ID的业务场景配置。
 
 请求方法：**DELETE**
 
@@ -1251,19 +1281,12 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 |类型|字段|是否必需|字段说明|
 | ------------ | ------------ | ------------ | ------------ |
-|||||
-
-接口返回数据类型：
-
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-||||
+|String|-|是|消息场景配置ID|
 
 请求参数示例：
 
 ```json
-{
-}
+"1d6bf020a31b4ff2b6f62f1a9300e87f"
 ```
 
 返回结果示例：
@@ -1298,10 +1321,48 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 |类型|字段|字段说明|
 | ------------ | ------------ | ------------ |
-|Boolean|success|接口调用是否成功，成功：true；失败：false|
-|Integer|code|错误代码，2xx代表成功，4xx或5xx代表失败|
-|String|message|错误消息，描述了接口调用失败原因|
-|Object|data|接口返回数据|
-|Object|option|附加数据，如分页数据的总条数|
+|String|id||
+|Integer|code||
+|String|message||
+|Object|data||
+|Object|option||
+
+[回目录](#目录)
+
+### SmsCode
+
+|类型|字段|字段说明|
+| ------------ | ------------ | ------------ |
+|Integer|type|验证码类型:0.验证手机号;1.注册用户账号;2.重置密码;3.修改支付密码;4.修改手机号|
+|String|mobile|手机号|
+|Integer|length|验证码长度|
+|Integer|minutes|验证码有效时间(分钟)|
+
+[回目录](#目录)
+
+### NormalMessage
+
+|类型|字段|字段说明|
+| ------------ | ------------ | ------------ |
+|String|sceneCode|场景编码|
+|String|partnerCode|合作伙伴编码|
+|String|receivers|接收人,多个接收人使用逗号分隔|
+|Map\<String, Object>|params|自定义参数|
+|Boolean|isBroadcast|是否广播消息|
+
+[回目录](#目录)
+
+### CustomMessage
+
+|类型|字段|字段说明|
+| ------------ | ------------ | ------------ |
+|String|tag|消息标签|
+|Integer|type|发送类型:0.未定义;1.仅消息;2.仅通知;3.推送+消息;4.仅短信;8.仅邮件|
+|String|receivers|接收人,多个接收人使用逗号分隔|
+|String|title|消息标题|
+|String|content|消息内容|
+|Map\<String, Object>|params|自定义参数|
+|Boolean|isBroadcast|是否广播消息|
+|Date|expireDate|消息失效日期|
 
 [回目录](#目录)

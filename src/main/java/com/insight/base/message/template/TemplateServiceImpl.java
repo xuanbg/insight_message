@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.insight.base.message.common.MessageDal;
 import com.insight.base.message.common.dto.TemplateListDto;
 import com.insight.base.message.common.entity.Template;
-import com.insight.base.message.common.mapper.SceneMapper;
+import com.insight.base.message.common.mapper.TemplateMapper;
 import com.insight.util.ReplyHelper;
 import com.insight.util.pojo.Log;
 import com.insight.util.pojo.LoginInfo;
@@ -29,15 +29,15 @@ import static com.insight.util.Generator.uuid;
 public class TemplateServiceImpl implements TemplateService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final MessageDal dal;
-    private final SceneMapper mapper;
+    private final TemplateMapper mapper;
 
     /**
      * 构造方法
      *
-     * @param dal    TemplateMapper
-     * @param mapper SceneMapper
+     * @param dal    MessageDal
+     * @param mapper TemplateMapper
      */
-    public TemplateServiceImpl(MessageDal dal, SceneMapper mapper) {
+    public TemplateServiceImpl(MessageDal dal, TemplateMapper mapper) {
         this.dal = dal;
         this.mapper = mapper;
     }
@@ -134,6 +134,11 @@ public class TemplateServiceImpl implements TemplateService {
         Template template = mapper.getTemplate(id);
         if (template == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
+        }
+
+        int count = mapper.getConfigCount(id);
+        if (count > 0){
+            return ReplyHelper.fail("该模板已配置到消息场景,请先删除相应配置");
         }
 
         mapper.deleteTemplate(id);

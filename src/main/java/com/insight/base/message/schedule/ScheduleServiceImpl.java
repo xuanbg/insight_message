@@ -165,7 +165,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public Reply getScheduleLogs(String tenantId, String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<Log> logs = mapper.getLogs(tenantId, "计划任务管理", keyword);
+        List<Log> logs = dal.getLogs(tenantId, "计划任务管理", keyword);
         PageInfo<Log> pageInfo = new PageInfo<>(logs);
 
         return ReplyHelper.success(logs, pageInfo.getTotal());
@@ -179,7 +179,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      */
     @Override
     public Reply getScheduleLog(String id) {
-        Log log = mapper.getLog(id);
+        Log log = dal.getLog(id);
         if (log == null) {
             return ReplyHelper.fail("ID不存在,未读取数据");
         }
