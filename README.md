@@ -16,6 +16,9 @@
   - [验证短信验证码](#验证短信验证码)
   - [发送送标准消息](#发送送标准消息)
   - [发送自定义消息](#发送自定义消息)
+  - [获取用户消息列表](#获取用户消息列表)
+  - [获取用户消息详情](#获取用户消息详情)
+  - [删除用户消息](#删除用户消息)
 - [任务模块](#任务模块)
   - [获取计划任务列表](#获取计划任务列表)
   - [获取计划任务详情](#获取计划任务详情)
@@ -159,7 +162,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 ### 发送送标准消息
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+发送一条标准消息，只需指定消息场景和合作伙伴(可选)，系统会自动匹配消息模板生成消息并发送给指定的接收人或进行公告。
 
 请求方法：**POST**
 
@@ -205,7 +208,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 ### 发送自定义消息
 
-描述接口能力(必须)、主要业务逻辑、涉及哪些数据、调用哪些服务(可选)
+发送一条自定义消息给指定的接收人或进行公告。
 
 请求方法：**method**
 
@@ -235,6 +238,164 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
   "content": "亲爱的用户，请点击https://www.insight.com/verify/2214d验证您的邮箱。请勿回复此邮件，谢谢。",
   "broadcast": false
 }
+```
+
+返回结果示例：
+
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "请求成功",
+  "data": null,
+  "option": null
+}
+```
+
+[回目录](#目录)
+
+### 获取用户消息列表
+
+可根据关键词查询当前用户的站内消息，仅限当前租户(可为空)和当前应用的消息。关键词精确匹配消息标签，模糊匹配消息标题。
+
+请求方法：**GET**
+
+接口URL：**/base/message/v1.0/messages**
+
+请求参数如下：
+
+|类型|字段|是否必需|字段说明|
+| ------------ | ------------ | ------------ | ------------ |
+|String|keyword|否|查询关键词|
+|Integer|page|否|分页页码|
+|Integer|size|否|每页记录数|
+
+接口返回数据集合类型：
+
+|类型|字段|字段说明|
+| ------------ | ------------ | ------------ |
+|String|id|消息ID|
+|String|tag|消息标签,如"平台通知"/"系统消息"|
+|String|title|消息标题|
+|Boolean|read|是否已读|
+|String|creator|创建人|
+|Date|createdTime|创建时间|
+
+请求参数示例：
+
+```sh
+curl "http://192.168.236.8:6200/base/message/v1.0/messages?keyword=a" \
+     -H 'Accept: application/json' \
+     -H 'Accept-Encoding: gzip, identity' \
+     -H 'Authorization: eyJpZCI6IjY2ZmZlMTRlYTcwYTQ4MTJhZjdhZjMwOGUyZjJlNmRhIiwic2VjcmV0IjoiNTMwZDA3OTFiOTgxNGIwODg0NmY3MjQ2MjczNTUyZTcifQ==' \
+     -H 'Content-Type: application/json'
+```
+
+返回结果示例：
+
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "请求成功",
+  "data": [
+    {
+      "id": "7ab89a1bace84e5aadca44851901df02",
+      "tag": "测试消息",
+      "title": "你好a",
+      "creator": "系统管理员",
+      "createdTime": "2019-10-24 18:15:26",
+      "read": true
+    }
+  ],
+  "option": 1
+}
+```
+
+[回目录](#目录)
+
+### 获取用户消息详情
+
+获取指定ID的消息详情，读取数据后该消息将被标记为已读。
+
+请求方法：**GET**
+
+接口URL：**/base/message/v1.0/messages/{id}**
+
+请求参数如下：
+
+|类型|字段|是否必需|字段说明|
+| ------------ | ------------ | ------------ | ------------ |
+|String|id|是|消息ID|
+
+接口返回数据集合类型：
+
+|类型|字段|字段说明|
+| ------------ | ------------ | ------------ |
+|String|id|消息ID|
+|String|tag|消息标签,如"平台通知"/"系统消息"|
+|String|title|消息标题|
+|String|content|消息内容|
+|Boolean|read|是否已读|
+|Boolean|broadcast|是否广播消息|
+|String|deptId|创建人部门ID|
+|String|creator|创建人|
+|String|creatorId|创建人ID|
+|Date|createdTime|创建时间|
+
+请求参数示例：
+
+```sh
+curl "http://192.168.236.8:6200/base/message/v1.0/messages/7ab89a1bace84e5aadca44851901df02" \
+     -H 'Accept: application/json' \
+     -H 'Accept-Encoding: gzip, identity' \
+     -H 'Authorization: eyJpZCI6IjY2ZmZlMTRlYTcwYTQ4MTJhZjdhZjMwOGUyZjJlNmRhIiwic2VjcmV0IjoiNTMwZDA3OTFiOTgxNGIwODg0NmY3MjQ2MjczNTUyZTcifQ==' \
+     -H 'Content-Type: application/json'
+```
+
+返回结果示例：
+
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "请求成功",
+  "data": {
+    "id": "506b3e4c705d4861af91a8db1d729673",
+    "tag": "测试消息",
+    "title": "你好",
+    "content": "你好",
+    "deptId": null,
+    "creator": "系统管理员",
+    "creatorId": "00000000000000000000000000000000",
+    "createdTime": "2019-10-24 17:48:24",
+    "broadcast": false,
+    "read": true
+  },
+  "option": null
+}
+```
+
+[回目录](#目录)
+
+### 删除用户消息
+
+获取指定ID的消息详情，读取数据后该消息将被标记为已读。
+
+请求方法：**DELETE**
+
+接口URL：**/base/message/v1.0/messages**
+
+请求参数如下：
+
+|类型|字段|是否必需|字段说明|
+| ------------ | ------------ | ------------ | ------------ |
+|String|-|是|消息ID|
+
+请求参数示例：
+
+```json
+"506b3e4c705d4861af91a8db1d729673"
 ```
 
 返回结果示例：
