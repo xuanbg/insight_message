@@ -210,7 +210,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 请求方法：**POST**
 
-接口URL：**/base/message**
+接口URL：**/base/message/v1.0/customs**
 
 请求参数如下：
 
