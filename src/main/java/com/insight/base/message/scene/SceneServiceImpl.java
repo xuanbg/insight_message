@@ -47,16 +47,15 @@ public class SceneServiceImpl implements SceneService {
     /**
      * 获取消息场景列表
      *
-     * @param tenantId 租户ID
      * @param keyword  查询关键词
      * @param page     分页页码
      * @param size     每页记录数
      * @return Reply
      */
     @Override
-    public Reply getScenes(String tenantId, String keyword, int page, int size) {
+    public Reply getScenes(String keyword, int page, int size) {
         PageHelper.startPage(page, size);
-        List<SceneListDto> scenes = mapper.getScenes(tenantId, keyword);
+        List<SceneListDto> scenes = mapper.getScenes(keyword);
         PageInfo<SceneListDto> pageInfo = new PageInfo<>(scenes);
 
         return ReplyHelper.success(scenes, pageInfo.getTotal());
@@ -72,7 +71,7 @@ public class SceneServiceImpl implements SceneService {
     public Reply getScene(String id) {
         Scene scene = mapper.getScene(id);
         if (scene == null) {
-            return ReplyHelper.fail("ID不存在,未更新数据");
+            return ReplyHelper.fail("ID不存在,未读取数据");
         }
 
         return ReplyHelper.success(scene);

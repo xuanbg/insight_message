@@ -181,7 +181,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 ```json
 {
   "scene": "0001",
-  "receivers": "13958085903",
+  "receivers": "13958085808",
   "param": {
     "code": "123456",
     "minutes": 5

@@ -39,11 +39,8 @@ public class SceneController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes")
-    public Reply getScenes(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
-                           @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        return service.getScenes(loginInfo.getTenantId(), keyword, page, size);
+    public Reply getScenes(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        return service.getScenes(keyword, page, size);
     }
 
     /**

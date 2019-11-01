@@ -19,7 +19,6 @@ public interface SceneMapper {
     /**
      * 获取消息场景列表
      *
-     * @param tenantId 租户ID
      * @param key      查询关键词
      * @return 消息场景列表
      */
@@ -27,7 +26,7 @@ public interface SceneMapper {
             "<if test = 'key != null'>where " +
             "code = #{key} or name like concat('%',#{key},'%')</if> " +
             "order by created_time desc</script>")
-    List<SceneListDto> getScenes(@Param("tenantId") String tenantId, @Param("key") String key);
+    List<SceneListDto> getScenes(@Param("key") String key);
 
     /**
      * 获取场景详情
