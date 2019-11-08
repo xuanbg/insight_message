@@ -4,7 +4,7 @@ spring:
   application:
     name: base-message
   datasource:
-    url: jdbc:mysql://192.168.236.8/insight_base?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://192.168.236.8/insight_message?useUnicode=true&characterEncoding=utf-8&useSSL=false
     hikari:
       connection-init-sql: set names utf8mb4
     username: root
