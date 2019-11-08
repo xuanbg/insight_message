@@ -134,7 +134,7 @@ public class MessageServiceImpl implements MessageService {
             Redis.deleteKey("VerifyCode:" + k);
         }
 
-        return ReplyHelper.success();
+        return ReplyHelper.success(mobile);
     }
 
     /**
