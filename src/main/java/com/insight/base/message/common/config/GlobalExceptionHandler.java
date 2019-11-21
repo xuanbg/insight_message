@@ -26,7 +26,6 @@ import javax.validation.UnexpectedTypeException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -41,10 +40,6 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     private static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static Error error = new Error();
-
-    static {
-        error.setLevel();
-    }
 
     /**
      * 处理缺少请求参数的异常
@@ -262,7 +257,6 @@ public class GlobalExceptionHandler {
      * @param e Exception
      */
     private void initError(Exception e) {
-        error.setTime();
         error.setRequestId();
         error.setError(e.getMessage());
         error.setException(e.getStackTrace());
@@ -277,16 +271,6 @@ public class GlobalExceptionHandler {
          * 请求ID
          */
         private String requestId;
-
-        /**
-         * 日志时间
-         */
-        private Date time;
-
-        /**
-         * 日志级别(DEBUG,INFO,WARN,ERROR)
-         */
-        private String level;
 
         /**
          * 错误消息
@@ -306,22 +290,6 @@ public class GlobalExceptionHandler {
             ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
             requestId = request.getHeader("requestId");
-        }
-
-        public Date getTime() {
-            return time;
-        }
-
-        void setTime() {
-            time = new Date();
-        }
-
-        public String getLevel() {
-            return level;
-        }
-
-        void setLevel() {
-            level = "ERROR";
         }
 
         public String getError() {
