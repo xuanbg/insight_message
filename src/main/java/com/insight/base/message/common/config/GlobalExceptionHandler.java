@@ -44,12 +44,12 @@ public class GlobalExceptionHandler {
     /**
      * 处理缺少请求参数的异常
      *
-     * @param e 缺少请求参数
+     * @param ex 缺少请求参数
      * @return Reply
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public Reply handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
-        String msg = "缺少请求参数: " + e.getParameterName();
+    public Reply handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        String msg = "缺少请求参数: " + ex.getParameterName();
 
         return ReplyHelper.invalidParam(msg);
     }
@@ -57,12 +57,12 @@ public class GlobalExceptionHandler {
     /**
      * 处理不合法的参数的异常
      *
-     * @param e 不合法的参数异常
+     * @param ex 不合法的参数异常
      * @return Reply
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public Reply handleIllegalArgumentException(IllegalArgumentException e) {
-        logger.info("不合法的参数: {}", e.getMessage());
+    public Reply handleIllegalArgumentException(IllegalArgumentException ex) {
+        logger.info("不合法的参数: {}", ex.getMessage());
 
         return ReplyHelper.invalidParam("不合法的参数");
     }
@@ -70,12 +70,12 @@ public class GlobalExceptionHandler {
     /**
      * 处理参数绑定出现的异常
      *
-     * @param e 参数绑定错误异常
+     * @param ex 参数绑定错误异常
      * @return Reply
      */
     @ExceptionHandler(ServletRequestBindingException.class)
-    public Reply handleServletRequestBindingException(ServletRequestBindingException e) {
-        logger.info("参数绑定错误: {}", e.getMessage());
+    public Reply handleServletRequestBindingException(ServletRequestBindingException ex) {
+        logger.info("参数绑定错误: {}", ex.getMessage());
 
         return ReplyHelper.invalidParam("参数绑定错误");
     }
@@ -83,12 +83,12 @@ public class GlobalExceptionHandler {
     /**
      * 处理参数解析失败的异常
      *
-     * @param e 参数解析失败异常
+     * @param ex 参数解析失败异常
      * @return Reply
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Reply handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        logger.info("参数解析失败: {}", e.getMessage());
+    public Reply handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        logger.info("参数解析失败: {}", ex.getMessage());
 
         return ReplyHelper.invalidParam("参数解析失败");
     }
@@ -96,14 +96,14 @@ public class GlobalExceptionHandler {
     /**
      * 参数验证失败的异常
      *
-     * @param e 参数验证失败异常
+     * @param ex 参数验证失败异常
      * @return Reply
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Reply handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        FieldError error = e.getBindingResult().getFieldError();
+    public Reply handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        FieldError error = ex.getBindingResult().getFieldError();
         if (error == null) {
-            logger.info("参数解析失败: {}", e.getMessage());
+            logger.info("参数解析失败: {}", ex.getMessage());
 
             return ReplyHelper.invalidParam("参数解析失败");
         }
@@ -114,14 +114,14 @@ public class GlobalExceptionHandler {
     /**
      * 参数绑定失败的异常
      *
-     * @param e 参数绑定失败异常
+     * @param ex 参数绑定失败异常
      * @return Reply
      */
     @ExceptionHandler(BindException.class)
-    public Reply handleBindException(BindException e) {
-        FieldError error = e.getBindingResult().getFieldError();
+    public Reply handleBindException(BindException ex) {
+        FieldError error = ex.getBindingResult().getFieldError();
         if (error == null) {
-            logger.info("参数绑定失败: {}", e.getMessage());
+            logger.info("参数绑定失败: {}", ex.getMessage());
 
             return ReplyHelper.invalidParam("参数绑定失败");
         }
@@ -132,12 +132,12 @@ public class GlobalExceptionHandler {
     /**
      * 参数类型不匹配的异常
      *
-     * @param e 参数类型不匹配异常
+     * @param ex 参数类型不匹配异常
      * @return Reply
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public Reply handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
-        logger.info("不支持当前媒体类型: {}", e.getMessage());
+    public Reply handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex) {
+        logger.info("不支持当前媒体类型: {}", ex.getMessage());
 
         return ReplyHelper.invalidParam("不支持当前媒体类型");
     }
@@ -145,12 +145,12 @@ public class GlobalExceptionHandler {
     /**
      * 非预期类型的异常
      *
-     * @param e 非预期类型异常
+     * @param ex 非预期类型异常
      * @return Reply
      */
     @ExceptionHandler(UnexpectedTypeException.class)
-    public Reply handleUnexpectedTypeException(UnexpectedTypeException e) {
-        logger.info("参数类型不匹配: {}", e.getMessage());
+    public Reply handleUnexpectedTypeException(UnexpectedTypeException ex) {
+        logger.info("参数类型不匹配: {}", ex.getMessage());
 
         return ReplyHelper.invalidParam("参数类型不匹配");
     }
@@ -158,15 +158,12 @@ public class GlobalExceptionHandler {
     /**
      * 数据库操作出现异常：插入、删除和修改数据的时候，违背数据完整性约束抛出的异常
      *
-     * @param e 违背数据完整性约异常
+     * @param ex 违背数据完整性约异常
      * @return Reply
      */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public Reply handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
-        initError(e);
-
-        String json = Json.toJson(error);
-        logger.error("发生异常: {}", json);
+    public Reply handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        initError(ex);
 
         return ReplyHelper.error();
     }
@@ -174,15 +171,12 @@ public class GlobalExceptionHandler {
     /**
      * SQL语句执行错误抛出的异常
      *
-     * @param e SQL语句执行错误的异常
+     * @param ex SQL语句执行错误的异常
      * @return Reply
      */
     @ExceptionHandler(SQLSyntaxErrorException.class)
-    public Reply handleSqlSyntaxErrorException(SQLSyntaxErrorException e) {
-        initError(e);
-
-        String json = Json.toJson(error);
-        logger.error("发生异常: {}", json);
+    public Reply handleSqlSyntaxErrorException(SQLSyntaxErrorException ex) {
+        initError(ex);
 
         return ReplyHelper.error();
     }
@@ -190,15 +184,12 @@ public class GlobalExceptionHandler {
     /**
      * 空指针抛出的异常
      *
-     * @param e 空指针异常
+     * @param ex 空指针异常
      * @return Reply
      */
     @ExceptionHandler(NullPointerException.class)
-    public Reply handleNullPointerException(NullPointerException e) {
-        initError(e);
-
-        String json = Json.toJson(error);
-        logger.error("发生异常: {}", json);
+    public Reply handleNullPointerException(NullPointerException ex) {
+        initError(ex);
 
         return ReplyHelper.error();
     }
@@ -206,15 +197,12 @@ public class GlobalExceptionHandler {
     /**
      * 服务器异常
      *
-     * @param e 服务器异常
+     * @param ex 服务器异常
      * @return Reply
      */
     @ExceptionHandler(AsyncRequestTimeoutException.class)
-    public Reply handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e) {
-        initError(e);
-
-        String json = Json.toJson(error);
-        logger.error("发生异常: {}", json);
+    public Reply handleAsyncRequestTimeoutException(AsyncRequestTimeoutException ex) {
+        initError(ex);
 
         return ReplyHelper.error();
     }
@@ -222,15 +210,12 @@ public class GlobalExceptionHandler {
     /**
      * 运行时异常
      *
-     * @param e 运行时异常
+     * @param ex 运行时异常
      * @return Reply
      */
     @ExceptionHandler(RuntimeException.class)
-    public Reply handleRuntimeException(RuntimeException e) {
-        initError(e);
-
-        String json = Json.toJson(error);
-        logger.error("发生异常: {}", json);
+    public Reply handleRuntimeException(RuntimeException ex) {
+        initError(ex);
 
         return ReplyHelper.error();
     }
@@ -238,15 +223,12 @@ public class GlobalExceptionHandler {
     /**
      * 服务器异常
      *
-     * @param e 通用异常
+     * @param ex 通用异常
      * @return Reply
      */
     @ExceptionHandler(Exception.class)
-    public Reply handleException(Exception e) {
-        initError(e);
-
-        String json = Json.toJson(error);
-        logger.error("发生异常: {}", json);
+    public Reply handleException(Exception ex) {
+        initError(ex);
 
         return ReplyHelper.error();
     }
@@ -254,12 +236,19 @@ public class GlobalExceptionHandler {
     /**
      * 初始化错误实体类
      *
-     * @param e Exception
+     * @param ex Exception
      */
-    private void initError(Exception e) {
+    private void initError(Exception ex) {
+        String message = ex.getMessage();
+        if (message == null){
+            message = ex.getClass().getSimpleName();
+        }
+
         error.setRequestId();
-        error.setError(e.getMessage());
-        error.setException(e.getStackTrace());
+        error.setError(message);
+        error.setException(ex.getStackTrace());
+
+        logger.error("发生异常: {}", error.toString());
     }
 
     /**
@@ -306,6 +295,11 @@ public class GlobalExceptionHandler {
 
         void setException(StackTraceElement[] trace) {
             exception = Arrays.stream(trace).map(StackTraceElement::toString).collect(Collectors.toList());
+        }
+
+        @Override
+        public String toString() {
+            return Json.toJson(this);
         }
     }
 }
