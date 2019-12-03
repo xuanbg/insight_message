@@ -89,7 +89,7 @@ public class TemplateServiceImpl implements TemplateService {
         String tenantId = info.getTenantId();
         dto.setId(id);
         dto.setTenantId(tenantId);
-        dto.setCode(dal.getTemplateCode(tenantId));
+        dto.setCode(dal.newCode(tenantId));
         dto.setDeptId(info.getDeptId());
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());

@@ -4,6 +4,7 @@ import com.insight.base.message.common.entity.InsightMessage;
 import com.insight.base.message.common.entity.PushMessage;
 import com.insight.base.message.common.entity.SubscribeMessage;
 import com.insight.base.message.common.mapper.MessageMapper;
+import com.insight.util.Generator;
 import com.insight.util.pojo.Log;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.OperateType;
@@ -16,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.insight.util.Generator.newCode;
 import static com.insight.util.Generator.uuid;
 
 /**
@@ -43,10 +43,10 @@ public class MessageDal {
      * @param tenantId 租户ID
      * @return 消息模板编码
      */
-    public String getTemplateCode(String tenantId) {
-        String group = "Template:" + (tenantId == null ? "" : tenantId);
+    public String newCode(String tenantId) {
+        String group = "Template" + (tenantId == null ? "" : ":" + tenantId);
         while (true) {
-            String code = newCode("#4", group, false);
+            String code = Generator.newCode("#4", group, false);
             int count = mapper.getTemplateCount(tenantId, code);
             if (count > 0) {
                 continue;
