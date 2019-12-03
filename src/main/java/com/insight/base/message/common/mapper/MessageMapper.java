@@ -261,7 +261,7 @@ public interface MessageMapper {
             "from iml_operate_log where business = #{business} " +
             "<if test = 'tenantId != null'>and tenant_id = #{tenantId} </if>" +
             "<if test = 'tenantId == null'>and tenant_id is null </if>" +
-            "<if test = 'key!=null'>and (type = #{key} or business = #{key} or business_id = #{key} or " +
+            "<if test = 'key!=null'>and (type = #{key} or business_id = #{key} or " +
             "dept_id = #{key} or creator = #{key} or creator_id = #{key}) </if>" +
             "order by created_time</script>")
     List<Log> getLogs(@Param("tenantId") String tenantId, @Param("business") String business, @Param("key") String key);

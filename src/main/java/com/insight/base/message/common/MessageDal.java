@@ -44,8 +44,9 @@ public class MessageDal {
      * @return 消息模板编码
      */
     public String getTemplateCode(String tenantId) {
+        String group = "Template:" + (tenantId == null ? "" : tenantId);
         while (true) {
-            String code = newCode("#4", "Template:" + tenantId, false);
+            String code = newCode("#4", group, false);
             int count = mapper.getTemplateCount(tenantId, code);
             if (count > 0) {
                 continue;
@@ -60,10 +61,10 @@ public class MessageDal {
      *
      * @param message 消息DTO
      */
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void addMessage(InsightMessage message) {
         String id = message.getId();
-        if (id == null || id.isEmpty()){
+        if (id == null || id.isEmpty()) {
             message.setId(uuid());
         }
 
