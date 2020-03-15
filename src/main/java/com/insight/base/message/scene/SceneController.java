@@ -17,7 +17,7 @@ import javax.validation.Valid;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/base/message")
+@RequestMapping("/common/message")
 public class SceneController {
     private final SceneService service;
 
