@@ -16,7 +16,7 @@ import javax.validation.Valid;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/base/message")
+@RequestMapping("/common/message")
 public class TemplateController {
     private final TemplateService service;
 

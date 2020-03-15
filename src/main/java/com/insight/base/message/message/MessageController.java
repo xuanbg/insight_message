@@ -14,7 +14,7 @@ import javax.validation.Valid;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/base/message")
+@RequestMapping("/common/message")
 public class MessageController {
     private final MessageService service;
 
