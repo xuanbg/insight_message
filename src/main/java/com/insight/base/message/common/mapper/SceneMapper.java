@@ -25,7 +25,7 @@ public interface SceneMapper {
     @Select("<script>select id, code, name, remark, creator from ims_scene " +
             "<if test = 'key != null'>where " +
             "code = #{key} or name like concat('%',#{key},'%')</if> " +
-            "order by created_time desc</script>")
+            "order by created_time</script>")
     List<SceneListDto> getScenes(@Param("key") String key);
 
     /**
@@ -87,7 +87,7 @@ public interface SceneMapper {
             "where c.scene_id = #{sceneId} " +
             "<if test = 'key != null'>and (s.code = #{key} or s.name like concat('%',#{key},'%') or c.app_name like concat('%',#{key},'%') " +
             "or c.partner_code = #{key} or c.partner like concat('%',#{key},'%')) </if> " +
-            "order by c.created_time desc</script>")
+            "order by c.created_time</script>")
     List<SceneTemplateListDto> getSceneTemplates(@Param("tenantId") String tenantId, @Param("sceneId") String sceneId, @Param("key") String key);
 
     /**
