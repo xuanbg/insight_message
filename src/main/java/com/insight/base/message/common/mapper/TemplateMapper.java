@@ -27,7 +27,7 @@ public interface TemplateMapper {
             "<if test = 'tenantId != null'>tenant_id = #{tenantId} </if>" +
             "<if test = 'tenantId == null'>tenant_id is null </if>" +
             "<if test = 'key != null'>and (code = #{key} or title like concat('%',#{key},'%'))</if>" +
-            "order by created_time desc</script>")
+            "order by created_time</script>")
     List<TemplateListDto> getTemplates(@Param("tenantId") String tenantId, @Param("key") String key);
 
     /**
