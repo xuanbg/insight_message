@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
         }
 
         String parameter = error.getField();
-        return ReplyHelper.invalidParam("参数{" + parameter + "}" + error.getDefaultMessage());
+        return ReplyHelper.invalidParam("参数「" + parameter + "」" + error.getDefaultMessage());
     }
 
     /**
@@ -128,7 +128,7 @@ public class GlobalExceptionHandler {
         }
 
         String parameter = error.getField();
-        return ReplyHelper.invalidParam("参数{" + parameter + "}" + error.getDefaultMessage());
+        return ReplyHelper.invalidParam("参数「" + parameter + "」" + error.getDefaultMessage());
     }
 
     /**
