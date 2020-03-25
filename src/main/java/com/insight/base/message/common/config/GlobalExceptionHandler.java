@@ -108,7 +108,8 @@ public class GlobalExceptionHandler {
             return ReplyHelper.invalidParam("参数解析失败");
         }
 
-        return ReplyHelper.invalidParam("参数解析失败: " + error.getDefaultMessage());
+        String parameter = error.getField();
+        return ReplyHelper.invalidParam("参数{" + parameter + "}" + error.getDefaultMessage());
     }
 
     /**
@@ -126,7 +127,8 @@ public class GlobalExceptionHandler {
             return ReplyHelper.invalidParam("参数绑定失败");
         }
 
-        return ReplyHelper.invalidParam("参数绑定失败: " + error.getDefaultMessage());
+        String parameter = error.getField();
+        return ReplyHelper.invalidParam("参数{" + parameter + "}" + error.getDefaultMessage());
     }
 
     /**
