@@ -23,7 +23,7 @@ public interface TemplateMapper {
      * @param key      查询关键词
      * @return 消息模板列表
      */
-    @Select("<script>select id, type, code, title, creator, created_time from ims_template where " +
+    @Select("<script>select * from ims_template where " +
             "<if test = 'tenantId != null'>tenant_id = #{tenantId} </if>" +
             "<if test = 'tenantId == null'>tenant_id is null </if>" +
             "<if test = 'key != null'>and (code = #{key} or title like concat('%',#{key},'%'))</if>" +
