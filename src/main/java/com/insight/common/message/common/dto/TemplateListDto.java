@@ -3,7 +3,6 @@ package com.insight.common.message.common.dto;
 import com.insight.util.Json;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author 宣炳刚
@@ -39,19 +38,24 @@ public class TemplateListDto implements Serializable {
     private String title;
 
     /**
+     * 消息内容
+     */
+    private String content;
+
+    /**
      * 消息有效时长(小时)
      */
     private Integer expire;
 
     /**
-     * 创建人
+     * 备注
      */
-    private String creator;
+    private String remark;
 
     /**
-     * 创建时间
+     * 是否失效:0.正常;1.失效
      */
-    private LocalDateTime createdTime;
+    private Boolean isInvalid;
 
     public String getId() {
         return id;
@@ -93,6 +97,14 @@ public class TemplateListDto implements Serializable {
         this.title = title;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public Integer getExpire() {
         return expire;
     }
@@ -101,20 +113,20 @@ public class TemplateListDto implements Serializable {
         this.expire = expire;
     }
 
-    public String getCreator() {
-        return creator;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
-    public LocalDateTime getCreatedTime() {
-        return createdTime;
+    public Boolean getInvalid() {
+        return isInvalid;
     }
 
-    public void setCreatedTime(LocalDateTime createdTime) {
-        this.createdTime = createdTime;
+    public void setInvalid(Boolean invalid) {
+        isInvalid = invalid;
     }
 
     @Override
