@@ -1,5 +1,6 @@
 package com.insight.common.message.common;
 
+import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
@@ -8,7 +9,6 @@ import com.insight.util.Generator;
 import com.insight.util.pojo.Log;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.OperateType;
-import com.insight.util.pojo.Schedule;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -136,7 +136,6 @@ public class MessageDal {
         log.setBusiness(business);
         log.setBusinessId(id);
         log.setContent(content);
-        log.setDeptId(info.getDeptId());
         log.setCreator(info.getUserName());
         log.setCreatorId(info.getUserId());
         log.setCreatedTime(LocalDateTime.now());

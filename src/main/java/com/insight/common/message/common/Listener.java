@@ -1,8 +1,8 @@
 package com.insight.common.message.common;
 
+import com.insight.common.message.common.dto.Schedule;
+import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.entity.InsightMessage;
-import com.insight.util.pojo.Schedule;
-import com.insight.util.pojo.ScheduleCall;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;

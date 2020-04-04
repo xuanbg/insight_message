@@ -1,13 +1,13 @@
 package com.insight.common.message.common;
 
 import com.insight.common.message.common.client.RabbitClient;
+import com.insight.common.message.common.dto.Schedule;
+import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
 import com.insight.util.common.LockHandler;
 import com.insight.util.pojo.LockParam;
-import com.insight.util.pojo.Schedule;
-import com.insight.util.pojo.ScheduleCall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;

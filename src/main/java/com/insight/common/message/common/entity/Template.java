@@ -70,11 +70,6 @@ public class Template implements Serializable {
     private Boolean isInvalid;
 
     /**
-     * 创建人部门ID
-     */
-    private String deptId;
-
-    /**
      * 创建人
      */
     private String creator;
@@ -167,14 +162,6 @@ public class Template implements Serializable {
 
     public void setInvalid(Boolean invalid) {
         isInvalid = invalid;
-    }
-
-    public String getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(String deptId) {
-        this.deptId = deptId;
     }
 
     public String getCreator() {

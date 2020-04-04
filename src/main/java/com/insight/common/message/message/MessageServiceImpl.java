@@ -4,16 +4,16 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.insight.common.message.common.MessageDal;
 import com.insight.common.message.common.client.RabbitClient;
-import com.insight.common.message.common.dto.MessageListDto;
-import com.insight.common.message.common.dto.TemplateDto;
-import com.insight.common.message.common.dto.UserMessageDto;
+import com.insight.common.message.common.dto.*;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.util.Generator;
 import com.insight.util.Redis;
 import com.insight.util.ReplyHelper;
 import com.insight.util.Util;
-import com.insight.util.pojo.*;
+import com.insight.util.pojo.LoginInfo;
+import com.insight.util.pojo.Reply;
+import com.insight.util.pojo.SmsCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -296,7 +296,6 @@ public class MessageServiceImpl implements MessageService {
             message.setId(Generator.uuid());
             message.setTenantId(info.getTenantId());
             message.setAppId(info.getAppId());
-            message.setDeptId(info.getDeptId());
             message.setCreator(info.getUserName());
             message.setCreatorId(info.getUserId());
 

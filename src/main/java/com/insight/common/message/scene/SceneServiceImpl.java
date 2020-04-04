@@ -184,7 +184,6 @@ public class SceneServiceImpl implements SceneService {
     public Reply addSceneTemplate(LoginInfo info, SceneTemplate dto) {
         String id = uuid();
         dto.setId(id);
-        dto.setDeptId(info.getDeptId());
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
         dto.setCreatedTime(LocalDateTime.now());

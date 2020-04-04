@@ -57,11 +57,6 @@ public class SceneTemplate implements Serializable {
     private String sign;
 
     /**
-     * 创建人部门ID
-     */
-    private String deptId;
-
-    /**
      * 创建人
      */
     private String creator;
@@ -138,14 +133,6 @@ public class SceneTemplate implements Serializable {
 
     public void setSign(String sign) {
         this.sign = sign;
-    }
-
-    public String getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(String deptId) {
-        this.deptId = deptId;
     }
 
     public String getCreator() {

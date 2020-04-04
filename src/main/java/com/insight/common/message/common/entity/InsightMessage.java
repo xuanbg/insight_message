@@ -72,11 +72,6 @@ public class InsightMessage implements Serializable {
     private Boolean isBroadcast;
 
     /**
-     * 创建人部门ID
-     */
-    private String deptId;
-
-    /**
      * 创建人
      */
     private String creator;
@@ -177,14 +172,6 @@ public class InsightMessage implements Serializable {
 
     public void setBroadcast(Boolean broadcast) {
         isBroadcast = broadcast;
-    }
-
-    public String getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(String deptId) {
-        this.deptId = deptId;
     }
 
     public String getCreator() {

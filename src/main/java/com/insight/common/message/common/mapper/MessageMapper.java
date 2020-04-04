@@ -1,14 +1,12 @@
 package com.insight.common.message.common.mapper;
 
-import com.insight.common.message.common.dto.MessageListDto;
-import com.insight.common.message.common.dto.ScheduleListDto;
-import com.insight.common.message.common.dto.TemplateDto;
-import com.insight.common.message.common.dto.UserMessageDto;
+import com.insight.common.message.common.dto.*;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
 import com.insight.util.common.JsonTypeHandler;
-import com.insight.util.pojo.*;
+import com.insight.util.pojo.Log;
+import com.insight.util.pojo.LoginInfo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

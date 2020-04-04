@@ -1,6 +1,10 @@
 package com.insight.common.message.message;
 
-import com.insight.util.pojo.*;
+import com.insight.common.message.common.dto.CustomMessage;
+import com.insight.common.message.common.dto.NormalMessage;
+import com.insight.util.pojo.LoginInfo;
+import com.insight.util.pojo.Reply;
+import com.insight.util.pojo.SmsCode;
 
 /**
  * @author 宣炳刚

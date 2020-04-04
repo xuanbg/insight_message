@@ -1,8 +1,8 @@
 package com.insight.common.message.schedule;
 
+import com.insight.common.message.common.dto.Schedule;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.Schedule;
 
 /**
  * @author 宣炳刚

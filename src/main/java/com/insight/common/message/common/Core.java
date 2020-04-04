@@ -1,13 +1,13 @@
 package com.insight.common.message.common;
 
 import com.insight.common.message.common.client.TaskClient;
+import com.insight.common.message.common.dto.Schedule;
+import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.util.Generator;
 import com.insight.util.Redis;
 import com.insight.util.http.HttpUtil;
 import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.Schedule;
-import com.insight.util.pojo.ScheduleCall;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import com.rabbitmq.client.Channel;
