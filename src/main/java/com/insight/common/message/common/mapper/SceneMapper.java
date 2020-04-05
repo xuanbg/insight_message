@@ -113,8 +113,8 @@ public interface SceneMapper {
      *
      * @param config 渠道模板配置DTO
      */
-    @Insert("INSERT ims_scene_template(id, scene_id, app_id, app_name, partner_code, partner, template_id, sign, dept_id, creator, creator_id, created_time) VALUES " +
-            "(#{id}, #{sceneId}, #{appId}, #{appName}, #{partnerCode}, #{partner}, #{templateId}, #{sign}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("INSERT ims_scene_template(id, scene_id, app_id, app_name, partner_code, partner, template_id, sign_id, creator, creator_id, created_time) VALUES " +
+            "(#{id}, #{sceneId}, #{appId}, #{appName}, #{partnerCode}, #{partner}, #{templateId}, #{sign}, #{creator}, #{creatorId}, #{createdTime});")
     void addSceneTemplate(SceneTemplate config);
 
     /**

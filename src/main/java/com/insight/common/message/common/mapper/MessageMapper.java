@@ -69,9 +69,8 @@ public interface MessageMapper {
      * @param userId    用户ID
      * @return 消息详情
      */
-    @Select("select m.id, m.tag, m.title, m.content, case when r.message_id is null then 0 else 1 end as is_read, m.is_broadcast, " +
-            "m.dept_id, m.creator, m.creator_id, m.created_time from imm_message m " +
-            "left join (select message_id, is_read from imm_message_push where message_id = #{messageId} and user_id = #{userId} union all " +
+    @Select("select m.id, m.tag, m.title, m.content, case when r.message_id is null then 0 else 1 end as is_read, m.is_broadcast, m.creator, m.creator_id, m.created_time " +
+            "from imm_message m left join (select message_id, is_read from imm_message_push where message_id = #{messageId} and user_id = #{userId} union all " +
             "select message_id, 1 as is_read from imm_message_subscribe where message_id = #{messageId} and user_id = #{userId}) r on r.message_id = m.id " +
             "where m.id = #{messageId};")
     UserMessageDto getMessage(@Param("messageId") String messageId, @Param("userId") String userId);
@@ -81,8 +80,8 @@ public interface MessageMapper {
      *
      * @param message 消息DTO
      */
-    @Insert("insert imm_message(id, tenant_id, app_id, tag, title, content, expire_date, is_broadcast, dept_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{tenantId}, #{appId}, #{tag}, #{title}, #{content}, #{expireDate}, #{isBroadcast}, #{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert imm_message(id, tenant_id, app_id, tag, title, content, expire_date, is_broadcast_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{appId}, #{tag}, #{title}, #{content}, #{expireDate}, #{isBroadcast}, #{creator}, #{creatorId}, #{createdTime});")
     void addMessage(InsightMessage message);
 
     /**
@@ -242,9 +241,9 @@ public interface MessageMapper {
      *
      * @param log 日志DTO
      */
-    @Insert("insert iml_operate_log(id, tenant_id, type, business, business_id, content, dept_id, creator, creator_id, created_time) values " +
+    @Insert("insert iml_operate_log(id, tenant_id, type, business, business_id, content_id, creator, creator_id, created_time) values " +
             "(#{id}, #{tenantId}, #{type}, #{business}, #{businessId}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
-            "#{deptId}, #{creator}, #{creatorId}, #{createdTime});")
+            "#{creator}, #{creatorId}, #{createdTime});")
     void addLog(Log log);
 
     /**
@@ -255,12 +254,10 @@ public interface MessageMapper {
      * @param key      查询关键词
      * @return 操作日志列表
      */
-    @Select("<script>select id, type, business, business_id, dept_id, creator, creator_id, created_time " +
-            "from iml_operate_log where business = #{business} " +
+    @Select("<script>select id, type, business, business_id_id, creator, creator_id, created_time from iml_operate_log where business = #{business} " +
             "<if test = 'tenantId != null'>and tenant_id = #{tenantId} </if>" +
             "<if test = 'tenantId == null'>and tenant_id is null </if>" +
-            "<if test = 'key!=null'>and (type = #{key} or business_id = #{key} or " +
-            "dept_id = #{key} or creator = #{key} or creator_id = #{key}) </if>" +
+            "<if test = 'key!=null'>and (type = #{key} or business_id = #{key} or creator = #{key} or creator_id = #{key}) </if>" +
             "order by created_time</script>")
     List<Log> getLogs(@Param("tenantId") String tenantId, @Param("business") String business, @Param("key") String key);
 

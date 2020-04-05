@@ -10,7 +10,6 @@ CREATE TABLE `iml_operate_log` (
   `business_id` char(32) DEFAULT NULL COMMENT '业务ID',
   `business` varchar(16) DEFAULT NULL COMMENT '业务名称',
   `content` json DEFAULT NULL COMMENT '日志内容',
-  `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
   `creator` varchar(64) NOT NULL COMMENT '创建人,系统自动为系统',
   `creator_id` char(32) NOT NULL COMMENT '创建人ID,系统自动为32个0',
   `created_time` datetime NOT NULL COMMENT '创建时间',
@@ -19,7 +18,6 @@ CREATE TABLE `iml_operate_log` (
   KEY `idx_operate_log_type` (`type`) USING BTREE,
   KEY `idx_operate_log_business_id` (`business_id`) USING BTREE,
   KEY `idx_operate_log_business` (`business`) USING BTREE,
-  KEY `idx_operate_log_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_operate_log_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_operate_log_created_time` (`created_time`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='操作日志记录表';
@@ -38,7 +36,6 @@ CREATE TABLE `imm_message` (
   `content` varchar(1024) DEFAULT NULL COMMENT '内容',
   `expire_date` date DEFAULT NULL COMMENT '失效日期',
   `is_broadcast` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否广播消息：0、普通消息；1、广播消息',
-  `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
   `creator` varchar(64) NOT NULL COMMENT '创建人',
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
   `created_time` datetime NOT NULL COMMENT '创建时间',
@@ -47,7 +44,6 @@ CREATE TABLE `imm_message` (
   KEY `idx_message_app_id` (`app_id`),
   KEY `idx_message_tag` (`tag`),
   KEY `idx_message_is_broadcast` (`is_broadcast`),
-  KEY `idx_message_dept_id` (`dept_id`),
   KEY `idx_message_creator_id` (`creator_id`),
   KEY `idx_message_created_time` (`created_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='消息表';
@@ -117,14 +113,12 @@ CREATE TABLE `ims_template` (
   `expire` int(10) unsigned DEFAULT NULL COMMENT '消息有效时长(小时)',
   `remark` varchar(256) DEFAULT NULL COMMENT '备注',
   `is_invalid` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否失效：0、正常；1、失效',
-  `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
   `creator` varchar(64) NOT NULL COMMENT '创建人',
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
   `created_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_template_tenant_id` (`tenant_id`) USING BTREE,
   KEY `idx_template_code` (`code`) USING BTREE,
-  KEY `idx_template_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_template_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_template_created_time` (`created_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='消息模板表';
@@ -142,7 +136,6 @@ CREATE TABLE `ims_scene_template` (
   `partner` varchar(64) DEFAULT NULL COMMENT '合作伙伴名称',
   `template_id` char(32) NOT NULL COMMENT '模板ID',
   `sign` varchar(16) DEFAULT NULL COMMENT '消息签名',
-  `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
   `creator` varchar(64) NOT NULL COMMENT '创建人',
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
   `created_time` datetime NOT NULL COMMENT '创建时间',
@@ -151,7 +144,6 @@ CREATE TABLE `ims_scene_template` (
   KEY `idx_scene_template_template_id` (`template_id`) USING BTREE,
   KEY `idx_scene_template_app_id` (`app_id`) USING BTREE,
   KEY `idx_scene_template_partner_code` (`partner_code`) USING BTREE,
-  KEY `idx_scene_template_dept_id` (`dept_id`) USING BTREE,
   KEY `idx_scene_template_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_scene_template_created_time` (`created_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='场景模板配置表';
@@ -199,7 +191,6 @@ CREATE TABLE `imu_user_tag` (
   `account` varchar(32) DEFAULT NULL COMMENT '用户账号',
   `mobile` varchar(16) DEFAULT NULL COMMENT '用户手机号',
   `tag` varchar(16) DEFAULT NULL COMMENT '标签',
-  `dept_id` char(32) DEFAULT NULL COMMENT '创建人部门ID',
   `creator` varchar(64) NOT NULL COMMENT '创建人',
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
   `created_time` datetime NOT NULL COMMENT '创建时间',
@@ -208,7 +199,6 @@ CREATE TABLE `imu_user_tag` (
   KEY `idx_user_tag_account` (`account`),
   KEY `idx_user_tag_mobile` (`mobile`),
   KEY `idx_user_tag_tag` (`tag`),
-  KEY `idx_user_tag_dept_id` (`dept_id`),
   KEY `idx_user_tag_creator_id` (`creator_id`),
   KEY `idx_user_tag_created_time` (`created_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='用户标签表';

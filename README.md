@@ -336,7 +336,6 @@ curl "http://192.168.236.8:6200/base/message/v1.0/messages?keyword=a" \
 |String|content|消息内容|
 |Boolean|read|是否已读|
 |Boolean|broadcast|是否广播消息|
-|String|deptId|创建人部门ID|
 |String|creator|创建人|
 |String|creatorId|创建人ID|
 |Date|createdTime|创建时间|
@@ -363,7 +362,6 @@ curl "http://192.168.236.8:6200/base/message/v1.0/messages/7ab89a1bace84e5aadca4
     "tag": "测试消息",
     "title": "你好",
     "content": "你好",
-    "deptId": null,
     "creator": "系统管理员",
     "creatorId": "00000000000000000000000000000000",
     "createdTime": "2019-10-24 17:48:24",
@@ -857,7 +855,6 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 |Integer|expire|消息有效时长(小时)|
 |String|remark|备注|
 |Boolean|invalid|是否失效|
-|String|deptId|创建人部门ID|
 |String|creator|创建人|
 |Date|createdTime|创建时间|
 
@@ -888,7 +885,6 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
     "content": "[{code}]是您登录Insight系统的验证码,请在{minutes}分钟内使用【{sign}】",
     "expire": null,
     "remark": "Insight系统登录验证码",
-    "deptId": null,
     "creator": "系统",
     "creatorId": "00000000000000000000000000000000",
     "createdTime": "2019-09-29 17:46:39",
@@ -1504,7 +1500,6 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 |Map\<String, Object>|params|推送参数|
 |Date|expireDate|失效日期|
 |Boolean|isBroadcast|是否广播消息|
-|String|deptId|创建人部门ID|
 |String|creator|创建人|
 |String|creatorId|创建人ID|
 |Date|createdTime|创建时间|
