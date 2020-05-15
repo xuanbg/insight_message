@@ -1,7 +1,7 @@
 package com.insight.common.message.common.client;
 
 import com.insight.common.message.common.dto.Schedule;
-import com.insight.util.common.ApplicationContextHolder;
+import com.insight.utils.common.ApplicationContextHolder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 /**

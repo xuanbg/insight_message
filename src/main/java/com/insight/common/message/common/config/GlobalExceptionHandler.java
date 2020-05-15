@@ -1,8 +1,8 @@
 package com.insight.common.message.common.config;
 
-import com.insight.util.Json;
-import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.Reply;
+import com.insight.utils.Json;
+import com.insight.utils.ReplyHelper;
+import com.insight.utils.pojo.Reply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

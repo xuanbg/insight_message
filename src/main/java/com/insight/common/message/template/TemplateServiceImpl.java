@@ -6,19 +6,18 @@ import com.insight.common.message.common.MessageDal;
 import com.insight.common.message.common.dto.TemplateListDto;
 import com.insight.common.message.common.entity.Template;
 import com.insight.common.message.common.mapper.TemplateMapper;
-import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.OperateType;
-import com.insight.util.pojo.Reply;
+import com.insight.utils.ReplyHelper;
+import com.insight.utils.Util;
+import com.insight.utils.pojo.Log;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.OperateType;
+import com.insight.utils.pojo.Reply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static com.insight.util.Generator.uuid;
 
 /**
  * @author 宣炳刚
@@ -85,7 +84,7 @@ public class TemplateServiceImpl implements TemplateService {
      */
     @Override
     public Reply newTemplate(LoginInfo info, Template dto) {
-        String id = uuid();
+        String id = Util.uuid();
         String tenantId = info.getTenantId();
         dto.setId(id);
         dto.setTenantId(tenantId);

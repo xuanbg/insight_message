@@ -5,10 +5,11 @@ import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
-import com.insight.util.Generator;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.OperateType;
+import com.insight.utils.Generator;
+import com.insight.utils.Util;
+import com.insight.utils.pojo.Log;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.OperateType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.insight.util.Generator.uuid;
 
 /**
  * @author 宣炳刚
@@ -65,7 +65,7 @@ public class MessageDal {
     public void addMessage(InsightMessage message) {
         String id = message.getId();
         if (id == null || id.isEmpty()) {
-            message.setId(uuid());
+            message.setId(Util.uuid());
         }
 
         message.setCreatedTime(LocalDateTime.now());
@@ -78,7 +78,7 @@ public class MessageDal {
         List<PushMessage> pushList = new ArrayList<>();
         message.getReceivers().forEach(i -> {
             PushMessage push = new PushMessage();
-            push.setId(uuid());
+            push.setId(Util.uuid());
             push.setMessageId(message.getId());
             push.setUserId(i);
             push.setRead(false);
@@ -98,7 +98,7 @@ public class MessageDal {
     public void readMessage(String messageId, String userId, boolean isBroadcast) {
         if (isBroadcast) {
             SubscribeMessage subscribe = new SubscribeMessage();
-            subscribe.setId(uuid());
+            subscribe.setId(Util.uuid());
             subscribe.setMessageId(messageId);
             subscribe.setUserId(userId);
             subscribe.setCreatedTime(LocalDateTime.now());
@@ -130,7 +130,7 @@ public class MessageDal {
     @Async
     public void writeLog(LoginInfo info, OperateType type, String business, String id, Object content) {
         Log log = new Log();
-        log.setId(uuid());
+        log.setId(Util.uuid());
         log.setTenantId(info.getTenantId());
         log.setType(type);
         log.setBusiness(business);

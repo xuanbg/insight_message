@@ -1,6 +1,6 @@
 package com.insight.common.message.common.entity;
 
-import com.insight.util.Json;
+import com.insight.utils.Json;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

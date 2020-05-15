@@ -7,13 +7,12 @@ import com.insight.common.message.common.client.RabbitClient;
 import com.insight.common.message.common.dto.*;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
-import com.insight.util.Generator;
-import com.insight.util.Redis;
-import com.insight.util.ReplyHelper;
-import com.insight.util.Util;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.SmsCode;
+import com.insight.utils.Redis;
+import com.insight.utils.ReplyHelper;
+import com.insight.utils.Util;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SmsCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,7 +54,7 @@ public class MessageServiceImpl implements MessageService {
     public Reply seedSmsCode(LoginInfo info, SmsCode dto) {
         Integer type = dto.getType();
         String mobile = dto.getMobile();
-        String smsCode = Generator.randomInt(dto.getLength());
+        String smsCode = Util.randomString(dto.getLength());
         Map<String, Object> map = new HashMap<>(4);
         map.put("code", smsCode);
         map.put("minutes", dto.getMinutes());
@@ -293,7 +292,7 @@ public class MessageServiceImpl implements MessageService {
 
         // 本地消息
         if (1 == (type & 1) && info != null) {
-            message.setId(Generator.uuid());
+            message.setId(Util.uuid());
             message.setTenantId(info.getTenantId());
             message.setAppId(info.getAppId());
             message.setCreator(info.getUserName());

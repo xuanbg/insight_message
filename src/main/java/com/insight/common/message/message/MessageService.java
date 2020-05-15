@@ -2,9 +2,9 @@ package com.insight.common.message.message;
 
 import com.insight.common.message.common.dto.CustomMessage;
 import com.insight.common.message.common.dto.NormalMessage;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.Reply;
-import com.insight.util.pojo.SmsCode;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SmsCode;
 
 /**
  * @author 宣炳刚

@@ -8,19 +8,18 @@ import com.insight.common.message.common.dto.SceneTemplateListDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneTemplate;
 import com.insight.common.message.common.mapper.SceneMapper;
-import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.OperateType;
-import com.insight.util.pojo.Reply;
+import com.insight.utils.ReplyHelper;
+import com.insight.utils.Util;
+import com.insight.utils.pojo.Log;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.OperateType;
+import com.insight.utils.pojo.Reply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static com.insight.util.Generator.uuid;
 
 /**
  * @author 宣炳刚
@@ -91,7 +90,7 @@ public class SceneServiceImpl implements SceneService {
             return ReplyHelper.invalidParam("场景编码已存在");
         }
 
-        String id = uuid();
+        String id = Util.uuid();
         dto.setId(id);
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
@@ -182,7 +181,7 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply addSceneTemplate(LoginInfo info, SceneTemplate dto) {
-        String id = uuid();
+        String id = Util.uuid();
         dto.setId(id);
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());

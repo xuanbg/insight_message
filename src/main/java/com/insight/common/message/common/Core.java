@@ -4,10 +4,10 @@ import com.insight.common.message.common.client.TaskClient;
 import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.entity.InsightMessage;
-import com.insight.util.Generator;
-import com.insight.util.Redis;
-import com.insight.util.http.HttpUtil;
-import com.insight.util.pojo.Reply;
+import com.insight.utils.Redis;
+import com.insight.utils.Util;
+import com.insight.utils.http.HttpUtil;
+import com.insight.utils.pojo.Reply;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import com.rabbitmq.client.Channel;
@@ -242,7 +242,7 @@ public class Core {
         LocalDateTime now = LocalDateTime.now();
         String id = schedule.getId();
         if (id == null || id.isEmpty()) {
-            schedule.setId(Generator.uuid());
+            schedule.setId(Util.uuid());
             schedule.setTaskTime(now.plusSeconds(10));
             schedule.setCount(0);
             schedule.setInvalid(false);

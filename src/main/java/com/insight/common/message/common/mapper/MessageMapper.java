@@ -4,9 +4,9 @@ import com.insight.common.message.common.dto.*;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
-import com.insight.util.common.JsonTypeHandler;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.LoginInfo;
+import com.insight.utils.common.JsonTypeHandler;
+import com.insight.utils.pojo.Log;
+import com.insight.utils.pojo.LoginInfo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -134,7 +134,7 @@ public interface MessageMapper {
      *
      * @param message 消息DTO
      */
-    @Update("update imm_message set app_id = #{appId}, tag = #{tag}, type = #{type}, receivers = #{receivers, typeHandler = com.insight.util.common.ArrayTypeHandler}, " +
+    @Update("update imm_message set app_id = #{appId}, tag = #{tag}, type = #{type}, receivers = #{receivers, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
             "content = #{content}, expire_date = #{expireDate}, is_broadcast = #{isBroadcast} where id = #{id};")
     void editMessage(InsightMessage message);
 
@@ -208,7 +208,7 @@ public interface MessageMapper {
      * @param schedule 计划任务DTO
      */
     @Insert("insert imt_schedule (id, type, method, task_time, content, count, is_invalid, created_time) values " +
-            "(#{id}, #{type}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, #{count}, #{isInvalid}, #{createdTime});")
+            "(#{id}, #{type}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.utils.common.JsonTypeHandler}, #{count}, #{isInvalid}, #{createdTime});")
     void addSchedule(Schedule schedule);
 
     /**
@@ -242,7 +242,7 @@ public interface MessageMapper {
      * @param log 日志DTO
      */
     @Insert("insert iml_operate_log(id, tenant_id, type, business, business_id, content_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{tenantId}, #{type}, #{business}, #{businessId}, #{content, typeHandler = com.insight.util.common.JsonTypeHandler}, " +
+            "(#{id}, #{tenantId}, #{type}, #{business}, #{businessId}, #{content, typeHandler = com.insight.utils.common.JsonTypeHandler}, " +
             "#{creator}, #{creatorId}, #{createdTime});")
     void addLog(Log log);
 

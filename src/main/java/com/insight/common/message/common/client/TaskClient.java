@@ -1,6 +1,6 @@
 package com.insight.common.message.common.client;
 
-import com.insight.util.pojo.Reply;
+import com.insight.utils.pojo.Reply;
 import feign.RequestLine;
 
 import java.net.URI;

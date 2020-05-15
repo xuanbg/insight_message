@@ -8,13 +8,13 @@ import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.dto.ScheduleListDto;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
-import com.insight.util.Generator;
-import com.insight.util.Json;
-import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.OperateType;
-import com.insight.util.pojo.Reply;
+import com.insight.utils.Json;
+import com.insight.utils.ReplyHelper;
+import com.insight.utils.Util;
+import com.insight.utils.pojo.Log;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.OperateType;
+import com.insight.utils.pojo.Reply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -111,7 +111,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
         }
 
-        String id = Generator.uuid();
+        String id = Util.uuid();
         dto.setId(id);
         if (dto.getTaskTime() == null) {
             dto.setTaskTime(LocalDateTime.now().plusSeconds(10));

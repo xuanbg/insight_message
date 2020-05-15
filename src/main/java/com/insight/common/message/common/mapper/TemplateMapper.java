@@ -2,7 +2,7 @@ package com.insight.common.message.common.mapper;
 
 import com.insight.common.message.common.dto.TemplateListDto;
 import com.insight.common.message.common.entity.Template;
-import com.insight.util.common.JsonTypeHandler;
+import com.insight.utils.common.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

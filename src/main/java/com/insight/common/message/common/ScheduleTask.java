@@ -5,9 +5,9 @@ import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
-import com.insight.util.Generator;
-import com.insight.util.common.LockHandler;
-import com.insight.util.pojo.LockParam;
+import com.insight.utils.LockHandler;
+import com.insight.utils.LockParam;
+import com.insight.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -41,7 +41,7 @@ public class ScheduleTask {
      */
     @Scheduled(fixedDelay = 10000)
     public void execute() {
-        param.setValue(Generator.uuid());
+        param.setValue(Util.uuid());
         if (handler.tryLock(param)) {
             try {
                 // 执行消息类型的计划任务

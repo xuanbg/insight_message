@@ -1,8 +1,8 @@
 package com.insight.common.message.template;
 
 import com.insight.common.message.common.entity.Template;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.Reply;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.Reply;
 
 /**
  * @author 宣炳刚
