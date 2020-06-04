@@ -17,6 +17,18 @@ import java.util.Map;
 public interface TemplateMapper {
 
     /**
+     * 获取指定租户下指定编码的模板数量
+     *
+     * @param tenantId 租户ID
+     * @param code     模板编码
+     * @return 模板数量
+     */
+    @Select("<script>select count(*) from ims_template where code = #{code} and " +
+            "<if test = 'tenantId != null'>tenant_id = #{tenantId}</if>" +
+            "<if test = 'tenantId == null'>tenant_id is null</if>;</script>")
+    int getTemplateCount(@Param("tenantId") String tenantId, @Param("code") String code);
+
+    /**
      * 获取消息模板列表
      *
      * @param tenantId 租户ID

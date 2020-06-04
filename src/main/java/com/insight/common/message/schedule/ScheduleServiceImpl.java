@@ -2,7 +2,8 @@ package com.insight.common.message.schedule;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.insight.common.message.common.MessageDal;
+import com.insight.common.message.common.client.LogClient;
+import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.dto.ScheduleListDto;
@@ -11,7 +12,6 @@ import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.Util;
-import com.insight.utils.pojo.Log;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.Reply;
@@ -30,8 +30,9 @@ import java.util.List;
  */
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
+    private static final String BUSINESS = "计划任务管理";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final MessageDal dal;
+    private final LogServiceClient client;
     private final MessageMapper mapper;
     private static final List<String> MATCH_LIST = new ArrayList<>();
 
@@ -45,11 +46,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     /**
      * 构造方法
      *
-     * @param dal    MessageDal
+     * @param client LogServiceClient
      * @param mapper MessageMapper
      */
-    public ScheduleServiceImpl(MessageDal dal, MessageMapper mapper) {
-        this.dal = dal;
+    public ScheduleServiceImpl(LogServiceClient client, MessageMapper mapper) {
+        this.client = client;
         this.mapper = mapper;
     }
 
@@ -106,7 +107,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
 
             InsightMessage message = Json.clone(dto.getContent(), InsightMessage.class);
-            if (message == null){
+            if (message == null) {
                 return ReplyHelper.invalidParam();
             }
         }
@@ -140,7 +141,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         mapper.editSchedule(id);
-        dal.writeLog(info, OperateType.UPDATE, "计划任务管理", id, schedule);
+        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, schedule);
 
         return ReplyHelper.success();
     }
@@ -160,7 +161,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         mapper.deleteSchedule(id);
-        dal.writeLog(info, OperateType.DELETE, "计划任务管理", id, schedule);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, schedule);
 
         return ReplyHelper.success();
     }
@@ -181,7 +182,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         mapper.changeScheduleStatus(id, status);
-        dal.writeLog(info, OperateType.UPDATE, "计划任务管理", id, schedule);
+        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, schedule);
 
         return ReplyHelper.success();
     }
@@ -197,11 +198,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      */
     @Override
     public Reply getScheduleLogs(String tenantId, String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<Log> logs = dal.getLogs(tenantId, "计划任务管理", keyword);
-        PageInfo<Log> pageInfo = new PageInfo<>(logs);
-
-        return ReplyHelper.success(logs, pageInfo.getTotal());
+        return client.getLogs(BUSINESS, keyword, page, size);
     }
 
     /**
@@ -212,11 +209,6 @@ public class ScheduleServiceImpl implements ScheduleService {
      */
     @Override
     public Reply getScheduleLog(String id) {
-        Log log = dal.getLog(id);
-        if (log == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
-        }
-
-        return ReplyHelper.success(log);
+        return client.getLog(id);
     }
 }

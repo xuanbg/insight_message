@@ -2,13 +2,14 @@ package com.insight.common.message.template;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.insight.common.message.common.MessageDal;
+import com.insight.common.message.common.client.LogClient;
+import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.common.message.common.dto.TemplateListDto;
 import com.insight.common.message.common.entity.Template;
 import com.insight.common.message.common.mapper.TemplateMapper;
+import com.insight.utils.Generator;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.Util;
-import com.insight.utils.pojo.Log;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.Reply;
@@ -26,18 +27,19 @@ import java.util.List;
  */
 @Service
 public class TemplateServiceImpl implements TemplateService {
+    private static final String BUSINESS = "消息模板管理";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final MessageDal dal;
+    private final LogServiceClient client;
     private final TemplateMapper mapper;
 
     /**
      * 构造方法
      *
-     * @param dal    MessageDal
+     * @param client LogServiceClient
      * @param mapper TemplateMapper
      */
-    public TemplateServiceImpl(MessageDal dal, TemplateMapper mapper) {
-        this.dal = dal;
+    public TemplateServiceImpl(LogServiceClient client, TemplateMapper mapper) {
+        this.client = client;
         this.mapper = mapper;
     }
 
@@ -88,13 +90,13 @@ public class TemplateServiceImpl implements TemplateService {
         String tenantId = info.getTenantId();
         dto.setId(id);
         dto.setTenantId(tenantId);
-        dto.setCode(dal.newCode(tenantId));
+        dto.setCode(newCode(tenantId));
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
         dto.setCreatedTime(LocalDateTime.now());
 
         mapper.addTemplate(dto);
-        dal.writeLog(info, OperateType.INSERT, "消息模板管理", id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
 
         return ReplyHelper.created(id);
     }
@@ -115,7 +117,7 @@ public class TemplateServiceImpl implements TemplateService {
         }
 
         mapper.editTemplate(dto);
-        dal.writeLog(info, OperateType.UPDATE, "消息模板管理", id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
 
         return ReplyHelper.success();
     }
@@ -135,12 +137,12 @@ public class TemplateServiceImpl implements TemplateService {
         }
 
         int count = mapper.getConfigCount(id);
-        if (count > 0){
+        if (count > 0) {
             return ReplyHelper.fail("该模板已配置到消息场景,请先删除相应配置");
         }
 
         mapper.deleteTemplate(id);
-        dal.writeLog(info, OperateType.DELETE, "消息模板管理", id, template);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, template);
 
         return ReplyHelper.success();
     }
@@ -161,7 +163,7 @@ public class TemplateServiceImpl implements TemplateService {
         }
 
         mapper.changeTemplateStatus(id, status);
-        dal.writeLog(info, OperateType.UPDATE, "消息模板管理", id, template);
+        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, template);
 
         return ReplyHelper.success();
     }
@@ -177,11 +179,7 @@ public class TemplateServiceImpl implements TemplateService {
      */
     @Override
     public Reply getTemplateLogs(String tenantId, String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<Log> logs = dal.getLogs(tenantId, "消息模板管理", keyword);
-        PageInfo<Log> pageInfo = new PageInfo<>(logs);
-
-        return ReplyHelper.success(logs, pageInfo.getTotal());
+        return client.getLogs(BUSINESS, keyword, page, size);
     }
 
     /**
@@ -192,11 +190,26 @@ public class TemplateServiceImpl implements TemplateService {
      */
     @Override
     public Reply getTemplateLog(String id) {
-        Log log = dal.getLog(id);
-        if (log == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
-        }
+        return client.getLog(id);
+    }
 
-        return ReplyHelper.success(log);
+
+    /**
+     * 获取消息模板编码
+     *
+     * @param tenantId 租户ID
+     * @return 消息模板编码
+     */
+    private String newCode(String tenantId) {
+        String group = "Template" + (tenantId == null ? "" : ":" + tenantId);
+        while (true) {
+            String code = Generator.newCode("#4", group, false);
+            int count = mapper.getTemplateCount(tenantId, code);
+            if (count > 0) {
+                continue;
+            }
+
+            return code;
+        }
     }
 }

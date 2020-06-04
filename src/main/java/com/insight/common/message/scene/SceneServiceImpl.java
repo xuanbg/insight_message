@@ -2,7 +2,8 @@ package com.insight.common.message.scene;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.insight.common.message.common.MessageDal;
+import com.insight.common.message.common.client.LogClient;
+import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.common.message.common.dto.SceneListDto;
 import com.insight.common.message.common.dto.SceneTemplateListDto;
 import com.insight.common.message.common.entity.Scene;
@@ -10,7 +11,6 @@ import com.insight.common.message.common.entity.SceneTemplate;
 import com.insight.common.message.common.mapper.SceneMapper;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.Util;
-import com.insight.utils.pojo.Log;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.Reply;
@@ -28,27 +28,28 @@ import java.util.List;
  */
 @Service
 public class SceneServiceImpl implements SceneService {
+    private static final String BUSINESS = "消息场景管理";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final MessageDal dal;
+    private final LogServiceClient client;
     private final SceneMapper mapper;
 
     /**
      * 构造方法
      *
-     * @param dal    TemplateMapper
+     * @param client LogServiceClient
      * @param mapper SceneMapper
      */
-    public SceneServiceImpl(MessageDal dal, SceneMapper mapper) {
-        this.dal = dal;
+    public SceneServiceImpl(LogServiceClient client, SceneMapper mapper) {
+        this.client = client;
         this.mapper = mapper;
     }
 
     /**
      * 获取消息场景列表
      *
-     * @param keyword  查询关键词
-     * @param page     分页页码
-     * @param size     每页记录数
+     * @param keyword 查询关键词
+     * @param page    分页页码
+     * @param size    每页记录数
      * @return Reply
      */
     @Override
@@ -97,7 +98,7 @@ public class SceneServiceImpl implements SceneService {
         dto.setCreatedTime(LocalDateTime.now());
 
         mapper.addScene(dto);
-        dal.writeLog(info, OperateType.INSERT, "消息场景管理", id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
 
         return ReplyHelper.created(id);
     }
@@ -123,7 +124,7 @@ public class SceneServiceImpl implements SceneService {
         }
 
         mapper.editScene(dto);
-        dal.writeLog(info, OperateType.UPDATE, "消息场景管理", id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
 
         return ReplyHelper.success();
     }
@@ -143,12 +144,12 @@ public class SceneServiceImpl implements SceneService {
         }
 
         int count = mapper.getConfigCount(id);
-        if (count > 0){
+        if (count > 0) {
             return ReplyHelper.fail("该消息场景下配置有模板,请先删除配置");
         }
 
         mapper.deleteScene(id);
-        dal.writeLog(info, OperateType.DELETE, "消息场景管理", id, scene);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, scene);
 
         return ReplyHelper.success();
     }
@@ -188,7 +189,7 @@ public class SceneServiceImpl implements SceneService {
         dto.setCreatedTime(LocalDateTime.now());
 
         mapper.addSceneTemplate(dto);
-        dal.writeLog(info, OperateType.INSERT, "消息场景管理", id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
 
         return ReplyHelper.created(id);
     }
@@ -208,7 +209,7 @@ public class SceneServiceImpl implements SceneService {
         }
 
         mapper.deleteSceneTemplate(id);
-        dal.writeLog(info, OperateType.DELETE, "消息场景管理", id, config);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, config);
 
         return ReplyHelper.success();
     }
@@ -224,11 +225,7 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply getSceneLogs(String tenantId, String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<Log> logs = dal.getLogs(tenantId, "消息场景管理", keyword);
-        PageInfo<Log> pageInfo = new PageInfo<>(logs);
-
-        return ReplyHelper.success(logs, pageInfo.getTotal());
+        return client.getLogs(BUSINESS, keyword, page, size);
     }
 
     /**
@@ -239,11 +236,6 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply getSceneLog(String id) {
-        Log log = dal.getLog(id);
-        if (log == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
-        }
-
-        return ReplyHelper.success(log);
+        return client.getLog(id);
     }
 }

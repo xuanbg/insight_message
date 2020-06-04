@@ -7,9 +7,6 @@ import com.insight.common.message.common.entity.SubscribeMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Generator;
 import com.insight.utils.Util;
-import com.insight.utils.pojo.Log;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.OperateType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,25 +32,6 @@ public class MessageDal {
      */
     public MessageDal(MessageMapper mapper) {
         this.mapper = mapper;
-    }
-
-    /**
-     * 获取消息模板编码
-     *
-     * @param tenantId 租户ID
-     * @return 消息模板编码
-     */
-    public String newCode(String tenantId) {
-        String group = "Template" + (tenantId == null ? "" : ":" + tenantId);
-        while (true) {
-            String code = Generator.newCode("#4", group, false);
-            int count = mapper.getTemplateCount(tenantId, code);
-            if (count > 0) {
-                continue;
-            }
-
-            return code;
-        }
     }
 
     /**
@@ -116,52 +94,5 @@ public class MessageDal {
      */
     public void addSchedule(Schedule schedule) {
         mapper.addSchedule(schedule);
-    }
-
-    /**
-     * 记录操作日志
-     *
-     * @param info     用户关键信息
-     * @param type     操作类型
-     * @param business 业务名称
-     * @param id       业务ID
-     * @param content  日志内容
-     */
-    @Async
-    public void writeLog(LoginInfo info, OperateType type, String business, String id, Object content) {
-        Log log = new Log();
-        log.setId(Util.uuid());
-        log.setTenantId(info.getTenantId());
-        log.setType(type);
-        log.setBusiness(business);
-        log.setBusinessId(id);
-        log.setContent(content);
-        log.setCreator(info.getUserName());
-        log.setCreatorId(info.getUserId());
-        log.setCreatedTime(LocalDateTime.now());
-
-        mapper.addLog(log);
-    }
-
-    /**
-     * 获取操作日志列表
-     *
-     * @param tenantId 租户ID
-     * @param business 业务类型
-     * @param key      查询关键词
-     * @return 操作日志列表
-     */
-    public List<Log> getLogs(String tenantId, String business, String key) {
-        return mapper.getLogs(tenantId, business, key);
-    }
-
-    /**
-     * 获取操作日志
-     *
-     * @param id 日志ID
-     * @return 操作日志
-     */
-    public Log getLog(String id) {
-        return mapper.getLog(id);
     }
 }
