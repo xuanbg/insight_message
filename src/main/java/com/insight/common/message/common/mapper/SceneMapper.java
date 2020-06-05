@@ -19,7 +19,7 @@ public interface SceneMapper {
     /**
      * 获取消息场景列表
      *
-     * @param key      查询关键词
+     * @param key 查询关键词
      * @return 消息场景列表
      */
     @Select("<script>select id, code, name, remark, creator from ims_scene " +
@@ -40,11 +40,12 @@ public interface SceneMapper {
     /**
      * 获取指定编码的场景数量
      *
+     * @param id   消息场景ID
      * @param code 消息场景编码
      * @return 场景数量
      */
-    @Select("select count(*) from ims_scene where code = #{code};")
-    int getSceneCount(String code);
+    @Select("select count(*) from ims_scene where id != #{id} and code = #{code};")
+    int getSceneCount(@Param("id") String id, @Param("code") String code);
 
     /**
      * 新增消息场景
@@ -113,7 +114,7 @@ public interface SceneMapper {
      *
      * @param config 渠道模板配置DTO
      */
-    @Insert("INSERT ims_scene_template(id, scene_id, app_id, app_name, partner_code, partner, template_id, sign_id, creator, creator_id, created_time) VALUES " +
+    @Insert("INSERT ims_scene_template(id, scene_id, app_id, app_name, partner_code, partner, template_id, sign, creator, creator_id, created_time) VALUES " +
             "(#{id}, #{sceneId}, #{appId}, #{appName}, #{partnerCode}, #{partner}, #{templateId}, #{sign}, #{creator}, #{creatorId}, #{createdTime});")
     void addSceneTemplate(SceneTemplate config);
 

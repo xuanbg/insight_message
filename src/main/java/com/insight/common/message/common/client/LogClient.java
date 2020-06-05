@@ -1,13 +1,11 @@
 package com.insight.common.message.common.client;
 
-import com.insight.utils.Util;
+import com.insight.utils.Json;
 import com.insight.utils.common.ApplicationContextHolder;
 import com.insight.utils.pojo.Log;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-
-import java.time.LocalDateTime;
 
 /**
  * @author 宣炳刚
@@ -28,15 +26,13 @@ public class LogClient {
      */
     public static void writeLog(LoginInfo info, String business, OperateType type, String id, Object content) {
         Log log = new Log();
-        log.setId(Util.uuid());
         log.setTenantId(info.getTenantId());
         log.setType(type);
         log.setBusiness(business);
         log.setBusinessId(id);
-        log.setContent(content);
+        log.setContent(Json.clone(content, Object.class));
         log.setCreator(info.getUserName());
         log.setCreatorId(info.getUserId());
-        log.setCreatedTime(LocalDateTime.now());
 
         TEMPLATE.convertAndSend("amq.topic", "insight.log", log);
     }

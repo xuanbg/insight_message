@@ -57,7 +57,7 @@ public interface TemplateMapper {
      *
      * @param template 消息模板DTO
      */
-    @Insert("insert ims_template(id, tenant_id, code, tag, type, title, content, expire, remark_id, creator, creator_id, created_time) values " +
+    @Insert("insert ims_template(id, tenant_id, code, tag, type, title, content, expire, remark, creator, creator_id, created_time) values " +
             "(#{id}, #{tenantId}, #{code}, #{tag}, #{type}, #{title}, #{content}, #{expire}, #{remark}, #{creator}, #{creatorId}, #{createdTime});")
     void addTemplate(Template template);
 

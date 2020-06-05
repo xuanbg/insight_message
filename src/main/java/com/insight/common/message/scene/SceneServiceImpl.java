@@ -86,12 +86,12 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply newScene(LoginInfo info, Scene dto) {
-        int count = mapper.getSceneCount(dto.getCode());
+        String id = Util.uuid();
+        int count = mapper.getSceneCount(id, dto.getCode());
         if (count > 0) {
             return ReplyHelper.invalidParam("场景编码已存在");
         }
 
-        String id = Util.uuid();
         dto.setId(id);
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
@@ -118,7 +118,7 @@ public class SceneServiceImpl implements SceneService {
             return ReplyHelper.fail("ID不存在,未更新数据");
         }
 
-        int count = mapper.getSceneCount(dto.getCode());
+        int count = mapper.getSceneCount(id, dto.getCode());
         if (count > 0) {
             return ReplyHelper.invalidParam("场景编码已存在");
         }

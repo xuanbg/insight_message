@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
 @ResponseBody
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    private static Error error = new Error();
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Error error = new Error();
 
     /**
      * 处理缺少请求参数的异常
