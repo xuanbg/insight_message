@@ -135,18 +135,14 @@ public class ScheduleController {
     /**
      * 获取日志列表
      *
-     * @param info    用户关键信息
      * @param keyword 查询关键词
      * @param page    分页页码
      * @param size    每页记录数
      * @return Reply
      */
     @GetMapping("/v1.0/schedules/logs")
-    public Reply getScheduleLogs(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
-                         @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        return service.getScheduleLogs(loginInfo.getTenantId(), keyword, page, size);
+    public Reply getScheduleLogs(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        return service.getScheduleLogs(keyword, page, size);
     }
 
     /**

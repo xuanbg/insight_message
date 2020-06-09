@@ -26,6 +26,7 @@ public class LogClient {
      */
     public static void writeLog(LoginInfo info, String business, OperateType type, String id, Object content) {
         Log log = new Log();
+        log.setAppId(info.getAppId());
         log.setTenantId(info.getTenantId());
         log.setType(type);
         log.setBusiness(business);
