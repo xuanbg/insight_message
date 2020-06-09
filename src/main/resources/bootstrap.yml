@@ -13,6 +13,16 @@ spring:
       profile: dev
 ---
 spring:
+  profiles: test
+  application:
+    name: common-message
+  cloud:
+    config:
+      uri: http://192.168.236.8:6101
+      label: master
+      profile: test
+---
+spring:
   profiles: pro
   application:
     name: common-message
