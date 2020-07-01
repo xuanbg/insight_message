@@ -123,7 +123,6 @@ public class MessageServiceImpl implements MessageService {
             return ReplyHelper.success();
         }
 
-
         // 清理已通过验证的验证码对应手机号的全部验证码
         String setKey = "VerifyCodeSet:" + mobile;
         List<String> keys = Redis.getMembers(setKey);
