@@ -123,15 +123,16 @@ public class MessageServiceImpl implements MessageService {
             return ReplyHelper.success();
         }
 
-        // 清理验证码对应手机号缓存
-        String setKey = "VerifyCodeSet:" + mobile;
-        Redis.deleteKey(setKey);
 
         // 清理已通过验证的验证码对应手机号的全部验证码
+        String setKey = "VerifyCodeSet:" + mobile;
         List<String> keys = Redis.getMembers(setKey);
         for (String k : keys) {
             Redis.deleteKey("VerifyCode:" + k);
         }
+
+        // 清理验证码对应手机号缓存
+        Redis.deleteKey(setKey);
 
         return ReplyHelper.success(mobile);
     }
