@@ -39,7 +39,7 @@ public interface MessageMapper {
      * @param key  查询关键词
      * @return 消息列表
      */
-    @Select("<script>select m.id, m.tag, m.title, case when r.message_id is null then 0 else 1 end as is_read, m.creator, m.created_time from imm_message m " +
+    @Select("<script>select m.id, m.tag, m.title, case when r.message_id is null then 0 else r.is_read end as is_read, m.creator, m.created_time from imm_message m " +
             "left join (select message_id, is_read, is_invalid from imm_message_push where user_id = #{info.userId} union all " +
             "select message_id, 1 as is_read, is_invalid from imm_message_subscribe where user_id = #{info.userId}) r on r.message_id = m.id " +
             "where m.app_id = #{info.appId} and m.expire_date > now() and (r.is_invalid = 0 or r.is_invalid is null) " +
