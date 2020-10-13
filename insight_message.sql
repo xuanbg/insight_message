@@ -63,6 +63,12 @@ CREATE TABLE `ims_scene` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
   `code` char(8) NOT NULL COMMENT '场景遍号',
   `name` varchar(32) NOT NULL COMMENT '场景名称',
+  `title` varchar(64) DEFAULT NULL COMMENT '消息标题',
+  `params` json DEFAULT NULL COMMENT '消息参数',
+  `tag` varchar(8) DEFAULT NULL COMMENT '消息标签',
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '默认发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)',
+  `content` varchar(1024) NOT NULL COMMENT '默认消息内容',
+  `sign` varchar(16) DEFAULT NULL COMMENT '默认消息签名',
   `remark` varchar(256) DEFAULT NULL COMMENT '场景描述',
   `creator` varchar(64) NOT NULL COMMENT '创建人',
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
@@ -74,17 +80,20 @@ CREATE TABLE `ims_scene` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='短信发送场景表';
 
 -- ----------------------------
--- Table structure for ims_template
+-- Table structure for ims_scene_config
 -- ----------------------------
-DROP TABLE IF EXISTS `ims_template`;
-CREATE TABLE `ims_template` (
+DROP TABLE IF EXISTS `ims_scene_config`;
+CREATE TABLE `ims_scene_config` (
   `id` char(32) NOT NULL COMMENT 'UUID主键',
   `tenant_id` char(32) DEFAULT NULL COMMENT '租户ID',
-  `code` varchar(8) DEFAULT NULL COMMENT '模板编号',
-  `tag` varchar(8) NOT NULL COMMENT '消息标签',
+  `scene_id` char(32) NOT NULL COMMENT '场景ID',
+  `app_id` char(32) DEFAULT NULL COMMENT '应用ID',
+  `app_name` varchar(64) DEFAULT NULL COMMENT '应用名称',
+  `partner_code` char(4) DEFAULT NULL COMMENT '合作伙伴编码',
+  `partner` varchar(64) DEFAULT NULL COMMENT '合作伙伴名称',
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)',
-  `title` varchar(64) DEFAULT NULL COMMENT '消息标题',
   `content` varchar(1024) NOT NULL COMMENT '消息内容',
+  `sign` varchar(16) DEFAULT NULL COMMENT '消息签名',
   `expire` int(10) unsigned DEFAULT NULL COMMENT '消息有效时长(小时)',
   `remark` varchar(256) DEFAULT NULL COMMENT '备注',
   `is_invalid` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否失效：0、正常；1、失效',
@@ -92,35 +101,12 @@ CREATE TABLE `ims_template` (
   `creator_id` char(32) NOT NULL COMMENT '创建人ID',
   `created_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_template_tenant_id` (`tenant_id`) USING BTREE,
-  KEY `idx_template_code` (`code`) USING BTREE,
-  KEY `idx_template_creator_id` (`creator_id`) USING BTREE,
-  KEY `idx_template_created_time` (`created_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='消息模板表';
-
--- ----------------------------
--- Table structure for ims_scene_template
--- ----------------------------
-DROP TABLE IF EXISTS `ims_scene_template`;
-CREATE TABLE `ims_scene_template` (
-  `id` char(32) NOT NULL COMMENT 'UUID主键',
-  `scene_id` char(32) NOT NULL COMMENT '场景ID',
-  `app_id` char(32) DEFAULT NULL COMMENT '应用ID',
-  `app_name` varchar(64) DEFAULT NULL COMMENT '应用名称',
-  `partner_code` char(4) DEFAULT NULL COMMENT '合作伙伴编码',
-  `partner` varchar(64) DEFAULT NULL COMMENT '合作伙伴名称',
-  `template_id` char(32) NOT NULL COMMENT '模板ID',
-  `sign` varchar(16) DEFAULT NULL COMMENT '消息签名',
-  `creator` varchar(64) NOT NULL COMMENT '创建人',
-  `creator_id` char(32) NOT NULL COMMENT '创建人ID',
-  `created_time` datetime NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_scene_template_scene_id` (`scene_id`) USING BTREE,
-  KEY `idx_scene_template_template_id` (`template_id`) USING BTREE,
-  KEY `idx_scene_template_app_id` (`app_id`) USING BTREE,
-  KEY `idx_scene_template_partner_code` (`partner_code`) USING BTREE,
-  KEY `idx_scene_template_creator_id` (`creator_id`) USING BTREE,
-  KEY `idx_scene_template_created_time` (`created_time`) USING BTREE
+  KEY `idx_scene_config_tenant_id` (`tenant_id`) USING BTREE,
+  KEY `idx_scene_config_scene_id` (`scene_id`) USING BTREE,
+  KEY `idx_scene_config_app_id` (`app_id`) USING BTREE,
+  KEY `idx_scene_config_partner_code` (`partner_code`) USING BTREE,
+  KEY `idx_scene_config_creator_id` (`creator_id`) USING BTREE,
+  KEY `idx_scene_config_created_time` (`created_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='场景模板配置表';
 
 
@@ -197,7 +183,7 @@ INSERT `ims_scene`(`id`, `code`, `name`, `creator`, `creator_id`, `created_time`
 ('27c3a661dc7011e9bc200242ac110004', '0006', '手机解除绑定', '系统', '00000000000000000000000000000000', now());
 
 -- 初始化场景配置数据
-INSERT `ims_scene_template`(`id`, `scene_id`, `template_id`, `sign`, `creator`, `creator_id`, `created_time`) VALUES 
+INSERT `ims_scene_config`(`id`, `scene_id`, `config_id`, `sign`, `creator`, `creator_id`, `created_time`) VALUES 
 (replace(uuid(), '-',''), '27c3a319dc7011e9bc200242ac110004', '387e156ddc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now()),
 (replace(uuid(), '-',''), '27c3a435dc7011e9bc200242ac110004', '387e1604dc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now()),
 (replace(uuid(), '-',''), '27c3a589dc7011e9bc200242ac110004', '387e165adc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now()),
