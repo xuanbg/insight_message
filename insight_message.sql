@@ -164,29 +164,11 @@ CREATE TABLE `imu_user_tag` (
   KEY `idx_user_tag_created_time` (`created_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='用户标签表';
 
--- 初始化模板数据
-INSERT `ims_template`(`id`, `code`, `tag`, `type`, `title`, `content`, `remark`, `creator`, `creator_id`, `created_time`) VALUES 
-('387e156ddc7211e9bc200242ac110004', '0001', '短信验证码', 4, '验证码登录', '[{code}]是您登录Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight系统登录验证码', '系统', '00000000000000000000000000000000', now()),
-('387e1604dc7211e9bc200242ac110004', '0002', '短信验证码', 4, '验证手机号', '[{code}]是您的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight系统验证手机号验证码', '系统', '00000000000000000000000000000000', now()),
-('387e165adc7211e9bc200242ac110004', '0003', '短信验证码', 4, '新用户注册', '[{code}]是您注册Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight系统新用户注册验证码', '系统', '00000000000000000000000000000000', now()),
-('387e16b2dc7211e9bc200242ac110004', '0004', '短信验证码', 4, '设置登录密码', '[{code}]是您重设Insight系统登录密码的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight系统设置登录密码验证码', '系统', '00000000000000000000000000000000', now()),
-('387e1706dc7211e9bc200242ac110004', '0005', '短信验证码', 4, '设置支付密码', '[{code}]是您设置Insight系统支付密码的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight系统设置支付密码验证码', '系统', '00000000000000000000000000000000', now()),
-('387e1759dc7211e9bc200242ac110004', '0006', '短信验证码', 4, '手机解除绑定', '[{code}]是您解除Insight系统绑定手机号的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight系统手机解除绑定验证码', '系统', '00000000000000000000000000000000', now());
-
 -- 初始化场景数据
-INSERT `ims_scene`(`id`, `code`, `name`, `creator`, `creator_id`, `created_time`) VALUES 
-('27c3a319dc7011e9bc200242ac110004', '0001', '验证码登录', '系统', '00000000000000000000000000000000', now()),
-('27c3a435dc7011e9bc200242ac110004', '0002', '验证手机号', '系统', '00000000000000000000000000000000', now()),
-('27c3a589dc7011e9bc200242ac110004', '0003', '新用户注册', '系统', '00000000000000000000000000000000', now()),
-('27c3a5d2dc7011e9bc200242ac110004', '0004', '设置登录密码', '系统', '00000000000000000000000000000000', now()),
-('27c3a61adc7011e9bc200242ac110004', '0005', '设置支付密码', '系统', '00000000000000000000000000000000', now()),
-('27c3a661dc7011e9bc200242ac110004', '0006', '手机解除绑定', '系统', '00000000000000000000000000000000', now());
-
--- 初始化场景配置数据
-INSERT `ims_scene_config`(`id`, `scene_id`, `config_id`, `sign`, `creator`, `creator_id`, `created_time`) VALUES 
-(replace(uuid(), '-',''), '27c3a319dc7011e9bc200242ac110004', '387e156ddc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a435dc7011e9bc200242ac110004', '387e1604dc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a589dc7011e9bc200242ac110004', '387e165adc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a5d2dc7011e9bc200242ac110004', '387e16b2dc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a61adc7011e9bc200242ac110004', '387e1706dc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now()),
-(replace(uuid(), '-',''), '27c3a661dc7011e9bc200242ac110004', '387e1759dc7211e9bc200242ac110004', 'Insight', '系统', '00000000000000000000000000000000', now());
+INSERT `ims_scene`(`id`, `code`, `name`, `title`, `params`, `tag`, `type`, `content`, `sign`, `remark`, `creator`, `creator_id`, `created_time`) VALUES 
+('27c3a319dc7011e9bc200242ac110004', '0001', '验证码登录', '验证码登录', json_array(json_object("key", "code", "required", true), json_object("key", "minutes", "required", true), json_object("key", "sign", "required", true)), '短信验证码', 4, '[{code}]是您登录Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight', 'Insight系统登录验证码', '系统', '00000000000000000000000000000000', now()),
+('27c3a435dc7011e9bc200242ac110004', '0002', '验证手机号', '验证手机号', json_array(json_object("key", "code", "required", true), json_object("key", "minutes", "required", true), json_object("key", "sign", "required", true)), '短信验证码', 4, '[{code}]是您的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight', 'Insight系统验证手机号验证码', '系统', '00000000000000000000000000000000', now()),
+('27c3a589dc7011e9bc200242ac110004', '0003', '新用户注册', '新用户注册', json_array(json_object("key", "code", "required", true), json_object("key", "minutes", "required", true), json_object("key", "sign", "required", true)), '短信验证码', 4, '[{code}]是您注册Insight系统的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight', 'Insight系统新用户注册验证码', '系统', '00000000000000000000000000000000', now()),
+('27c3a5d2dc7011e9bc200242ac110004', '0004', '设置登录密码', '设置登录密码', json_array(json_object("key", "code", "required", true), json_object("key", "minutes", "required", true), json_object("key", "sign", "required", true)), '短信验证码', 4, '[{code}]是您重设Insight系统登录密码的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight', 'Insight系统设置登录密码验证码', '系统', '00000000000000000000000000000000', now()),
+('27c3a61adc7011e9bc200242ac110004', '0005', '设置支付密码', '设置支付密码', json_array(json_object("key", "code", "required", true), json_object("key", "minutes", "required", true), json_object("key", "sign", "required", true)), '短信验证码', 4, '[{code}]是您设置Insight系统支付密码的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight', 'Insight系统设置支付密码验证码', '系统', '00000000000000000000000000000000', now()),
+('27c3a661dc7011e9bc200242ac110004', '0006', '手机解除绑定', '手机解除绑定', json_array(json_object("key", "code", "required", true), json_object("key", "minutes", "required", true), json_object("key", "sign", "required", true)), '短信验证码', 4, '[{code}]是您解除Insight系统绑定手机号的验证码,请在{minutes}分钟内使用【{sign}】', 'Insight', 'Insight系统手机解除绑定验证码', '系统', '00000000000000000000000000000000', now());
