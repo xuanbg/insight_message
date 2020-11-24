@@ -25,11 +25,10 @@ public interface MessageMapper {
      * @param dto  标准信息DTO
      * @return 消息模板
      */
-    @Select("select t.tag, t.type, t.title, t.content, t.expire, c.sign from ims_scene_template c " +
-            "join ims_template t on t.id = c.template_id and (t.tenant_id is null or t.tenant_id = #{info.tenantId}) " +
-            "join ims_scene s on s.id = c.scene_id and s.code = #{dto.sceneCode} " +
-            "where (c.app_id is null or c.app_id = #{info.appId}) and (c.partner_code is null or c.partner_code = #{dto.partnerCode}) " +
-            "order by t.tenant_id desc, c.app_id desc, c.partner_code desc limit 1;")
+    @Select("select ifnull(c.type, s.type) as type, s.title, s.tag, ifnull(c.content, s.content) as content, ifnull(c.sign, s.sign) as sign, c.expire " +
+            "from ims_scene s join ims_scene_config c on c.scene_id = s.id and c.tenant_id = #{info.tenantId} " +
+            "and (c.app_id is null or c.app_id = #{info.appId}) and (c.partner_code is null or c.partner_code = #{dto.partnerCode}) " +
+            "where s.code = #{dto.sceneCode} order by c.app_id desc, c.partner_code desc limit 1;")
     TemplateDto getTemplate(@Param("info") LoginInfo info, @Param("dto") NormalMessage dto);
 
     /**

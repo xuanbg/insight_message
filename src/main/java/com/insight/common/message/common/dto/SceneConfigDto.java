@@ -6,26 +6,31 @@ import java.io.Serializable;
 
 /**
  * @author 宣炳刚
- * @date 2020/11/24
- * @remark
+ * @date 2019-08-28
+ * @remark 渠道消息模板
  */
-public class TemplateDto implements Serializable {
+public class SceneConfigDto implements Serializable {
     private static final long serialVersionUID = -1L;
+
+    /**
+     * UUID主键
+     */
+    private String id;
+
+    /**
+     * 应用名称
+     */
+    private String appName;
+
+    /**
+     * 合作伙伴名称
+     */
+    private String partner;
 
     /**
      * 发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
      */
     private Integer type;
-
-    /**
-     * 消息标题
-     */
-    private String title;
-
-    /**
-     * 消息标签
-     */
-    private String tag;
 
     /**
      * 消息内容
@@ -42,28 +47,36 @@ public class TemplateDto implements Serializable {
      */
     private Integer expire;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getPartner() {
+        return partner;
+    }
+
+    public void setPartner(String partner) {
+        this.partner = partner;
+    }
+
     public Integer getType() {
         return type;
     }
 
     public void setType(Integer type) {
         this.type = type;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
     }
 
     public String getContent() {

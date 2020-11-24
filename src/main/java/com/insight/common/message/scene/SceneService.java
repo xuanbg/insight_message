@@ -1,9 +1,10 @@
 package com.insight.common.message.scene;
 
 import com.insight.common.message.common.entity.Scene;
-import com.insight.common.message.common.entity.SceneTemplate;
+import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 
 /**
  * @author 宣炳刚
@@ -15,12 +16,10 @@ public interface SceneService {
     /**
      * 获取场景列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询DTO
      * @return Reply
      */
-    Reply getScenes(String keyword, int page, int size);
+    Reply getScenes(SearchDto search);
 
     /**
      * 获取场景
@@ -60,14 +59,12 @@ public interface SceneService {
     /**
      * 获取场景模板配置列表
      *
-     * @param tenantId 租户ID
-     * @param sceneId  场景ID
-     * @param keyword  查询关键词
-     * @param page     分页页码
-     * @param size     每页记录数
+     * @param info    用户关键信息
+     * @param search  查询DTO
+     * @param sceneId 场景ID
      * @return Reply
      */
-    Reply getSceneTemplates(String tenantId, String sceneId, String keyword, int page, int size);
+    Reply getSceneTemplates(LoginInfo info, SearchDto search, String sceneId);
 
     /**
      * 添加渠道模板
@@ -76,7 +73,7 @@ public interface SceneService {
      * @param dto  渠道模板DTO
      * @return Reply
      */
-    Reply addSceneTemplate(LoginInfo info, SceneTemplate dto);
+    Reply addSceneTemplate(LoginInfo info, SceneConfig dto);
 
     /**
      * 移除渠道模板

@@ -3,8 +3,10 @@ package com.insight.common.message.common.entity;
 import com.insight.utils.Json;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @author 宣炳刚
@@ -30,6 +32,39 @@ public class Scene implements Serializable {
      */
     @NotEmpty(message = "消息场景名称不能为空")
     private String name;
+
+    /**
+     * 默认消息标题
+     */
+    @NotEmpty(message = "消息标题不能为空")
+    private String title;
+
+    /**
+     * 默认消息参数
+     */
+    private Map<String, Object> params;
+
+    /**
+     * 默认消息标签
+     */
+    private String tag;
+
+    /**
+     * 默认发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
+     */
+    @NotNull(message = "发送类型不能为空")
+    private Integer type;
+
+    /**
+     * 默认消息内容
+     */
+    @NotEmpty(message = "消息内容不能为空")
+    private String content;
+
+    /**
+     * 默认签名
+     */
+    private String sign;
 
     /**
      * 备注
@@ -73,6 +108,54 @@ public class Scene implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 
     public String getRemark() {

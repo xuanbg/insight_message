@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @date 2019-08-28
  * @remark 消息场景
  */
-public class SceneListDto implements Serializable {
+public class SceneDto implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
@@ -28,14 +28,24 @@ public class SceneListDto implements Serializable {
     private String name;
 
     /**
+     * 默认消息标题
+     */
+    private String title;
+
+    /**
+     * 默认发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
+     */
+    private Integer type;
+
+    /**
+     * 默认消息内容
+     */
+    private String content;
+
+    /**
      * 备注
      */
     private String remark;
-
-    /**
-     * 创建人
-     */
-    private String creator;
 
     public String getId() {
         return id;
@@ -61,20 +71,36 @@ public class SceneListDto implements Serializable {
         this.name = name;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public String getRemark() {
         return remark;
     }
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
     }
 
     @Override

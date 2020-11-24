@@ -4,16 +4,17 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.insight.common.message.common.client.LogClient;
 import com.insight.common.message.common.client.LogServiceClient;
-import com.insight.common.message.common.dto.SceneListDto;
-import com.insight.common.message.common.dto.SceneTemplateListDto;
+import com.insight.common.message.common.dto.SceneDto;
+import com.insight.common.message.common.dto.SceneConfigDto;
 import com.insight.common.message.common.entity.Scene;
-import com.insight.common.message.common.entity.SceneTemplate;
+import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.common.message.common.mapper.SceneMapper;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.Util;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -47,16 +48,14 @@ public class SceneServiceImpl implements SceneService {
     /**
      * 获取消息场景列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询DTO
      * @return Reply
      */
     @Override
-    public Reply getScenes(String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<SceneListDto> scenes = mapper.getScenes(keyword);
-        PageInfo<SceneListDto> pageInfo = new PageInfo<>(scenes);
+    public Reply getScenes(SearchDto search) {
+        PageHelper.startPage(search.getPage(), search.getSize());
+        List<SceneDto> scenes = mapper.getScenes(search.getKeyword());
+        PageInfo<SceneDto> pageInfo = new PageInfo<>(scenes);
 
         return ReplyHelper.success(scenes, pageInfo.getTotal());
     }
@@ -157,18 +156,16 @@ public class SceneServiceImpl implements SceneService {
     /**
      * 获取场景模板配置列表
      *
-     * @param tenantId 租户ID
-     * @param sceneId  场景ID
-     * @param keyword  查询关键词
-     * @param page     分页页码
-     * @param size     每页记录数
+     * @param info    用户关键信息
+     * @param search  查询DTO
+     * @param sceneId 场景ID
      * @return Reply
      */
     @Override
-    public Reply getSceneTemplates(String tenantId, String sceneId, String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<SceneTemplateListDto> templates = mapper.getSceneTemplates(tenantId, sceneId, keyword);
-        PageInfo<SceneTemplateListDto> pageInfo = new PageInfo<>(templates);
+    public Reply getSceneTemplates(LoginInfo info, SearchDto search, String sceneId) {
+        PageHelper.startPage(search.getPage(), search.getSize());
+        List<SceneConfigDto> templates = mapper.getSceneConfigs(info.getTenantId(), sceneId, search.getKeyword());
+        PageInfo<SceneConfigDto> pageInfo = new PageInfo<>(templates);
 
         return ReplyHelper.success(templates, pageInfo.getTotal());
     }
@@ -181,14 +178,14 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply addSceneTemplate(LoginInfo info, SceneTemplate dto) {
+    public Reply addSceneTemplate(LoginInfo info, SceneConfig dto) {
         String id = Util.uuid();
         dto.setId(id);
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
         dto.setCreatedTime(LocalDateTime.now());
 
-        mapper.addSceneTemplate(dto);
+        mapper.addSceneConfig(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
 
         return ReplyHelper.created(id);
@@ -203,12 +200,12 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply removeSceneTemplate(LoginInfo info, String id) {
-        SceneTemplate config = mapper.getSceneTemplate(id);
+        SceneConfig config = mapper.getSceneConfig(id);
         if (config == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
         }
 
-        mapper.deleteSceneTemplate(id);
+        mapper.deleteSceneConfig(id);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, config);
 
         return ReplyHelper.success();

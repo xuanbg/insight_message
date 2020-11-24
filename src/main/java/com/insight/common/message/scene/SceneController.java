@@ -1,11 +1,12 @@
 package com.insight.common.message.scene;
 
 import com.insight.common.message.common.entity.Scene;
-import com.insight.common.message.common.entity.SceneTemplate;
+import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,14 +34,12 @@ public class SceneController {
     /**
      * 获取场景列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询DTO
      * @return Reply
      */
     @GetMapping("/v1.0/scenes")
-    public Reply getScenes(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getScenes(keyword, page, size);
+    public Reply getScenes(SearchDto search) {
+        return service.getScenes(search);
     }
 
     /**
@@ -108,18 +107,16 @@ public class SceneController {
     /**
      * 获取场景模板配置列表
      *
-     * @param id      场景ID
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param info   用户关键信息
+     * @param search 查询DTO
+     * @param id     场景ID
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/{id}/configs")
-    public Reply getSceneTemplates(@RequestHeader("loginInfo") String info, @PathVariable("id") String id, @RequestParam(required = false) String keyword,
-                                   @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+    public Reply getSceneTemplates(@RequestHeader("loginInfo") String info, SearchDto search, @PathVariable("id") String id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.getSceneTemplates(loginInfo.getTenantId(), id, keyword, page, size);
+        return service.getSceneTemplates(loginInfo, search, id);
     }
 
     /**
@@ -130,7 +127,7 @@ public class SceneController {
      * @return Reply
      */
     @PostMapping("/v1.0/scenes/configs")
-    public Reply addSceneTemplate(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneTemplate dto) {
+    public Reply addSceneTemplate(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
         if (dto == null) {
             return ReplyHelper.invalidParam();
         }
