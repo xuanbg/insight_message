@@ -162,12 +162,12 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply getSceneTemplates(LoginInfo info, SearchDto search, String sceneId) {
+    public Reply getSceneConfigs(LoginInfo info, SearchDto search, String sceneId) {
         PageHelper.startPage(search.getPage(), search.getSize());
-        List<SceneConfigDto> templates = mapper.getSceneConfigs(info.getTenantId(), sceneId, search.getKeyword());
-        PageInfo<SceneConfigDto> pageInfo = new PageInfo<>(templates);
+        List<SceneConfigDto> configs = mapper.getSceneConfigs(info.getTenantId(), sceneId, search.getKeyword());
+        PageInfo<SceneConfigDto> pageInfo = new PageInfo<>(configs);
 
-        return ReplyHelper.success(templates, pageInfo.getTotal());
+        return ReplyHelper.success(configs, pageInfo.getTotal());
     }
 
     /**
@@ -178,7 +178,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply addSceneTemplate(LoginInfo info, SceneConfig dto) {
+    public Reply addSceneConfigs(LoginInfo info, SceneConfig dto) {
         String id = Util.uuid();
         dto.setId(id);
         dto.setCreator(info.getUserName());
@@ -199,7 +199,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply removeSceneTemplate(LoginInfo info, String id) {
+    public Reply removeSceneConfig(LoginInfo info, String id) {
         SceneConfig config = mapper.getSceneConfig(id);
         if (config == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");

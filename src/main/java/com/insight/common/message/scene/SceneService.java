@@ -64,7 +64,7 @@ public interface SceneService {
      * @param sceneId 场景ID
      * @return Reply
      */
-    Reply getSceneTemplates(LoginInfo info, SearchDto search, String sceneId);
+    Reply getSceneConfigs(LoginInfo info, SearchDto search, String sceneId);
 
     /**
      * 添加渠道模板
@@ -73,7 +73,7 @@ public interface SceneService {
      * @param dto  渠道模板DTO
      * @return Reply
      */
-    Reply addSceneTemplate(LoginInfo info, SceneConfig dto);
+    Reply addSceneConfigs(LoginInfo info, SceneConfig dto);
 
     /**
      * 移除渠道模板
@@ -82,7 +82,7 @@ public interface SceneService {
      * @param id   渠道模板ID
      * @return Reply
      */
-    Reply removeSceneTemplate(LoginInfo info, String id);
+    Reply removeSceneConfig(LoginInfo info, String id);
 
     /**
      * 获取日志列表

@@ -113,10 +113,10 @@ public class SceneController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/{id}/configs")
-    public Reply getSceneTemplates(@RequestHeader("loginInfo") String info, SearchDto search, @PathVariable("id") String id) {
+    public Reply getSceneConfigs(@RequestHeader("loginInfo") String info, SearchDto search, @PathVariable("id") String id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.getSceneTemplates(loginInfo, search, id);
+        return service.getSceneConfigs(loginInfo, search, id);
     }
 
     /**
@@ -127,13 +127,13 @@ public class SceneController {
      * @return Reply
      */
     @PostMapping("/v1.0/scenes/configs")
-    public Reply addSceneTemplate(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
+    public Reply addSceneConfigs(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
         if (dto == null) {
             return ReplyHelper.invalidParam();
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.addSceneTemplate(loginInfo, dto);
+        return service.addSceneConfigs(loginInfo, dto);
     }
 
     /**
@@ -144,13 +144,13 @@ public class SceneController {
      * @return Reply
      */
     @DeleteMapping("/v1.0/scenes/configs")
-    public Reply removeSceneTemplate(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+    public Reply removeSceneConfig(@RequestHeader("loginInfo") String info, @RequestBody String id) {
         if (id == null || id.isEmpty()) {
             return ReplyHelper.invalidParam();
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.removeSceneTemplate(loginInfo, id);
+        return service.removeSceneConfig(loginInfo, id);
     }
 
     /**

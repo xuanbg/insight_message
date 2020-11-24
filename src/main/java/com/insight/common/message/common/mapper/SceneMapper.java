@@ -1,9 +1,10 @@
 package com.insight.common.message.common.mapper;
 
-import com.insight.common.message.common.dto.SceneDto;
 import com.insight.common.message.common.dto.SceneConfigDto;
+import com.insight.common.message.common.dto.SceneDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
+import com.insight.utils.common.ArrayTypeHandler;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public interface SceneMapper {
      * @param id 消息场景ID
      * @return 消息场景DTO
      */
+    @Results({@Result(property = "params", column = "params", javaType = String.class, typeHandler = ArrayTypeHandler.class)})
     @Select("select * from ims_scene where id = #{id};")
     Scene getScene(String id);
 
@@ -52,7 +54,7 @@ public interface SceneMapper {
      * @param scene 消息场景DTO
      */
     @Insert("insert ims_scene(id, `code`, `name`, title, params, tag, type, content, sign, remark, creator, creator_id, created_time) values " +
-            "(#{id}, #{code}, #{name}, #{title}, #{params, typeHandler = com.insight.utils.common.JsonTypeHandler}, " +
+            "(#{id}, #{code}, #{name}, #{title}, #{params, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
             "#{tag}, #{type}, #{content}, #{sign}, #{remark}, #{creator}, #{creatorId}, #{createdTime});")
     void addScene(Scene scene);
 
@@ -61,7 +63,7 @@ public interface SceneMapper {
      *
      * @param scene 消息场景DTO
      */
-    @Update("update ims_scene set `code` = #{code}, `name` = #{name}, title = #{title}, params = #{params, typeHandler = com.insight.utils.common.JsonTypeHandler}, " +
+    @Update("update ims_scene set `code` = #{code}, `name` = #{name}, title = #{title}, params = #{params, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
             "tag = #{tag}, type = #{type}, content = #{content}, sign = #{sign}, remark = #{remark} where id = #{id};")
     void editScene(Scene scene);
 
@@ -95,7 +97,7 @@ public interface SceneMapper {
      * @param id 消息场景ID
      * @return 配置数量
      */
-    @Select("select count(*) from ims_scene_template where scene_id = #{id};")
+    @Select("select count(*) from ims_scene_config where scene_id = #{id};")
     int getConfigCount(String id);
 
     /**
@@ -104,7 +106,7 @@ public interface SceneMapper {
      * @param id 配置ID
      * @return 配置详情
      */
-    @Select("select * from ims_scene_template where id = #{id};")
+    @Select("select * from ims_scene_config where id = #{id};")
     SceneConfig getSceneConfig(String id);
 
     /**
@@ -121,6 +123,6 @@ public interface SceneMapper {
      *
      * @param id 消息场景ID
      */
-    @Delete("delete from ims_scene_template where id = #{id};")
+    @Delete("delete from ims_scene_config where id = #{id};")
     void deleteSceneConfig(String id);
 }

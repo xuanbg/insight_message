@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -42,7 +42,7 @@ public class Scene implements Serializable {
     /**
      * 默认消息参数
      */
-    private Map<String, Object> params;
+    private List<String> params;
 
     /**
      * 默认消息标签
@@ -118,11 +118,11 @@ public class Scene implements Serializable {
         this.title = title;
     }
 
-    public Map<String, Object> getParams() {
+    public List<String> getParams() {
         return params;
     }
 
-    public void setParams(Map<String, Object> params) {
+    public void setParams(List<String> params) {
         this.params = params;
     }
 
