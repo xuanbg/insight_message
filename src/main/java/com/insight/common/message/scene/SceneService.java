@@ -57,7 +57,7 @@ public interface SceneService {
     Reply deleteScene(LoginInfo info, String id);
 
     /**
-     * 获取场景模板配置列表
+     * 获取场景配置列表
      *
      * @param info    用户关键信息
      * @param search  查询DTO
@@ -67,22 +67,31 @@ public interface SceneService {
     Reply getSceneConfigs(LoginInfo info, SearchDto search, String sceneId);
 
     /**
-     * 添加渠道模板
+     * 新增场景配置
      *
      * @param info 用户关键信息
-     * @param dto  渠道模板DTO
+     * @param dto  场景配置DTO
      * @return Reply
      */
-    Reply addSceneConfigs(LoginInfo info, SceneConfig dto);
+    Reply newSceneConfigs(LoginInfo info, SceneConfig dto);
 
     /**
-     * 移除渠道模板
+     * 编辑场景配置
      *
      * @param info 用户关键信息
-     * @param id   渠道模板ID
+     * @param dto  场景配置DTO
      * @return Reply
      */
-    Reply removeSceneConfig(LoginInfo info, String id);
+    Reply editSceneConfigs(LoginInfo info, SceneConfig dto);
+
+    /**
+     * 删除场景配置
+     *
+     * @param info 用户关键信息
+     * @param id   场景配置ID
+     * @return Reply
+     */
+    Reply deleteSceneConfig(LoginInfo info, String id);
 
     /**
      * 获取日志列表

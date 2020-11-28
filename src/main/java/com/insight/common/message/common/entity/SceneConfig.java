@@ -32,6 +32,11 @@ public class SceneConfig implements Serializable {
     private String sceneId;
 
     /**
+     * 租户名称
+     */
+    private String tenantName;
+
+    /**
      * 应用ID
      */
     private String appId;
@@ -40,16 +45,6 @@ public class SceneConfig implements Serializable {
      * 应用名称
      */
     private String appName;
-
-    /**
-     * 合作伙伴编码
-     */
-    private String partnerCode;
-
-    /**
-     * 合作伙伴名称
-     */
-    private String partner;
 
     /**
      * 发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
@@ -112,6 +107,14 @@ public class SceneConfig implements Serializable {
         this.sceneId = sceneId;
     }
 
+    public String getTenantName() {
+        return tenantName;
+    }
+
+    public void setTenantName(String tenantName) {
+        this.tenantName = tenantName;
+    }
+
     public String getAppId() {
         return appId;
     }
@@ -126,22 +129,6 @@ public class SceneConfig implements Serializable {
 
     public void setAppName(String appName) {
         this.appName = appName;
-    }
-
-    public String getPartnerCode() {
-        return partnerCode;
-    }
-
-    public void setPartnerCode(String partnerCode) {
-        this.partnerCode = partnerCode;
-    }
-
-    public String getPartner() {
-        return partner;
-    }
-
-    public void setPartner(String partner) {
-        this.partner = partner;
     }
 
     public Integer getType() {

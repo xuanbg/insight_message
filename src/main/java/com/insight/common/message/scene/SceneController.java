@@ -105,7 +105,7 @@ public class SceneController {
     }
 
     /**
-     * 获取场景模板配置列表
+     * 获取场景配置列表
      *
      * @param info   用户关键信息
      * @param search 查询DTO
@@ -120,37 +120,54 @@ public class SceneController {
     }
 
     /**
-     * 添加场景配置
+     * 新增场景配置
      *
      * @param info 用户关键信息
-     * @param dto  渠道模板DTO
+     * @param dto  场景配置DTO
      * @return Reply
      */
     @PostMapping("/v1.0/scenes/configs")
-    public Reply addSceneConfigs(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
+    public Reply newSceneConfigs(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
         if (dto == null) {
             return ReplyHelper.invalidParam();
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.addSceneConfigs(loginInfo, dto);
+        return service.newSceneConfigs(loginInfo, dto);
     }
 
     /**
-     * 移除场景配置
+     * 编辑场景配置
      *
      * @param info 用户关键信息
-     * @param id   渠道模板ID
+     * @param dto  场景配置DTO
+     * @return Reply
+     */
+    @PutMapping("/v1.0/scenes/configs")
+    public Reply editSceneConfigs(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
+        if (dto == null) {
+            return ReplyHelper.invalidParam();
+        }
+
+        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        return service.editSceneConfigs(loginInfo, dto);
+    }
+
+    /**
+     * 删除场景配置
+     *
+     * @param info 用户关键信息
+     * @param id   场景配置ID
      * @return Reply
      */
     @DeleteMapping("/v1.0/scenes/configs")
-    public Reply removeSceneConfig(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+    public Reply deleteSceneConfig(@RequestHeader("loginInfo") String info, @RequestBody String id) {
         if (id == null || id.isEmpty()) {
             return ReplyHelper.invalidParam();
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.removeSceneConfig(loginInfo, id);
+        return service.deleteSceneConfig(loginInfo, id);
     }
 
     /**

@@ -154,7 +154,7 @@ public class SceneServiceImpl implements SceneService {
     }
 
     /**
-     * 获取场景模板配置列表
+     * 获取场景配置列表
      *
      * @param info    用户关键信息
      * @param search  查询DTO
@@ -171,14 +171,19 @@ public class SceneServiceImpl implements SceneService {
     }
 
     /**
-     * 添加渠道模板
+     * 新增场景配置
      *
      * @param info 用户关键信息
-     * @param dto  渠道模板DTO
+     * @param dto  场景配置DTO
      * @return Reply
      */
     @Override
-    public Reply addSceneConfigs(LoginInfo info, SceneConfig dto) {
+    public Reply newSceneConfigs(LoginInfo info, SceneConfig dto) {
+        String tenantId = info.getTenantId();
+        if (Util.isNotEmpty(tenantId)) {
+            dto.setTenantId(tenantId);
+        }
+
         String id = Util.uuid();
         dto.setId(id);
         dto.setCreator(info.getUserName());
@@ -192,14 +197,40 @@ public class SceneServiceImpl implements SceneService {
     }
 
     /**
-     * 移除渠道模板
+     * 编辑场景配置
      *
      * @param info 用户关键信息
-     * @param id   渠道模板ID
+     * @param dto  场景配置DTO
      * @return Reply
      */
     @Override
-    public Reply removeSceneConfig(LoginInfo info, String id) {
+    public Reply editSceneConfigs(LoginInfo info, SceneConfig dto) {
+        String id = dto.getId();
+        SceneConfig config = mapper.getSceneConfig(id);
+        if (config == null) {
+            return ReplyHelper.fail("ID不存在,未更新数据");
+        }
+
+        String tenantId = info.getTenantId();
+        if (Util.isNotEmpty(tenantId) && !tenantId.equals(config.getTenantId())) {
+            return ReplyHelper.fail("您无权修改该数据");
+        }
+
+        mapper.updateSceneConfig(dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
+
+        return ReplyHelper.success();
+    }
+
+    /**
+     * 删除场景配置
+     *
+     * @param info 用户关键信息
+     * @param id   场景配置ID
+     * @return Reply
+     */
+    @Override
+    public Reply deleteSceneConfig(LoginInfo info, String id) {
         SceneConfig config = mapper.getSceneConfig(id);
         if (config == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");

@@ -76,14 +76,14 @@ public interface SceneMapper {
     void deleteScene(String id);
 
     /**
-     * 获取场景模板配置列表
+     * 获取场景配置列表
      *
      * @param tenantId 租户ID
      * @param sceneId  场景ID
      * @param key      查询关键词
      * @return 场景模板配置列表
      */
-    @Select("<script>select id, app_name, concat(partner_code, '-', partner) as partner, type, content, sign, expire " +
+    @Select("<script>select id, tenant_name, app_name, type, content, sign, expire " +
             "from ims_scene_config where scene_id = #{sceneId} " +
             "<if test = 'tenantId != null'>and tenant_id = #{tenantId} </if>" +
             "<if test = 'tenantId == null'>and tenant_id is null </if>" +
@@ -92,7 +92,7 @@ public interface SceneMapper {
     List<SceneConfigDto> getSceneConfigs(@Param("tenantId") String tenantId, @Param("sceneId") String sceneId, @Param("key") String key);
 
     /**
-     * 获取消息场景配置数量
+     * 获取场景配置数量
      *
      * @param id 消息场景ID
      * @return 配置数量
@@ -101,7 +101,7 @@ public interface SceneMapper {
     int getConfigCount(String id);
 
     /**
-     * 获取场景模板配置详情
+     * 获取场景配置详情
      *
      * @param id 配置ID
      * @return 配置详情
@@ -110,18 +110,26 @@ public interface SceneMapper {
     SceneConfig getSceneConfig(String id);
 
     /**
-     * 新增分渠道模板配置
+     * 新增场景配置
      *
-     * @param config 渠道模板配置DTO
+     * @param config 场景配置DTO
      */
-    @Insert("INSERT ims_scene_config(id, tenant_id, scene_id, app_id, app_name, partner_code, partner, type, content, sign, expire, creator, creator_id, created_time) VALUES " +
-            "(#{id}, #{tenantId}, #{sceneId}, #{appId}, #{appName}, #{partnerCode}, #{partner}, #{type}, #{content}, #{sign}, #{expire}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert ims_scene_config(id, tenant_id, scene_id, tenant_name, app_id, app_name, type, content, sign, expire, creator, creator_id, created_time) VALUES " +
+            "(#{id}, #{tenantId}, #{sceneId}, #{tenantName}, #{appId}, #{appName}, #{type}, #{content}, #{sign}, #{expire}, #{creator}, #{creatorId}, #{createdTime});")
     void addSceneConfig(SceneConfig config);
 
     /**
-     * 删除分渠道模板配置
+     * 编辑场景配置
+     * @param config 场景配置DTO
+     */
+    @Update("update ims_scene_config set app_id = #{appId}, app_name = #{appName}, type = #{type}, content = #{content}, " +
+            "sign = #{sign}, expire = #{expire} where id = #{id};")
+    void updateSceneConfig(SceneConfig config);
+
+    /**
+     * 删除场景配置
      *
-     * @param id 消息场景ID
+     * @param id 场景配置ID
      */
     @Delete("delete from ims_scene_config where id = #{id};")
     void deleteSceneConfig(String id);

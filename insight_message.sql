@@ -89,7 +89,6 @@ CREATE TABLE `ims_scene_config` (
   `scene_id` char(32) NOT NULL COMMENT '场景ID',
   `app_id` char(32) DEFAULT NULL COMMENT '应用ID',
   `app_name` varchar(64) DEFAULT NULL COMMENT '应用名称',
-  `partner_code` char(4) DEFAULT NULL COMMENT '合作伙伴编码',
   `partner` varchar(64) DEFAULT NULL COMMENT '合作伙伴名称',
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)',
   `content` varchar(1024) NOT NULL COMMENT '消息内容',
@@ -104,7 +103,6 @@ CREATE TABLE `ims_scene_config` (
   KEY `idx_scene_config_tenant_id` (`tenant_id`) USING BTREE,
   KEY `idx_scene_config_scene_id` (`scene_id`) USING BTREE,
   KEY `idx_scene_config_app_id` (`app_id`) USING BTREE,
-  KEY `idx_scene_config_partner_code` (`partner_code`) USING BTREE,
   KEY `idx_scene_config_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_scene_config_created_time` (`created_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_general_ci COMMENT='场景模板配置表';
