@@ -8,8 +8,6 @@ import com.insight.utils.Redis;
 import com.insight.utils.Util;
 import com.insight.utils.http.HttpUtil;
 import com.insight.utils.pojo.Reply;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.EurekaClient;
 import com.rabbitmq.client.Channel;
 import feign.Feign;
 import feign.codec.Decoder;
@@ -21,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.mail.SimpleMailMessage;
@@ -48,7 +48,7 @@ public class Core {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Decoder decoder = new JacksonDecoder();
     private final Encoder encoder = new JacksonEncoder();
-    private final EurekaClient client;
+    private final DiscoveryClient discoveryClient;
     private final JavaMailSender mailSender;
     private final MessageDal dal;
 
@@ -61,12 +61,12 @@ public class Core {
     /**
      * 构造方法
      *
-     * @param client     EurekaClient
-     * @param mailSender JavaMailSender
-     * @param dal        MessageDal
+     * @param discoveryClient DiscoveryClient
+     * @param mailSender      JavaMailSender
+     * @param dal             MessageDal
      */
-    public Core(EurekaClient client, JavaMailSender mailSender, MessageDal dal) {
-        this.client = client;
+    public Core(DiscoveryClient discoveryClient, JavaMailSender mailSender, MessageDal dal) {
+        this.discoveryClient = discoveryClient;
         this.mailSender = mailSender;
         this.dal = dal;
     }
@@ -149,16 +149,19 @@ public class Core {
     @Async
     public void localCall(Schedule<ScheduleCall> schedule, Channel channel, Message message) throws IOException, URISyntaxException {
         ScheduleCall call = schedule.getContent();
-        URI uri = new URI(call.getUrl());
+        String host = getServiceUrl(call.getService());
+        URI uri = new URI(host + call.getUrl());
         Object body = call.getBody();
         TaskClient taskClient = Feign.builder().decoder(decoder).encoder(encoder)
                 .requestInterceptor(template -> {
                     Map<String, String> map = call.getHeaders();
-                    for (String k : map.keySet()) {
-                        String v = map.get(k);
-                        template.header(k, v);
+                    if (map != null) {
+                        for (String k : map.keySet()) {
+                            String v = map.get(k);
+                            template.header(k, v);
+                        }
                     }
-                }).target(TaskClient.class, getServiceUrl(call.getService()));
+                }).target(TaskClient.class, host);
         try {
             Reply reply;
             switch (call.getMethod()) {
@@ -289,10 +292,13 @@ public class Core {
      */
     private String getServiceUrl(String service) {
         try {
-            InstanceInfo instanceInfo = client.getNextServerFromEureka(service, false);
-            String host = instanceInfo.getHomePageUrl();
+            List<ServiceInstance> list = discoveryClient.getInstances(service);
+            if (list == null || list.isEmpty()){
+                return null;
+            }
 
-            return host.substring(0, host.length() - 1);
+            URI uri = list.get(0).getUri();
+            return uri.toString();
         } catch (Exception ex) {
             logger.error("从eureka 获取服务：{}的地址出现异常：{}", service, ex.getMessage());
 
