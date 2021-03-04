@@ -6,12 +6,11 @@ spring:
   cloud:
     consul:
       discovery:
-        register: true
+        instanceId: ${spring.application.name}:${random.value}
         service-name: ${spring.application.name}
         ip-address: ${spring.cloud.client.ip-address}
         prefer-ip-address: true
       config:
-        enabled: true
         format: yaml
         prefix: config
         defaultContext: ${spring.application.name}
