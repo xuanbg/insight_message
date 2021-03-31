@@ -92,9 +92,8 @@ public class MessageServiceImpl implements MessageService {
         }
 
         String key = Util.md5(type + mobile + smsCode);
-        Redis.set("VerifyCode:" + key, mobile, dto.getMinutes(), TimeUnit.MINUTES);
-        Redis.add("VerifyCodeSet:" + mobile, key);
-        Redis.setExpire("VerifyCodeSet:" + mobile, 30, TimeUnit.MINUTES);
+        Redis.set("VerifyCode:" + key, mobile, Long.valueOf(dto.getMinutes()), TimeUnit.MINUTES);
+        Redis.add("VerifyCodeSet:" + mobile, key, 1800L);
         logger.info("手机号[{}]的{}类短信验证码为: {}", mobile, type, smsCode);
 
         return ReplyHelper.success();
@@ -117,9 +116,7 @@ public class MessageServiceImpl implements MessageService {
 
         if (isCheck) {
             // 每验证一次有效时间减少15秒,以避免暴力破解
-            long expire = Redis.getExpire(codeKey, TimeUnit.SECONDS);
-            Redis.setExpire(codeKey, expire - 15, TimeUnit.SECONDS);
-
+            Redis.changeExpire(codeKey, -15);
             return ReplyHelper.success();
         }
 

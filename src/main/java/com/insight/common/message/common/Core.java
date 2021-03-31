@@ -279,7 +279,7 @@ public class Core {
             message.setReceivers(list);
             message.setContent(now.toString() + "保存任务失败! 请尽快处理");
 
-            Redis.set(key, now.toString(), 24, TimeUnit.HOURS);
+            Redis.set(key, now.toString(), 24L, TimeUnit.HOURS);
             sendSms(message);
         }
     }
