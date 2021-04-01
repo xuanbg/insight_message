@@ -2,11 +2,16 @@ package com.insight.common.message.common.config;
 
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
+import com.insight.utils.common.BusinessException;
 import com.insight.utils.pojo.Reply;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.logging.LogLevel;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -25,9 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.UnexpectedTypeException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author 宣炳刚
@@ -38,8 +41,7 @@ import java.util.stream.Collectors;
 @ResponseBody
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    private static final Error error = new Error();
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * 处理缺少请求参数的异常
@@ -50,6 +52,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Reply handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         String msg = "缺少请求参数: " + ex.getParameterName();
+        logger(LogLevel.WARN, msg);
 
         return ReplyHelper.invalidParam(msg);
     }
@@ -62,9 +65,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public Reply handleIllegalArgumentException(IllegalArgumentException ex) {
-        logger.info("不合法的参数: {}", ex.getMessage());
+        String msg = "不合法的参数: " + ex.getMessage();
+        logger(LogLevel.WARN, msg);
 
-        return ReplyHelper.invalidParam("不合法的参数");
+        return ReplyHelper.invalidParam(msg);
     }
 
     /**
@@ -75,9 +79,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ServletRequestBindingException.class)
     public Reply handleServletRequestBindingException(ServletRequestBindingException ex) {
-        logger.info("参数绑定错误: {}", ex.getMessage());
+        String msg = "参数绑定错误: " + ex.getMessage();
+        logger(LogLevel.WARN, msg);
 
-        return ReplyHelper.invalidParam("参数绑定错误");
+        return ReplyHelper.invalidParam(msg);
     }
 
     /**
@@ -88,9 +93,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Reply handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        logger.info("参数解析失败: {}", ex.getMessage());
+        String msg = "参数解析失败: " + ex.getMessage();
+        logger(LogLevel.WARN, msg);
 
-        return ReplyHelper.invalidParam("参数解析失败");
+        return ReplyHelper.invalidParam(msg);
     }
 
     /**
@@ -103,13 +109,17 @@ public class GlobalExceptionHandler {
     public Reply handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         FieldError error = ex.getBindingResult().getFieldError();
         if (error == null) {
-            logger.info("参数解析失败: {}", ex.getMessage());
+            String msg = "参数解析失败: " + ex.getMessage();
+            logger(LogLevel.WARN, msg);
 
             return ReplyHelper.invalidParam("参数解析失败");
         }
 
         String parameter = error.getField();
-        return ReplyHelper.invalidParam("参数「" + parameter + "」" + error.getDefaultMessage());
+        String msg = "参数绑定失败: " + parameter;
+        logger(LogLevel.WARN, msg);
+
+        return ReplyHelper.invalidParam(msg);
     }
 
     /**
@@ -122,13 +132,17 @@ public class GlobalExceptionHandler {
     public Reply handleBindException(BindException ex) {
         FieldError error = ex.getBindingResult().getFieldError();
         if (error == null) {
-            logger.info("参数绑定失败: {}", ex.getMessage());
+            String msg = "参数绑定失败: " + ex.getMessage();
+            logger(LogLevel.WARN, msg);
 
             return ReplyHelper.invalidParam("参数绑定失败");
         }
 
         String parameter = error.getField();
-        return ReplyHelper.invalidParam("参数「" + parameter + "」" + error.getDefaultMessage());
+        String msg = "参数绑定失败: " + parameter;
+        logger(LogLevel.WARN, msg);
+
+        return ReplyHelper.invalidParam(msg);
     }
 
     /**
@@ -139,9 +153,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Reply handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex) {
-        logger.info("不支持当前媒体类型: {}", ex.getMessage());
+        String msg = "不支持当前媒体类型: " + ex.getMessage();
+        logger(LogLevel.WARN, msg);
 
-        return ReplyHelper.invalidParam("不支持当前媒体类型");
+        return ReplyHelper.invalidParam(msg);
     }
 
     /**
@@ -152,9 +167,66 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnexpectedTypeException.class)
     public Reply handleUnexpectedTypeException(UnexpectedTypeException ex) {
-        logger.info("参数类型不匹配: {}", ex.getMessage());
+        String msg = "参数类型不匹配: " + ex.getMessage();
+        logger(LogLevel.WARN, msg);
 
-        return ReplyHelper.invalidParam("参数类型不匹配");
+        return ReplyHelper.invalidParam(msg);
+    }
+
+    /**
+     * 业务异常
+     *
+     * @param ex 业务异常
+     * @return Reply
+     */
+    @ExceptionHandler(BusinessException.class)
+    public Reply handleBusinessException(BusinessException ex) {
+        String msg = "业务发生异常: " + ex.getMessage();
+        logger(LogLevel.WARN, msg);
+
+        return ReplyHelper.fail(msg);
+    }
+
+    /**
+     * 服务调用异常
+     *
+     * @param ex 服务调用异常
+     * @return Reply
+     */
+    @ExceptionHandler(FeignException.class)
+    public Reply handleFeignException(FeignException ex) {
+        String msg = "服务调用异常: " + ex.getMessage();
+        logger(LogLevel.ERROR, msg);
+
+        return ReplyHelper.error();
+    }
+
+    /**
+     * 数据库操作出现异常：插入、删除和修改数据的时候，违背数据完整性约束抛出的异常
+     *
+     * @param ex 违背数据完整性约异常
+     * @return Reply
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public Reply handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String msg = "数据库操作异常: " + ex.getCause().getMessage();
+        logger(LogLevel.ERROR, msg);
+
+        return ReplyHelper.error();
+    }
+
+    /**
+     * 数据库操作出现异常：插入、删除和修改数据的时候，违背数据完整性约束抛出的异常
+     *
+     * @param ex 违背数据完整性约异常
+     * @return Reply
+     */
+    @ExceptionHandler(BadSqlGrammarException.class)
+    public Reply handleBadSqlGrammarException(BadSqlGrammarException ex) {
+        String msg = "数据库操作异常: " + ex.getCause().getMessage();
+        logger(LogLevel.ERROR, msg);
+
+        return ReplyHelper.error();
     }
 
     /**
@@ -165,7 +237,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public Reply handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
-        initError(ex);
+        String msg = "数据库操作异常: " + ex.getCause().getMessage();
+        logger(LogLevel.ERROR, msg);
 
         return ReplyHelper.error();
     }
@@ -178,7 +251,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(SQLSyntaxErrorException.class)
     public Reply handleSqlSyntaxErrorException(SQLSyntaxErrorException ex) {
-        initError(ex);
+        String msg = "数据库操作异常: " + ex.getCause().getMessage();
+        logger(LogLevel.ERROR, msg);
 
         return ReplyHelper.error();
     }
@@ -191,20 +265,22 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NullPointerException.class)
     public Reply handleNullPointerException(NullPointerException ex) {
-        initError(ex);
+        String msg = "空指针异常: " + ex.getMessage();
+        logger(LogLevel.ERROR, msg);
 
         return ReplyHelper.error();
     }
 
     /**
-     * 服务器异常
+     * 异步请求超时异常
      *
-     * @param ex 服务器异常
+     * @param ex 异步请求超时异常
      * @return Reply
      */
     @ExceptionHandler(AsyncRequestTimeoutException.class)
     public Reply handleAsyncRequestTimeoutException(AsyncRequestTimeoutException ex) {
-        initError(ex);
+        String msg = "异步请求超时异常: " + ex.getMessage();
+        logger(LogLevel.ERROR, msg);
 
         return ReplyHelper.error();
     }
@@ -217,7 +293,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     public Reply handleRuntimeException(RuntimeException ex) {
-        initError(ex);
+        String msg = "运行时异常: " + ex.getMessage();
+        String requestId = logger(LogLevel.ERROR, msg);
+        printStack(requestId, ex);
 
         return ReplyHelper.error();
     }
@@ -230,78 +308,46 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Reply handleException(Exception ex) {
-        initError(ex);
+        String msg = "服务器异常: " + ex.getMessage();
+        String requestId = logger(LogLevel.ERROR, msg);
+        printStack(requestId, ex);
 
         return ReplyHelper.error();
     }
 
     /**
-     * 初始化错误实体类
+     * 打印日志
      *
-     * @param ex Exception
+     * @param level   日志等级
+     * @param message 错误信息
+     * @return 请求ID
      */
-    private void initError(Exception ex) {
-        String message = ex.getMessage();
-        if (message == null){
-            message = ex.getClass().getSimpleName();
+    private String logger(LogLevel level, String message) {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
+        String requestId = request.getHeader("requestId");
+        switch (level) {
+            case ERROR:
+                LOGGER.error("requestId: {}. 错误信息: {}", requestId, message);
+                break;
+            case WARN:
+                LOGGER.warn("requestId: {}. 警告信息: {}", requestId, message);
+                break;
+            default:
+                LOGGER.info("requestId: {}. 日志信息: {}", requestId, message);
         }
 
-        error.setRequestId();
-        error.setError(message);
-        error.setException(ex.getStackTrace());
-
-        logger.error("发生异常: {}", error.toString());
+        return requestId;
     }
 
     /**
-     * 错误日志实体类
+     * 打印异常堆栈
+     *
+     * @param requestId 请求ID
+     * @param ex        Exception
      */
-    private static class Error {
-
-        /**
-         * 请求ID
-         */
-        private String requestId;
-
-        /**
-         * 错误消息
-         */
-        private String error;
-
-        /**
-         * 异常堆栈
-         */
-        private Object exception;
-
-        public String getRequestId() {
-            return requestId;
-        }
-
-        void setRequestId() {
-            ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
-            requestId = request.getHeader("requestId");
-        }
-
-        public String getError() {
-            return error;
-        }
-
-        void setError(String error) {
-            this.error = error;
-        }
-
-        public Object getException() {
-            return exception;
-        }
-
-        void setException(StackTraceElement[] trace) {
-            exception = Arrays.stream(trace).map(StackTraceElement::toString).collect(Collectors.toList());
-        }
-
-        @Override
-        public String toString() {
-            return Json.toJson(this);
-        }
+    private void printStack(String requestId, Exception ex) {
+        String stackTrace = Json.toJson(ex.getStackTrace());
+        LOGGER.error("requestId: {}. 异常堆栈: {}", requestId, stackTrace);
     }
 }
