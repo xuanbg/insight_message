@@ -3,9 +3,7 @@ package com.insight.common.message.common.entity;
 import com.insight.utils.Json;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author 宣炳刚
@@ -28,13 +26,7 @@ public class SceneConfig implements Serializable {
     /**
      * 场景ID
      */
-    @NotEmpty(message = "消息场景ID不能为空")
     private String sceneId;
-
-    /**
-     * 租户名称
-     */
-    private String tenantName;
 
     /**
      * 应用ID
@@ -45,12 +37,6 @@ public class SceneConfig implements Serializable {
      * 应用名称
      */
     private String appName;
-
-    /**
-     * 发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
-     */
-    @NotNull(message = "发送类型不能为空")
-    private Integer type;
 
     /**
      * 消息内容
@@ -69,6 +55,11 @@ public class SceneConfig implements Serializable {
     private Integer expire;
 
     /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 创建人
      */
     private String creator;
@@ -77,11 +68,6 @@ public class SceneConfig implements Serializable {
      * 创建人ID
      */
     private String creatorId;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createdTime;
 
     public String getId() {
         return id;
@@ -107,14 +93,6 @@ public class SceneConfig implements Serializable {
         this.sceneId = sceneId;
     }
 
-    public String getTenantName() {
-        return tenantName;
-    }
-
-    public void setTenantName(String tenantName) {
-        this.tenantName = tenantName;
-    }
-
     public String getAppId() {
         return appId;
     }
@@ -129,14 +107,6 @@ public class SceneConfig implements Serializable {
 
     public void setAppName(String appName) {
         this.appName = appName;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getContent() {
@@ -156,11 +126,19 @@ public class SceneConfig implements Serializable {
     }
 
     public Integer getExpire() {
-        return expire;
+        return expire == null ? 1 : expire;
     }
 
     public void setExpire(Integer expire) {
         this.expire = expire;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getCreator() {
@@ -177,14 +155,6 @@ public class SceneConfig implements Serializable {
 
     public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
-    }
-
-    public LocalDateTime getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(LocalDateTime createdTime) {
-        this.createdTime = createdTime;
     }
 
     @Override

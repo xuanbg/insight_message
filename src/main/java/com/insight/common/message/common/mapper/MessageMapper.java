@@ -21,15 +21,15 @@ public interface MessageMapper {
     /**
      * 获取适用消息模板
      *
-     * @param info 用户关键信息
-     * @param dto  标准信息DTO
+     * @param tenantId 租户ID
+     * @param appId    应用ID
+     * @param code     场景编号
      * @return 消息模板
      */
-    @Select("select ifnull(c.type, s.type) as type, s.title, s.tag, ifnull(c.content, s.content) as content, ifnull(c.sign, s.sign) as sign, c.expire " +
-            "from ims_scene s join ims_scene_config c on c.scene_id = s.id and c.tenant_id = #{info.tenantId} " +
-            "and (c.app_id is null or c.app_id = #{info.appId}) and (c.partner_code is null or c.partner_code = #{dto.partnerCode}) " +
-            "where s.code = #{dto.sceneCode} order by c.app_id desc, c.partner_code desc limit 1;")
-    TemplateDto getTemplate(@Param("info") LoginInfo info, @Param("dto") NormalMessage dto);
+    @Select("select s.type, s.title, s.tag, c.content, c.sign, c.expire from ims_scene s join ims_scene_config c on c.scene_id = s.id " +
+            "and (c.tenant_id is null or c.tenant_id = #{tenantId}) and (c.app_id is null or c.app_id = #{appId}) " +
+            "where s.code = #{code} order by c.tenant_id desc, c.app_id desc limit 1;")
+    TemplateDto getTemplate(String tenantId, String appId, String code);
 
     /**
      * 获取消息列表

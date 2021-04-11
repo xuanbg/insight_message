@@ -142,7 +142,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public Reply sendNormalMessage(LoginInfo info, NormalMessage dto) {
-        TemplateDto template = mapper.getTemplate(info, dto);
+        TemplateDto template = mapper.getTemplate(info.getTenantId(), info.getAppId(), dto.getSceneCode());
         if (template == null) {
             return ReplyHelper.fail("没有可用消息模板,请检查消息参数是否正确");
         }

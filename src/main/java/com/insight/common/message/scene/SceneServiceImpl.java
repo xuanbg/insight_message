@@ -4,8 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.insight.common.message.common.client.LogClient;
 import com.insight.common.message.common.client.LogServiceClient;
-import com.insight.common.message.common.dto.SceneDto;
 import com.insight.common.message.common.dto.SceneConfigDto;
+import com.insight.common.message.common.dto.SceneDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.common.message.common.mapper.SceneMapper;
@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -94,7 +93,6 @@ public class SceneServiceImpl implements SceneService {
         dto.setId(id);
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
-        dto.setCreatedTime(LocalDateTime.now());
 
         mapper.addScene(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
@@ -142,11 +140,6 @@ public class SceneServiceImpl implements SceneService {
             return ReplyHelper.fail("ID不存在,未删除数据");
         }
 
-        int count = mapper.getConfigCount(id);
-        if (count > 0) {
-            return ReplyHelper.fail("该消息场景下配置有模板,请先删除配置");
-        }
-
         mapper.deleteScene(id);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, scene);
 
@@ -164,7 +157,7 @@ public class SceneServiceImpl implements SceneService {
     @Override
     public Reply getSceneConfigs(LoginInfo info, SearchDto search, String sceneId) {
         PageHelper.startPage(search.getPage(), search.getSize());
-        List<SceneConfigDto> configs = mapper.getSceneConfigs(info.getTenantId(), sceneId, search.getKeyword());
+        List<SceneConfigDto> configs = mapper.getSceneConfigs(info.getTenantId(), sceneId);
         PageInfo<SceneConfigDto> pageInfo = new PageInfo<>(configs);
 
         return ReplyHelper.success(configs, pageInfo.getTotal());
@@ -188,7 +181,6 @@ public class SceneServiceImpl implements SceneService {
         dto.setId(id);
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
-        dto.setCreatedTime(LocalDateTime.now());
 
         mapper.addSceneConfig(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);

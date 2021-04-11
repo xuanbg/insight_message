@@ -5,7 +5,6 @@ import com.insight.utils.Json;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,6 +27,12 @@ public class Scene implements Serializable {
     private String code;
 
     /**
+     * 默认发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
+     */
+    @NotNull(message = "发送类型不能为空")
+    private Integer type;
+
+    /**
      * 场景名称
      */
     @NotEmpty(message = "消息场景名称不能为空")
@@ -36,13 +41,7 @@ public class Scene implements Serializable {
     /**
      * 默认消息标题
      */
-    @NotEmpty(message = "消息标题不能为空")
     private String title;
-
-    /**
-     * 默认消息参数
-     */
-    private List<String> params;
 
     /**
      * 默认消息标签
@@ -50,21 +49,9 @@ public class Scene implements Serializable {
     private String tag;
 
     /**
-     * 默认发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
+     * 默认消息参数
      */
-    @NotNull(message = "发送类型不能为空")
-    private Integer type;
-
-    /**
-     * 默认消息内容
-     */
-    @NotEmpty(message = "消息内容不能为空")
-    private String content;
-
-    /**
-     * 默认签名
-     */
-    private String sign;
+    private List<String> param;
 
     /**
      * 备注
@@ -81,11 +68,6 @@ public class Scene implements Serializable {
      */
     private String creatorId;
 
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createdTime;
-
     public String getId() {
         return id;
     }
@@ -100,6 +82,14 @@ public class Scene implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getName() {
@@ -118,14 +108,6 @@ public class Scene implements Serializable {
         this.title = title;
     }
 
-    public List<String> getParams() {
-        return params;
-    }
-
-    public void setParams(List<String> params) {
-        this.params = params;
-    }
-
     public String getTag() {
         return tag;
     }
@@ -134,28 +116,12 @@ public class Scene implements Serializable {
         this.tag = tag;
     }
 
-    public Integer getType() {
-        return type;
+    public List<String> getParam() {
+        return param;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
+    public void setParam(List<String> param) {
+        this.param = param;
     }
 
     public String getRemark() {
@@ -180,14 +146,6 @@ public class Scene implements Serializable {
 
     public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
-    }
-
-    public LocalDateTime getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(LocalDateTime createdTime) {
-        this.createdTime = createdTime;
     }
 
     @Override

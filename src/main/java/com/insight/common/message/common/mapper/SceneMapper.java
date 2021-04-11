@@ -23,7 +23,8 @@ public interface SceneMapper {
      * @param key 查询关键词
      * @return 消息场景列表
      */
-    @Select("<script>select id, `code`, `name`, title, type, content, remark from ims_scene " +
+    @Results({@Result(property = "param", column = "param", javaType = String.class, typeHandler = ArrayTypeHandler.class)})
+    @Select("<script>select * from ims_scene " +
             "<if test = 'key != null'>where code = #{key} or name like concat('%',#{key},'%')</if> " +
             "order by created_time</script>")
     List<SceneDto> getScenes(@Param("key") String key);
@@ -53,9 +54,9 @@ public interface SceneMapper {
      *
      * @param scene 消息场景DTO
      */
-    @Insert("insert ims_scene(id, `code`, `name`, title, params, tag, type, content, sign, remark, creator, creator_id, created_time) values " +
-            "(#{id}, #{code}, #{name}, #{title}, #{params, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
-            "#{tag}, #{type}, #{content}, #{sign}, #{remark}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert ims_scene(id, `code`, type, `name`, title, tag, `param`, remark, creator, creator_id, created_time) values " +
+            "(#{id}, #{code}, #{type}, #{name}, #{title}, #{tag}, #{param, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
+            "#{remark}, #{creator}, #{creatorId}, now());")
     void addScene(Scene scene);
 
     /**
@@ -63,8 +64,8 @@ public interface SceneMapper {
      *
      * @param scene 消息场景DTO
      */
-    @Update("update ims_scene set `code` = #{code}, `name` = #{name}, title = #{title}, params = #{params, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
-            "tag = #{tag}, type = #{type}, content = #{content}, sign = #{sign}, remark = #{remark} where id = #{id};")
+    @Update("update ims_scene set `code` = #{code}, type = #{type}, `name` = #{name}, title = #{title}, tag = #{tag}, " +
+            "`param` = #{param, typeHandler = com.insight.utils.common.ArrayTypeHandler}, remark = #{remark} where id = #{id};")
     void editScene(Scene scene);
 
     /**
@@ -72,7 +73,7 @@ public interface SceneMapper {
      *
      * @param id 消息场景ID
      */
-    @Delete("delete from ims_scene where id = #{id};")
+    @Delete("delete s, c from ims_scene s left join ims_scene_config c on c.scene_id = s.id where s.id = #{id};")
     void deleteScene(String id);
 
     /**
@@ -80,25 +81,13 @@ public interface SceneMapper {
      *
      * @param tenantId 租户ID
      * @param sceneId  场景ID
-     * @param key      查询关键词
      * @return 场景模板配置列表
      */
-    @Select("<script>select id, tenant_name, app_name, type, content, sign, expire " +
-            "from ims_scene_config where scene_id = #{sceneId} " +
+    @Select("<script>select * from ims_scene_config where scene_id = #{sceneId} " +
             "<if test = 'tenantId != null'>and tenant_id = #{tenantId} </if>" +
             "<if test = 'tenantId == null'>and tenant_id is null </if>" +
-            "<if test = 'key != null'>and (app_name like concat('%',#{key},'%') or partner_code = #{key} or partner like concat('%',#{key},'%')) </if> " +
             "order by created_time</script>")
-    List<SceneConfigDto> getSceneConfigs(@Param("tenantId") String tenantId, @Param("sceneId") String sceneId, @Param("key") String key);
-
-    /**
-     * 获取场景配置数量
-     *
-     * @param id 消息场景ID
-     * @return 配置数量
-     */
-    @Select("select count(*) from ims_scene_config where scene_id = #{id};")
-    int getConfigCount(String id);
+    List<SceneConfigDto> getSceneConfigs(@Param("tenantId") String tenantId, @Param("sceneId") String sceneId);
 
     /**
      * 获取场景配置详情
@@ -114,16 +103,15 @@ public interface SceneMapper {
      *
      * @param config 场景配置DTO
      */
-    @Insert("insert ims_scene_config(id, tenant_id, scene_id, tenant_name, app_id, app_name, type, content, sign, expire, creator, creator_id, created_time) VALUES " +
-            "(#{id}, #{tenantId}, #{sceneId}, #{tenantName}, #{appId}, #{appName}, #{type}, #{content}, #{sign}, #{expire}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert ims_scene_config(id, tenant_id, scene_id, app_id, app_name, content, sign, expire, creator, creator_id, created_time) VALUES " +
+            "(#{id}, #{tenantId}, #{sceneId}, #{appId}, #{appName}, #{content}, #{sign}, #{expire}, #{creator}, #{creatorId}, now());")
     void addSceneConfig(SceneConfig config);
 
     /**
      * 编辑场景配置
      * @param config 场景配置DTO
      */
-    @Update("update ims_scene_config set app_id = #{appId}, app_name = #{appName}, type = #{type}, content = #{content}, " +
-            "sign = #{sign}, expire = #{expire} where id = #{id};")
+    @Update("update ims_scene_config set app_id = #{appId}, app_name = #{appName}, content = #{content}, sign = #{sign}, expire = #{expire} where id = #{id};")
     void updateSceneConfig(SceneConfig config);
 
     /**

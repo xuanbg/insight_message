@@ -3,6 +3,7 @@ package com.insight.common.message.common.dto;
 import com.insight.utils.Json;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -23,6 +24,11 @@ public class SceneDto implements Serializable {
     private String code;
 
     /**
+     * 默认发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
+     */
+    private Integer type;
+
+    /**
      * 场景名称
      */
     private String name;
@@ -33,14 +39,19 @@ public class SceneDto implements Serializable {
     private String title;
 
     /**
-     * 默认发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
-     */
-    private Integer type;
-
-    /**
      * 默认消息内容
      */
     private String content;
+
+    /**
+     * 默认消息标签
+     */
+    private String tag;
+
+    /**
+     * 默认消息参数
+     */
+    private List<String> param;
 
     /**
      * 备注
@@ -63,6 +74,14 @@ public class SceneDto implements Serializable {
         this.code = code;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }
@@ -79,20 +98,28 @@ public class SceneDto implements Serializable {
         this.title = title;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public List<String> getParam() {
+        return param;
+    }
+
+    public void setParam(List<String> param) {
+        this.param = param;
     }
 
     public String getRemark() {

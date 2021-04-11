@@ -3,6 +3,7 @@ package com.insight.common.message.common.dto;
 import com.insight.utils.Json;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author 宣炳刚
@@ -18,19 +19,14 @@ public class SceneConfigDto implements Serializable {
     private String id;
 
     /**
+     * 应用ID
+     */
+    private String appId;
+
+    /**
      * 应用名称
      */
     private String appName;
-
-    /**
-     * 合作伙伴名称
-     */
-    private String partner;
-
-    /**
-     * 发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
-     */
-    private Integer type;
 
     /**
      * 消息内容
@@ -47,6 +43,21 @@ public class SceneConfigDto implements Serializable {
      */
     private Integer expire;
 
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 创建人
+     */
+    private String creator;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createdTime;
+
     public String getId() {
         return id;
     }
@@ -55,28 +66,20 @@ public class SceneConfigDto implements Serializable {
         this.id = id;
     }
 
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
     public String getAppName() {
         return appName;
     }
 
     public void setAppName(String appName) {
         this.appName = appName;
-    }
-
-    public String getPartner() {
-        return partner;
-    }
-
-    public void setPartner(String partner) {
-        this.partner = partner;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getContent() {
@@ -101,6 +104,30 @@ public class SceneConfigDto implements Serializable {
 
     public void setExpire(Integer expire) {
         this.expire = expire;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
     }
 
     @Override
