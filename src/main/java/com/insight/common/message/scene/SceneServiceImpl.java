@@ -150,17 +150,14 @@ public class SceneServiceImpl implements SceneService {
      * 获取场景配置列表
      *
      * @param info    用户关键信息
-     * @param search  查询DTO
      * @param sceneId 场景ID
      * @return Reply
      */
     @Override
-    public Reply getSceneConfigs(LoginInfo info, SearchDto search, String sceneId) {
-        PageHelper.startPage(search.getPage(), search.getSize());
+    public Reply getSceneConfigs(LoginInfo info, String sceneId) {
         List<SceneConfigDto> configs = mapper.getSceneConfigs(info.getTenantId(), sceneId);
-        PageInfo<SceneConfigDto> pageInfo = new PageInfo<>(configs);
 
-        return ReplyHelper.success(configs, pageInfo.getTotal());
+        return ReplyHelper.success(configs);
     }
 
     /**
@@ -173,12 +170,15 @@ public class SceneServiceImpl implements SceneService {
     @Override
     public Reply newSceneConfigs(LoginInfo info, SceneConfig dto) {
         String tenantId = info.getTenantId();
-        if (Util.isNotEmpty(tenantId)) {
-            dto.setTenantId(tenantId);
+        String id = Util.uuid();
+
+        int count = mapper.getConfigCount(dto.getSceneId(), tenantId, dto.getAppId());
+        if (count > 0){
+            return ReplyHelper.invalidParam("场景配置已存在,请勿重复添加");
         }
 
-        String id = Util.uuid();
         dto.setId(id);
+        dto.setTenantId(tenantId);
         dto.setCreator(info.getUserName());
         dto.setCreatorId(info.getUserId());
 

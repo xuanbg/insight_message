@@ -60,11 +60,10 @@ public interface SceneService {
      * 获取场景配置列表
      *
      * @param info    用户关键信息
-     * @param search  查询DTO
      * @param sceneId 场景ID
      * @return Reply
      */
-    Reply getSceneConfigs(LoginInfo info, SearchDto search, String sceneId);
+    Reply getSceneConfigs(LoginInfo info, String sceneId);
 
     /**
      * 新增场景配置

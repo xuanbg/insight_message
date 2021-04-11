@@ -108,15 +108,14 @@ public class SceneController {
      * 获取场景配置列表
      *
      * @param info   用户关键信息
-     * @param search 查询DTO
      * @param id     场景ID
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/{id}/configs")
-    public Reply getSceneConfigs(@RequestHeader("loginInfo") String info, SearchDto search, @PathVariable("id") String id) {
+    public Reply getSceneConfigs(@RequestHeader("loginInfo") String info, @PathVariable("id") String id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.getSceneConfigs(loginInfo, search, id);
+        return service.getSceneConfigs(loginInfo, id);
     }
 
     /**

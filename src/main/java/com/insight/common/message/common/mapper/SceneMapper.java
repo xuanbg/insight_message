@@ -99,6 +99,22 @@ public interface SceneMapper {
     SceneConfig getSceneConfig(String id);
 
     /**
+     * 获取适用消息模板
+     *
+     * @param id       场景ID
+     * @param tenantId 租户ID
+     * @param appId    应用ID
+     * @return 消息模板
+     */
+    @Select("<script>select count(*) from ims_scene_config where scene_id = #{id} " +
+            "<if test = 'tenantId != null'>and tenant_id = #{tenantId} </if>" +
+            "<if test = 'tenantId == null'>and tenant_id is null </if>" +
+            "<if test = 'appId != null'>and app_id = #{appId} </if>" +
+            "<if test = 'appId == null'>and app_id is null </if>" +
+            ";</script>")
+    int getConfigCount(String id, String tenantId, String appId);
+
+    /**
      * 新增场景配置
      *
      * @param config 场景配置DTO
@@ -109,6 +125,7 @@ public interface SceneMapper {
 
     /**
      * 编辑场景配置
+     *
      * @param config 场景配置DTO
      */
     @Update("update ims_scene_config set app_id = #{appId}, app_name = #{appName}, content = #{content}, sign = #{sign}, expire = #{expire} where id = #{id};")

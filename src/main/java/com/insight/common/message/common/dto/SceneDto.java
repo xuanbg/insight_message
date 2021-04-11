@@ -39,11 +39,6 @@ public class SceneDto implements Serializable {
     private String title;
 
     /**
-     * 默认消息内容
-     */
-    private String content;
-
-    /**
      * 默认消息标签
      */
     private String tag;
@@ -96,14 +91,6 @@ public class SceneDto implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public String getTag() {
