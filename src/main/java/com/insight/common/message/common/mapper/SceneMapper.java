@@ -83,10 +83,7 @@ public interface SceneMapper {
      * @param sceneId  场景ID
      * @return 场景模板配置列表
      */
-    @Select("<script>select * from ims_scene_config where scene_id = #{sceneId} " +
-            "<if test = 'tenantId != null'>and tenant_id = #{tenantId} </if>" +
-            "<if test = 'tenantId == null'>and tenant_id is null </if>" +
-            "order by created_time</script>")
+    @Select("select * from ims_scene_config where scene_id = #{sceneId} and (tenant_id is null or tenant_id = #{tenantId}) order by created_time;")
     List<SceneConfigDto> getSceneConfigs(@Param("tenantId") String tenantId, @Param("sceneId") String sceneId);
 
     /**
@@ -99,7 +96,7 @@ public interface SceneMapper {
     SceneConfig getSceneConfig(String id);
 
     /**
-     * 获取适用消息模板
+     * 获取已存在配置数量
      *
      * @param id       场景ID
      * @param tenantId 租户ID
