@@ -168,7 +168,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply newSceneConfigs(LoginInfo info, SceneConfig dto) {
+    public Reply newSceneConfig(LoginInfo info, SceneConfig dto) {
         String tenantId = info.getTenantId();
         String id = Util.uuid();
 
@@ -196,7 +196,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply editSceneConfigs(LoginInfo info, SceneConfig dto) {
+    public Reply editSceneConfig(LoginInfo info, SceneConfig dto) {
         String id = dto.getId();
         SceneConfig config = mapper.getSceneConfig(id);
         if (config == null) {

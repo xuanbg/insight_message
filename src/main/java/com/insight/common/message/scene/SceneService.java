@@ -72,7 +72,7 @@ public interface SceneService {
      * @param dto  场景配置DTO
      * @return Reply
      */
-    Reply newSceneConfigs(LoginInfo info, SceneConfig dto);
+    Reply newSceneConfig(LoginInfo info, SceneConfig dto);
 
     /**
      * 编辑场景配置
@@ -81,7 +81,7 @@ public interface SceneService {
      * @param dto  场景配置DTO
      * @return Reply
      */
-    Reply editSceneConfigs(LoginInfo info, SceneConfig dto);
+    Reply editSceneConfig(LoginInfo info, SceneConfig dto);
 
     /**
      * 删除场景配置

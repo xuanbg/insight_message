@@ -126,13 +126,13 @@ public class SceneController {
      * @return Reply
      */
     @PostMapping("/v1.0/scenes/configs")
-    public Reply newSceneConfigs(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
+    public Reply newSceneConfig(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
         if (dto == null) {
             return ReplyHelper.invalidParam();
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.newSceneConfigs(loginInfo, dto);
+        return service.newSceneConfig(loginInfo, dto);
     }
 
     /**
@@ -143,13 +143,13 @@ public class SceneController {
      * @return Reply
      */
     @PutMapping("/v1.0/scenes/configs")
-    public Reply editSceneConfigs(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
+    public Reply editSceneConfig(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
         if (dto == null) {
             return ReplyHelper.invalidParam();
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.editSceneConfigs(loginInfo, dto);
+        return service.editSceneConfig(loginInfo, dto);
     }
 
     /**
