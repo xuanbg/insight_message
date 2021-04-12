@@ -19,6 +19,11 @@ public class SceneConfigDto implements Serializable {
     private String id;
 
     /**
+     * 租户ID
+     */
+    private String tenantId;
+
+    /**
      * 应用ID
      */
     private String appId;
@@ -64,6 +69,14 @@ public class SceneConfigDto implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getAppId() {
