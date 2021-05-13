@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.UnexpectedTypeException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 /**
@@ -42,6 +43,20 @@ import java.util.Objects;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    /**
+     * 业务异常
+     *
+     * @param ex 业务异常
+     * @return Reply
+     */
+    @ExceptionHandler(BusinessException.class)
+    public Reply handleBusinessException(BusinessException ex) {
+        String msg = "业务发生异常, " + ex.getMessage();
+        logger(LogLevel.INFO, msg);
+
+        return ReplyHelper.fail(msg);
+    }
 
     /**
      * 处理缺少请求参数的异常
@@ -174,20 +189,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 业务异常
-     *
-     * @param ex 业务异常
-     * @return Reply
-     */
-    @ExceptionHandler(BusinessException.class)
-    public Reply handleBusinessException(BusinessException ex) {
-        String msg = "业务发生异常, " + ex.getMessage();
-        logger(LogLevel.WARN, msg);
-
-        return ReplyHelper.fail(msg);
-    }
-
-    /**
      * 服务调用异常
      *
      * @param ex 服务调用异常
@@ -196,9 +197,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FeignException.class)
     public Reply handleFeignException(FeignException ex) {
         String msg = "服务调用异常, " + ex.getMessage();
-        logger(LogLevel.ERROR, msg);
+        String requestId = logger(LogLevel.ERROR, msg);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
     }
 
     /**
@@ -210,9 +211,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Reply handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         String msg = "数据库操作异常, " + ex.getCause().getMessage();
-        logger(LogLevel.ERROR, msg);
+        String requestId = logger(LogLevel.ERROR, msg);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
     }
 
     /**
@@ -224,9 +225,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadSqlGrammarException.class)
     public Reply handleBadSqlGrammarException(BadSqlGrammarException ex) {
         String msg = "数据库操作异常, " + ex.getCause().getMessage();
-        logger(LogLevel.ERROR, msg);
+        String requestId = logger(LogLevel.ERROR, msg);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
     }
 
     /**
@@ -238,9 +239,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public Reply handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
         String msg = "数据库操作异常, " + ex.getCause().getMessage();
-        logger(LogLevel.ERROR, msg);
+        String requestId = logger(LogLevel.ERROR, msg);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
     }
 
     /**
@@ -252,9 +253,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SQLSyntaxErrorException.class)
     public Reply handleSqlSyntaxErrorException(SQLSyntaxErrorException ex) {
         String msg = "数据库操作异常, " + ex.getCause().getMessage();
-        logger(LogLevel.ERROR, msg);
+        String requestId = logger(LogLevel.ERROR, msg);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
     }
 
     /**
@@ -266,9 +267,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public Reply handleNullPointerException(NullPointerException ex) {
         String msg = "空指针异常, " + Json.toJson(ex.getStackTrace());
-        logger(LogLevel.ERROR, msg);
+        String requestId = logger(LogLevel.ERROR, msg);
+        printStack(requestId, ex);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
+    }
+
+    /**
+     * 时间/日期格式错误的异常
+     *
+     * @param ex 时间/日期格式错误的异常
+     * @return Reply
+     */
+    @ExceptionHandler(DateTimeParseException.class)
+    public Reply handleUnexpectedTypeException(DateTimeParseException ex) {
+        String msg = "时间/日期格式错误, " + ex.getMessage();
+        String requestId = logger(LogLevel.ERROR, msg);
+        printStack(requestId, ex);
+
+        return ReplyHelper.error(requestId, msg);
     }
 
     /**
@@ -283,7 +300,7 @@ public class GlobalExceptionHandler {
         String requestId = logger(LogLevel.ERROR, msg);
         printStack(requestId, ex);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
     }
 
     /**
@@ -298,7 +315,7 @@ public class GlobalExceptionHandler {
         String requestId = logger(LogLevel.ERROR, msg);
         printStack(requestId, ex);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
     }
 
     /**
@@ -313,7 +330,7 @@ public class GlobalExceptionHandler {
         String requestId = logger(LogLevel.ERROR, msg);
         printStack(requestId, ex);
 
-        return ReplyHelper.error();
+        return ReplyHelper.error(requestId);
     }
 
     /**
