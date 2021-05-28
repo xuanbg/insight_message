@@ -1,16 +1,13 @@
 package com.insight.common.message.common.dto;
 
-import com.insight.utils.Json;
-
-import java.io.Serializable;
+import com.insight.utils.pojo.BaseXo;
 
 /**
  * @author 宣炳刚
  * @date 2020/11/24
  * @remark
  */
-public class TemplateDto implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class TemplateDto extends BaseXo {
 
     /**
      * 发送类型:0.未定义;1.仅消息(0001);2.仅推送(0010);3.推送+消息(0011);4.仅短信(0100);8.仅邮件(1000)
@@ -88,10 +85,5 @@ public class TemplateDto implements Serializable {
 
     public void setExpire(Integer expire) {
         this.expire = expire;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

@@ -1,8 +1,7 @@
 package com.insight.common.message.common.dto;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -10,23 +9,22 @@ import java.time.LocalDateTime;
  * @date 2019-08-28
  * @remark 渠道消息模板
  */
-public class SceneConfigDto implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class SceneConfigDto extends BaseXo {
 
     /**
      * UUID主键
      */
-    private String id;
+    private Long id;
 
     /**
      * 租户ID
      */
-    private String tenantId;
+    private Long tenantId;
 
     /**
      * 应用ID
      */
-    private String appId;
+    private Long appId;
 
     /**
      * 应用名称
@@ -63,27 +61,27 @@ public class SceneConfigDto implements Serializable {
      */
     private LocalDateTime createdTime;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getTenantId() {
+    public Long getTenantId() {
         return tenantId;
     }
 
-    public void setTenantId(String tenantId) {
+    public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
     }
 
-    public String getAppId() {
+    public Long getAppId() {
         return appId;
     }
 
-    public void setAppId(String appId) {
+    public void setAppId(Long appId) {
         this.appId = appId;
     }
 
@@ -141,10 +139,5 @@ public class SceneConfigDto implements Serializable {
 
     public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

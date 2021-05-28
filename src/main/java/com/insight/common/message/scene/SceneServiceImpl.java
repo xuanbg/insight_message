@@ -10,7 +10,7 @@ import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.common.message.common.mapper.SceneMapper;
 import com.insight.utils.ReplyHelper;
-import com.insight.utils.Util;
+import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.Reply;
@@ -29,6 +29,7 @@ import java.util.List;
 @Service
 public class SceneServiceImpl implements SceneService {
     private static final String BUSINESS = "消息场景管理";
+    private final SnowflakeCreator creator;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final LogServiceClient client;
     private final SceneMapper mapper;
@@ -36,10 +37,12 @@ public class SceneServiceImpl implements SceneService {
     /**
      * 构造方法
      *
-     * @param client LogServiceClient
-     * @param mapper SceneMapper
+     * @param creator 雪花算法ID生成器
+     * @param client  LogServiceClient
+     * @param mapper  SceneMapper
      */
-    public SceneServiceImpl(LogServiceClient client, SceneMapper mapper) {
+    public SceneServiceImpl(SnowflakeCreator creator, LogServiceClient client, SceneMapper mapper) {
+        this.creator = creator;
         this.client = client;
         this.mapper = mapper;
     }
@@ -66,7 +69,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply getScene(String id) {
+    public Reply getScene(Long id) {
         Scene scene = mapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未读取数据");
@@ -84,7 +87,7 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply newScene(LoginInfo info, Scene dto) {
-        String id = Util.uuid();
+        Long id = creator.nextId(1);
         int count = mapper.getSceneCount(id, dto.getCode());
         if (count > 0) {
             return ReplyHelper.invalidParam("场景编码已存在");
@@ -109,7 +112,7 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply editScene(LoginInfo info, Scene dto) {
-        String id = dto.getId();
+        Long id = dto.getId();
         Scene scene = mapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
@@ -134,7 +137,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply deleteScene(LoginInfo info, String id) {
+    public Reply deleteScene(LoginInfo info, Long id) {
         Scene scene = mapper.getScene(id);
         if (scene == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
@@ -154,7 +157,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply getSceneConfigs(LoginInfo info, String sceneId) {
+    public Reply getSceneConfigs(LoginInfo info, Long sceneId) {
         List<SceneConfigDto> configs = mapper.getSceneConfigs(info.getTenantId(), sceneId);
 
         return ReplyHelper.success(configs);
@@ -169,11 +172,11 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply newSceneConfig(LoginInfo info, SceneConfig dto) {
-        String tenantId = info.getTenantId();
-        String id = Util.uuid();
+        Long tenantId = info.getTenantId();
+        Long id = creator.nextId(2);
 
         int count = mapper.getConfigCount(dto.getSceneId(), tenantId, dto.getAppId());
-        if (count > 0){
+        if (count > 0) {
             return ReplyHelper.invalidParam("场景配置已存在,请勿重复添加");
         }
 
@@ -197,14 +200,14 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply editSceneConfig(LoginInfo info, SceneConfig dto) {
-        String id = dto.getId();
+        Long id = dto.getId();
         SceneConfig config = mapper.getSceneConfig(id);
         if (config == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
         }
 
-        String tenantId = info.getTenantId();
-        if (Util.isNotEmpty(tenantId) && !tenantId.equals(config.getTenantId())) {
+        Long tenantId = info.getTenantId();
+        if (tenantId != null && !tenantId.equals(config.getTenantId())) {
             return ReplyHelper.fail("您无权修改该数据");
         }
 
@@ -222,7 +225,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply deleteSceneConfig(LoginInfo info, String id) {
+    public Reply deleteSceneConfig(LoginInfo info, Long id) {
         SceneConfig config = mapper.getSceneConfig(id);
         if (config == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
@@ -237,14 +240,12 @@ public class SceneServiceImpl implements SceneService {
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @Override
-    public Reply getSceneLogs(String keyword, int page, int size) {
-        return client.getLogs(BUSINESS, keyword, page, size);
+    public Reply getSceneLogs(SearchDto search) {
+        return client.getLogs(BUSINESS, search.getKeyword(), search.getPage(), search.getSize());
     }
 
     /**
@@ -254,7 +255,7 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply getSceneLog(String id) {
+    public Reply getSceneLog(Long id) {
         return client.getLog(id);
     }
 }

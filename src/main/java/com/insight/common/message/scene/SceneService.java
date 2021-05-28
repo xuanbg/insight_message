@@ -27,7 +27,7 @@ public interface SceneService {
      * @param id 场景ID
      * @return Reply
      */
-    Reply getScene(String id);
+    Reply getScene(Long id);
 
     /**
      * 新增场景
@@ -54,7 +54,7 @@ public interface SceneService {
      * @param id   场景ID
      * @return Reply
      */
-    Reply deleteScene(LoginInfo info, String id);
+    Reply deleteScene(LoginInfo info, Long id);
 
     /**
      * 获取场景配置列表
@@ -63,7 +63,7 @@ public interface SceneService {
      * @param sceneId 场景ID
      * @return Reply
      */
-    Reply getSceneConfigs(LoginInfo info, String sceneId);
+    Reply getSceneConfigs(LoginInfo info, Long sceneId);
 
     /**
      * 新增场景配置
@@ -90,17 +90,15 @@ public interface SceneService {
      * @param id   场景配置ID
      * @return Reply
      */
-    Reply deleteSceneConfig(LoginInfo info, String id);
+    Reply deleteSceneConfig(LoginInfo info, Long id);
 
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
-    Reply getSceneLogs(String keyword, int page, int size);
+    Reply getSceneLogs(SearchDto search);
 
     /**
      * 获取日志详情
@@ -108,5 +106,5 @@ public interface SceneService {
      * @param id 日志ID
      * @return Reply
      */
-    Reply getSceneLog(String id);
+    Reply getSceneLog(Long id);
 }

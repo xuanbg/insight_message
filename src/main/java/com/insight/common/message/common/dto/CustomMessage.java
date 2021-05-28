@@ -1,10 +1,9 @@
 package com.insight.common.message.common.dto;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -13,8 +12,7 @@ import java.util.Map;
  * @date 2019/9/20
  * @remark 自定义消息DTO
  */
-public class CustomMessage implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class CustomMessage extends BaseXo {
 
     /**
      * 消息标签
@@ -124,10 +122,5 @@ public class CustomMessage implements Serializable {
 
     public void setExpireDate(LocalDate expireDate) {
         this.expireDate = expireDate;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

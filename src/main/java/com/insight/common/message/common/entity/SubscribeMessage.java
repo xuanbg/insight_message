@@ -1,8 +1,7 @@
 package com.insight.common.message.common.entity;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -10,50 +9,49 @@ import java.time.LocalDateTime;
  * @date 2019/9/21
  * @remark 订阅消息DTO
  */
-public class SubscribeMessage implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class SubscribeMessage extends BaseXo {
 
     /**
      * UUID主键
      */
-    private String id;
+    private Long id;
 
     /**
      * 消息ID
      */
-    private String messageId;
+    private Long messageId;
 
     /**
      * 用户ID
      */
-    private String userId;
+    private Long userId;
 
     /**
      * 创建时间
      */
     private LocalDateTime createdTime;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getMessageId() {
+    public Long getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(String messageId) {
+    public void setMessageId(Long messageId) {
         this.messageId = messageId;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -63,10 +61,5 @@ public class SubscribeMessage implements Serializable {
 
     public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

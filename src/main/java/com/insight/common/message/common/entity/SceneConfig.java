@@ -1,37 +1,35 @@
 package com.insight.common.message.common.entity;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
 import javax.validation.constraints.NotEmpty;
-import java.io.Serializable;
 
 /**
  * @author 宣炳刚
  * @date 2019-08-28
  * @remark 渠道消息模板
  */
-public class SceneConfig implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class SceneConfig extends BaseXo {
 
     /**
      * UUID主键
      */
-    private String id;
+    private Long id;
 
     /**
      * 租户ID
      */
-    private String tenantId;
+    private Long tenantId;
 
     /**
      * 场景ID
      */
-    private String sceneId;
+    private Long sceneId;
 
     /**
      * 应用ID
      */
-    private String appId;
+    private Long appId;
 
     /**
      * 应用名称
@@ -67,37 +65,37 @@ public class SceneConfig implements Serializable {
     /**
      * 创建人ID
      */
-    private String creatorId;
+    private Long creatorId;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getTenantId() {
+    public Long getTenantId() {
         return tenantId;
     }
 
-    public void setTenantId(String tenantId) {
+    public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
     }
 
-    public String getSceneId() {
+    public Long getSceneId() {
         return sceneId;
     }
 
-    public void setSceneId(String sceneId) {
+    public void setSceneId(Long sceneId) {
         this.sceneId = sceneId;
     }
 
-    public String getAppId() {
+    public Long getAppId() {
         return appId;
     }
 
-    public void setAppId(String appId) {
+    public void setAppId(Long appId) {
         this.appId = appId;
     }
 
@@ -149,16 +147,11 @@ public class SceneConfig implements Serializable {
         this.creator = creator;
     }
 
-    public String getCreatorId() {
+    public Long getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(String creatorId) {
+    public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

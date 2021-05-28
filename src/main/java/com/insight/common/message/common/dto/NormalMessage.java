@@ -1,10 +1,9 @@
 package com.insight.common.message.common.dto;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -12,8 +11,7 @@ import java.util.Map;
  * @date 2019/9/20
  * @remark 标准消息DTO
  */
-public class NormalMessage implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class NormalMessage extends BaseXo {
 
     /**
      * 场景编码
@@ -81,10 +79,5 @@ public class NormalMessage implements Serializable {
 
     public void setBroadcast(Boolean broadcast) {
         isBroadcast = broadcast;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

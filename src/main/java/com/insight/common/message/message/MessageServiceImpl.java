@@ -9,9 +9,11 @@ import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Redis;
 import com.insight.utils.ReplyHelper;
+import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.Util;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import com.insight.utils.pojo.SmsCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,16 +31,19 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class MessageServiceImpl implements MessageService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final SnowflakeCreator creator;
     private final MessageDal dal;
     private final MessageMapper mapper;
 
     /**
      * 构造方法
      *
-     * @param dal    MessageDal
-     * @param mapper MessageMapper
+     * @param creator 雪花算法ID生成器
+     * @param dal     MessageDal
+     * @param mapper  MessageMapper
      */
-    public MessageServiceImpl(MessageDal dal, MessageMapper mapper) {
+    public MessageServiceImpl(SnowflakeCreator creator, MessageDal dal, MessageMapper mapper) {
+        this.creator = creator;
         this.dal = dal;
         this.mapper = mapper;
     }
@@ -211,16 +216,14 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 获取用户消息列表
      *
-     * @param info    用户关键信息
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param info   用户关键信息
+     * @param search 查询实体类
      * @return Reply
      */
     @Override
-    public Reply getUserMessages(LoginInfo info, String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<MessageListDto> scenes = mapper.getMessages(info, keyword);
+    public Reply getUserMessages(LoginInfo info, SearchDto search) {
+        PageHelper.startPage(search.getPage(), search.getSize());
+        List<MessageListDto> scenes = mapper.getMessages(info, search.getKeyword());
         PageInfo<MessageListDto> pageInfo = new PageInfo<>(scenes);
 
         return ReplyHelper.success(scenes, pageInfo.getTotal());
@@ -234,7 +237,7 @@ public class MessageServiceImpl implements MessageService {
      * @return Reply
      */
     @Override
-    public Reply getUserMessage(String messageId, String userId) {
+    public Reply getUserMessage(Long messageId, Long userId) {
         UserMessageDto message = mapper.getMessage(messageId, userId);
         if (message == null) {
             return ReplyHelper.fail("ID不存在,未读取数据");
@@ -256,7 +259,7 @@ public class MessageServiceImpl implements MessageService {
      * @return Reply
      */
     @Override
-    public Reply deleteUserMessage(String messageId, String userId) {
+    public Reply deleteUserMessage(Long messageId, Long userId) {
         UserMessageDto message = mapper.getMessage(messageId, userId);
         if (message == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
@@ -289,7 +292,7 @@ public class MessageServiceImpl implements MessageService {
 
         // 本地消息
         if (1 == (type & 1) && info != null) {
-            message.setId(Util.uuid());
+            message.setId(creator.nextId(0));
             message.setTenantId(info.getTenantId());
             message.setAppId(info.getAppId());
             message.setCreator(info.getUserName());

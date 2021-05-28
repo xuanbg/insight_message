@@ -49,7 +49,7 @@ public class SceneController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/{id}")
-    public Reply getScene(@PathVariable String id) {
+    public Reply getScene(@PathVariable Long id) {
         return service.getScene(id);
     }
 
@@ -95,8 +95,8 @@ public class SceneController {
      * @return Reply
      */
     @DeleteMapping("/v1.0/scenes")
-    public Reply deleteScene(@RequestHeader("loginInfo") String info, @RequestBody String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply deleteScene(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
@@ -107,12 +107,12 @@ public class SceneController {
     /**
      * 获取场景配置列表
      *
-     * @param info   用户关键信息
-     * @param id     场景ID
+     * @param info 用户关键信息
+     * @param id   场景ID
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/{id}/configs")
-    public Reply getSceneConfigs(@RequestHeader("loginInfo") String info, @PathVariable("id") String id) {
+    public Reply getSceneConfigs(@RequestHeader("loginInfo") String info, @PathVariable("id") Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.getSceneConfigs(loginInfo, id);
@@ -160,8 +160,8 @@ public class SceneController {
      * @return Reply
      */
     @DeleteMapping("/v1.0/scenes/configs")
-    public Reply deleteSceneConfig(@RequestHeader("loginInfo") String info, @RequestBody String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply deleteSceneConfig(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
@@ -172,14 +172,12 @@ public class SceneController {
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/logs")
-    public Reply getSceneLogs(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getSceneLogs(keyword, page, size);
+    public Reply getSceneLogs(SearchDto search) {
+        return service.getSceneLogs(search);
     }
 
     /**
@@ -189,8 +187,8 @@ public class SceneController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/logs/{id}")
-    Reply getSceneLog(@PathVariable String id) {
-        if (id == null || id.isEmpty()) {
+    Reply getSceneLog(@PathVariable Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 

@@ -1,10 +1,9 @@
 package com.insight.common.message.common.entity;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,13 +11,12 @@ import java.util.List;
  * @date 2019-08-28
  * @remark 消息场景
  */
-public class Scene implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class Scene extends BaseXo {
 
     /**
      * UUID主键
      */
-    private String id;
+    private Long id;
 
     /**
      * 场景编号
@@ -66,13 +64,13 @@ public class Scene implements Serializable {
     /**
      * 创建人ID
      */
-    private String creatorId;
+    private Long creatorId;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -140,16 +138,11 @@ public class Scene implements Serializable {
         this.creator = creator;
     }
 
-    public String getCreatorId() {
+    public Long getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(String creatorId) {
+    public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

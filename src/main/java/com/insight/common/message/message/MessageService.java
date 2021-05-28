@@ -4,6 +4,7 @@ import com.insight.common.message.common.dto.CustomMessage;
 import com.insight.common.message.common.dto.NormalMessage;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import com.insight.utils.pojo.SmsCode;
 
 /**
@@ -52,13 +53,11 @@ public interface MessageService {
     /**
      * 获取用户消息列表
      *
-     * @param info    用户关键信息
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param info   用户关键信息
+     * @param search 查询实体类
      * @return Reply
      */
-    Reply getUserMessages(LoginInfo info, String keyword, int page, int size);
+    Reply getUserMessages(LoginInfo info, SearchDto search);
 
     /**
      * 获取用户消息详情
@@ -67,7 +66,7 @@ public interface MessageService {
      * @param userId    用户ID
      * @return Reply
      */
-    Reply getUserMessage(String messageId, String userId);
+    Reply getUserMessage(Long messageId, Long userId);
 
     /**
      * 删除用户消息
@@ -76,5 +75,5 @@ public interface MessageService {
      * @param userId    用户ID
      * @return Reply
      */
-    Reply deleteUserMessage(String messageId, String userId);
+    Reply deleteUserMessage(Long messageId, Long userId);
 }

@@ -11,10 +11,11 @@ import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
-import com.insight.utils.Util;
+import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,6 @@ import java.util.List;
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
     private static final String BUSINESS = "计划任务管理";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final LogServiceClient client;
-    private final MessageMapper mapper;
     private static final List<String> MATCH_LIST = new ArrayList<>();
 
     static {
@@ -43,13 +41,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         MATCH_LIST.add("sendMail");
     }
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final SnowflakeCreator creator;
+    private final LogServiceClient client;
+    private final MessageMapper mapper;
+
     /**
      * 构造方法
      *
-     * @param client LogServiceClient
-     * @param mapper MessageMapper
+     * @param creator 雪花算法ID生成器
+     * @param client  LogServiceClient
+     * @param mapper  MessageMapper
      */
-    public ScheduleServiceImpl(LogServiceClient client, MessageMapper mapper) {
+    public ScheduleServiceImpl(SnowflakeCreator creator, LogServiceClient client, MessageMapper mapper) {
+        this.creator = creator;
         this.client = client;
         this.mapper = mapper;
     }
@@ -57,15 +62,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     /**
      * 获取计划任务列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @Override
-    public Reply getSchedules(String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<ScheduleListDto> schedules = mapper.getSchedules(keyword);
+    public Reply getSchedules(SearchDto search) {
+        PageHelper.startPage(search.getPage(), search.getSize());
+        List<ScheduleListDto> schedules = mapper.getSchedules(search.getKeyword());
         PageInfo<ScheduleListDto> pageInfo = new PageInfo<>(schedules);
 
         return ReplyHelper.success(schedules, pageInfo.getTotal());
@@ -78,7 +81,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply getSchedule(String id) {
+    public Reply getSchedule(Long id) {
         Schedule schedule = mapper.getSchedule(id);
         if (schedule == null) {
             return ReplyHelper.fail("ID不存在,未读取数据");
@@ -112,7 +115,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
         }
 
-        String id = Util.uuid();
+        Long id = creator.nextId(3);
         dto.setId(id);
         if (dto.getTaskTime() == null) {
             dto.setTaskTime(LocalDateTime.now().plusSeconds(10));
@@ -134,7 +137,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply executeSchedule(LoginInfo info, String id) {
+    public Reply executeSchedule(LoginInfo info, Long id) {
         Schedule schedule = mapper.getSchedule(id);
         if (schedule == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
@@ -154,7 +157,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply deleteSchedule(LoginInfo info, String id) {
+    public Reply deleteSchedule(LoginInfo info, Long id) {
         Schedule schedule = mapper.getSchedule(id);
         if (schedule == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
@@ -175,7 +178,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply changeScheduleStatus(LoginInfo info, String id, boolean status) {
+    public Reply changeScheduleStatus(LoginInfo info, Long id, boolean status) {
         Schedule schedule = mapper.getSchedule(id);
         if (schedule == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
@@ -190,14 +193,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @Override
-    public Reply getScheduleLogs(String keyword, int page, int size) {
-        return client.getLogs(BUSINESS, keyword, page, size);
+    public Reply getScheduleLogs(SearchDto search) {
+        return client.getLogs(BUSINESS, search.getKeyword(), search.getPage(), search.getSize());
     }
 
     /**
@@ -207,7 +208,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply getScheduleLog(String id) {
+    public Reply getScheduleLog(Long id) {
         return client.getLog(id);
     }
 }

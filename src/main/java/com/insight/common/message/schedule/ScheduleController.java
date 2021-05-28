@@ -5,6 +5,7 @@ import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,14 +33,12 @@ public class ScheduleController {
     /**
      * 获取计划任务列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/schedules")
-    public Reply getSchedules(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getSchedules(keyword, page, size);
+    public Reply getSchedules(SearchDto search) {
+        return service.getSchedules(search);
     }
 
     /**
@@ -49,7 +48,7 @@ public class ScheduleController {
      * @return Reply
      */
     @GetMapping("/v1.0/schedules/{id}")
-    public Reply getSchedule(@PathVariable String id) {
+    public Reply getSchedule(@PathVariable Long id) {
         return service.getSchedule(id);
     }
 
@@ -72,8 +71,8 @@ public class ScheduleController {
      * @return Reply
      */
     @PutMapping("/v1.0/schedules")
-    public Reply executeSchedule(@RequestHeader("loginInfo") String info, @RequestBody String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply executeSchedule(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
@@ -89,8 +88,8 @@ public class ScheduleController {
      * @return Reply
      */
     @DeleteMapping("/v1.0/schedules")
-    public Reply deleteSchedule(@RequestHeader("loginInfo") String info, @RequestBody String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply deleteSchedule(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
@@ -106,8 +105,8 @@ public class ScheduleController {
      * @return Reply
      */
     @PutMapping("/v1.0/schedules/disable")
-    public Reply disableSchedule(@RequestHeader("loginInfo") String info, @RequestBody String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply disableSchedule(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
@@ -123,8 +122,8 @@ public class ScheduleController {
      * @return Reply
      */
     @PutMapping("/v1.0/schedules/enable")
-    public Reply enableSchedule(@RequestHeader("loginInfo") String info, @RequestBody String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply enableSchedule(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
@@ -135,14 +134,12 @@ public class ScheduleController {
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/schedules/logs")
-    public Reply getScheduleLogs(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getScheduleLogs(keyword, page, size);
+    public Reply getScheduleLogs(SearchDto search) {
+        return service.getScheduleLogs(search);
     }
 
     /**
@@ -152,8 +149,8 @@ public class ScheduleController {
      * @return Reply
      */
     @GetMapping("/v1.0/schedules/logs/{id}")
-    Reply getScheduleLog(@PathVariable String id) {
-        if (id == null || id.isEmpty()) {
+    Reply getScheduleLog(@PathVariable Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 

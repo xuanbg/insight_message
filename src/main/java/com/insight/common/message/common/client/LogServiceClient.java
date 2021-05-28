@@ -34,5 +34,5 @@ public interface LogServiceClient {
      * @return Reply
      */
     @GetMapping("/common/log/v1.0/logs/{id}")
-    Reply getLog(@PathVariable String id);
+    Reply getLog(@PathVariable Long id);
 }

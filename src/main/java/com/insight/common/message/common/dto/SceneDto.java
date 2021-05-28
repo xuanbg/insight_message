@@ -1,8 +1,7 @@
 package com.insight.common.message.common.dto;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,13 +9,12 @@ import java.util.List;
  * @date 2019-08-28
  * @remark 消息场景
  */
-public class SceneDto implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class SceneDto extends BaseXo {
 
     /**
      * UUID主键
      */
-    private String id;
+    private Long id;
 
     /**
      * 场景编号
@@ -53,11 +51,11 @@ public class SceneDto implements Serializable {
      */
     private String remark;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -115,10 +113,5 @@ public class SceneDto implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

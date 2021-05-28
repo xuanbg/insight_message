@@ -5,8 +5,7 @@ import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
-import com.insight.utils.Generator;
-import com.insight.utils.Util;
+import com.insight.utils.SnowflakeCreator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +23,17 @@ import java.util.List;
 @Component
 public class MessageDal {
     private final MessageMapper mapper;
+    private final SnowflakeCreator creator;
 
     /**
      * 构造方法
      *
-     * @param mapper MessageMapper
+     * @param mapper  MessageMapper
+     * @param creator 雪花算法ID生成器
      */
-    public MessageDal(MessageMapper mapper) {
+    public MessageDal(MessageMapper mapper, SnowflakeCreator creator) {
         this.mapper = mapper;
+        this.creator = creator;
     }
 
     /**
@@ -41,9 +43,9 @@ public class MessageDal {
      */
     @Transactional
     public void addMessage(InsightMessage message) {
-        String id = message.getId();
-        if (id == null || id.isEmpty()) {
-            message.setId(Util.uuid());
+        Long id = message.getId();
+        if (id == null) {
+            message.setId(creator.nextId(0));
         }
 
         message.setCreatedTime(LocalDateTime.now());
@@ -56,7 +58,6 @@ public class MessageDal {
         List<PushMessage> pushList = new ArrayList<>();
         message.getReceivers().forEach(i -> {
             PushMessage push = new PushMessage();
-            push.setId(Util.uuid());
             push.setMessageId(message.getId());
             push.setUserId(i);
             push.setRead(false);
@@ -73,10 +74,9 @@ public class MessageDal {
      * @param isBroadcast 是否广播消息
      */
     @Async
-    public void readMessage(String messageId, String userId, boolean isBroadcast) {
+    public void readMessage(Long messageId, Long userId, boolean isBroadcast) {
         if (isBroadcast) {
             SubscribeMessage subscribe = new SubscribeMessage();
-            subscribe.setId(Util.uuid());
             subscribe.setMessageId(messageId);
             subscribe.setUserId(userId);
             subscribe.setCreatedTime(LocalDateTime.now());

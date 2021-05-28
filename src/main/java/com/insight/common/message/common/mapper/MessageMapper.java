@@ -29,7 +29,7 @@ public interface MessageMapper {
     @Select("select s.type, s.title, s.tag, c.content, c.sign, c.expire from ims_scene s join ims_scene_config c on c.scene_id = s.id " +
             "and (c.tenant_id is null or c.tenant_id = #{tenantId}) and (c.app_id is null or c.app_id = #{appId}) " +
             "where s.code = #{code} order by c.tenant_id desc, c.app_id desc limit 1;")
-    TemplateDto getTemplate(String tenantId, String appId, String code);
+    TemplateDto getTemplate(Long tenantId, Long appId, String code);
 
     /**
      * 获取消息列表
@@ -59,7 +59,7 @@ public interface MessageMapper {
             "from imm_message m left join (select message_id, is_read from imm_message_push where message_id = #{messageId} and user_id = #{userId} union all " +
             "select message_id, 1 as is_read from imm_message_subscribe where message_id = #{messageId} and user_id = #{userId}) r on r.message_id = m.id " +
             "where m.id = #{messageId};")
-    UserMessageDto getMessage(@Param("messageId") String messageId, @Param("userId") String userId);
+    UserMessageDto getMessage(@Param("messageId") Long messageId, @Param("userId") Long userId);
 
     /**
      * 新增消息
@@ -87,14 +87,14 @@ public interface MessageMapper {
      * @param userId    用户ID
      */
     @Update("update imm_message_push set is_read = 1, read_time = now() where message_id = #{messageId} and user_id = #{userId};")
-    void readMessage(@Param("messageId") String messageId, @Param("userId") String userId);
+    void readMessage(@Param("messageId") Long messageId, @Param("userId") Long userId);
 
     /**
      * 订阅消息
      *
      * @param subscribeMessage 消息订阅DTO
      */
-    @Insert("insert imm_message_subscribe(id, message_id, user_id, created_time) values (#{id}, #{messageId}, #{userId}, #{createdTime});")
+    @Insert("insert imm_message_subscribe(message_id, user_id, created_time) values (#{messageId}, #{userId}, #{createdTime});")
     void subscribeMessage(SubscribeMessage subscribeMessage);
 
     /**
@@ -104,7 +104,7 @@ public interface MessageMapper {
      * @param userId    用户ID
      */
     @Update("update imm_message_push set is_invalid = 1 where message_id = #{messageId} and user_id = #{userId};")
-    void deleteUserMessage(@Param("messageId") String messageId, @Param("userId") String userId);
+    void deleteUserMessage(@Param("messageId") Long messageId, @Param("userId") Long userId);
 
     /**
      * 删除用户消息
@@ -113,7 +113,7 @@ public interface MessageMapper {
      * @param userId    用户ID
      */
     @Update("update imm_message_subscribe set is_invalid = 1 where message_id = #{messageId} and user_id = #{userId};")
-    void unsubscribeMessage(@Param("messageId") String messageId, @Param("userId") String userId);
+    void unsubscribeMessage(@Param("messageId") Long messageId, @Param("userId") Long userId);
 
     /**
      * 编辑消息
@@ -159,7 +159,7 @@ public interface MessageMapper {
      */
     @Results({@Result(property = "content", column = "content", javaType = Object.class, typeHandler = JsonTypeHandler.class)})
     @Select("select * from imt_schedule where id = #{id};")
-    Schedule getSchedule(String id);
+    Schedule getSchedule(Long id);
 
     /**
      * 获取当前需要执行的消息类型的计划任务
@@ -203,7 +203,7 @@ public interface MessageMapper {
      * @param id 计划任务ID
      */
     @Update("update imt_schedule set task_time = now(), is_invalid = 0 where id = #{id};")
-    void editSchedule(String id);
+    void editSchedule(Long id);
 
     /**
      * 禁用/启用计划任务
@@ -212,7 +212,7 @@ public interface MessageMapper {
      * @param status 禁用/启用状态
      */
     @Update("update imt_schedule set is_invalid = #{status} where id = #{id};")
-    void changeScheduleStatus(String id, boolean status);
+    void changeScheduleStatus(Long id, boolean status);
 
     /**
      * 删除计划任务
@@ -220,5 +220,5 @@ public interface MessageMapper {
      * @param id 计划任务ID
      */
     @Delete("delete from imt_schedule where id = #{id};")
-    void deleteSchedule(String id);
+    void deleteSchedule(Long id);
 }

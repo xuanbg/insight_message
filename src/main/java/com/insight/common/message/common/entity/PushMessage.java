@@ -1,8 +1,7 @@
 package com.insight.common.message.common.entity;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -10,18 +9,17 @@ import java.time.LocalDateTime;
  * @date 2019/9/21
  * @remark 推送消息DTO
  */
-public class PushMessage implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class PushMessage extends BaseXo {
 
     /**
      * UUID主键
      */
-    private String id;
+    private Long id;
 
     /**
      * 消息ID
      */
-    private String messageId;
+    private Long messageId;
 
     /**
      * 用户ID
@@ -38,19 +36,19 @@ public class PushMessage implements Serializable {
      */
     private LocalDateTime readTime;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getMessageId() {
+    public Long getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(String messageId) {
+    public void setMessageId(Long messageId) {
         this.messageId = messageId;
     }
 
@@ -76,10 +74,5 @@ public class PushMessage implements Serializable {
 
     public void setReadTime(LocalDateTime readTime) {
         this.readTime = readTime;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

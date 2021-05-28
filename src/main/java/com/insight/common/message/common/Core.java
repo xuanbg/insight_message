@@ -5,7 +5,7 @@ import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.utils.Redis;
-import com.insight.utils.Util;
+import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.http.HttpUtil;
 import com.insight.utils.pojo.Reply;
 import com.rabbitmq.client.Channel;
@@ -50,6 +50,7 @@ public class Core {
     private final Encoder encoder = new JacksonEncoder();
     private final DiscoveryClient discoveryClient;
     private final JavaMailSender mailSender;
+    private final SnowflakeCreator creator;
     private final MessageDal dal;
 
     /**
@@ -63,11 +64,13 @@ public class Core {
      *
      * @param discoveryClient DiscoveryClient
      * @param mailSender      JavaMailSender
+     * @param creator         雪花算法ID生成器
      * @param dal             MessageDal
      */
-    public Core(DiscoveryClient discoveryClient, JavaMailSender mailSender, MessageDal dal) {
+    public Core(DiscoveryClient discoveryClient, JavaMailSender mailSender, SnowflakeCreator creator, MessageDal dal) {
         this.discoveryClient = discoveryClient;
         this.mailSender = mailSender;
+        this.creator = creator;
         this.dal = dal;
     }
 
@@ -243,9 +246,9 @@ public class Core {
      */
     private void addSchedule(Schedule schedule) {
         LocalDateTime now = LocalDateTime.now();
-        String id = schedule.getId();
-        if (id == null || id.isEmpty()) {
-            schedule.setId(Util.uuid());
+        Long id = schedule.getId();
+        if (id == null) {
+            schedule.setId(creator.nextId(3));
             schedule.setTaskTime(now.plusSeconds(10));
             schedule.setCount(0);
             schedule.setInvalid(false);
@@ -265,7 +268,7 @@ public class Core {
             dal.addSchedule(schedule);
         } catch (Exception ex) {
             // 保存计划任务数据失败,记录日志并发短信通知运维人员
-            logger.warn("保存任务失败! 任务数据为: {}", schedule.toString());
+            logger.warn("保存任务失败! 任务数据为: {}", schedule);
 
             String key = "Config:Warning";
             boolean isWarning = Redis.hasKey(key);
@@ -277,7 +280,7 @@ public class Core {
             list.add("13958085903");
             InsightMessage message = new InsightMessage();
             message.setReceivers(list);
-            message.setContent(now.toString() + "保存任务失败! 请尽快处理");
+            message.setContent(now + "保存任务失败! 请尽快处理");
 
             Redis.set(key, now.toString(), 24L, TimeUnit.HOURS);
             sendSms(message);
@@ -293,7 +296,7 @@ public class Core {
     private String getServiceUrl(String service) {
         try {
             List<ServiceInstance> list = discoveryClient.getInstances(service);
-            if (list == null || list.isEmpty()){
+            if (list == null || list.isEmpty()) {
                 return null;
             }
 

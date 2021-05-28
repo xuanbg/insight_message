@@ -1,10 +1,9 @@
 package com.insight.common.message.common.dto;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -12,13 +11,12 @@ import java.time.LocalDateTime;
  * @date 2019/9/23
  * @remark 计划任务DTO
  */
-public class Schedule<T> implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class Schedule<T> extends BaseXo {
 
     /**
      * UUID主键
      */
-    private String id;
+    private Long id;
 
     /**
      * 任务类型:0.消息;1.本地调用;2.远程调用
@@ -58,11 +56,11 @@ public class Schedule<T> implements Serializable {
      */
     private LocalDateTime createdTime;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -120,10 +118,5 @@ public class Schedule<T> implements Serializable {
 
     public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

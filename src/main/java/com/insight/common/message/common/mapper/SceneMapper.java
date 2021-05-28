@@ -37,7 +37,7 @@ public interface SceneMapper {
      */
     @Results({@Result(property = "params", column = "params", javaType = String.class, typeHandler = ArrayTypeHandler.class)})
     @Select("select * from ims_scene where id = #{id};")
-    Scene getScene(String id);
+    Scene getScene(Long id);
 
     /**
      * 获取指定编码的场景数量
@@ -47,7 +47,7 @@ public interface SceneMapper {
      * @return 场景数量
      */
     @Select("select count(*) from ims_scene where id != #{id} and code = #{code};")
-    int getSceneCount(@Param("id") String id, @Param("code") String code);
+    int getSceneCount(@Param("id") Long id, @Param("code") String code);
 
     /**
      * 新增消息场景
@@ -74,7 +74,7 @@ public interface SceneMapper {
      * @param id 消息场景ID
      */
     @Delete("delete s, c from ims_scene s left join ims_scene_config c on c.scene_id = s.id where s.id = #{id};")
-    void deleteScene(String id);
+    void deleteScene(Long id);
 
     /**
      * 获取场景配置列表
@@ -84,7 +84,7 @@ public interface SceneMapper {
      * @return 场景模板配置列表
      */
     @Select("select * from ims_scene_config where scene_id = #{sceneId} and (tenant_id is null or tenant_id = #{tenantId}) order by created_time;")
-    List<SceneConfigDto> getSceneConfigs(@Param("tenantId") String tenantId, @Param("sceneId") String sceneId);
+    List<SceneConfigDto> getSceneConfigs(@Param("tenantId") Long tenantId, @Param("sceneId") Long sceneId);
 
     /**
      * 获取场景配置详情
@@ -93,7 +93,7 @@ public interface SceneMapper {
      * @return 配置详情
      */
     @Select("select * from ims_scene_config where id = #{id};")
-    SceneConfig getSceneConfig(String id);
+    SceneConfig getSceneConfig(Long id);
 
     /**
      * 获取已存在配置数量
@@ -109,7 +109,7 @@ public interface SceneMapper {
             "<if test = 'appId != null'>and app_id = #{appId} </if>" +
             "<if test = 'appId == null'>and app_id is null </if>" +
             ";</script>")
-    int getConfigCount(String id, String tenantId, String appId);
+    int getConfigCount(Long id, Long tenantId, Long appId);
 
     /**
      * 新增场景配置
@@ -134,5 +134,5 @@ public interface SceneMapper {
      * @param id 场景配置ID
      */
     @Delete("delete from ims_scene_config where id = #{id};")
-    void deleteSceneConfig(String id);
+    void deleteSceneConfig(Long id);
 }

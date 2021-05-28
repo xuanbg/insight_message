@@ -1,8 +1,7 @@
 package com.insight.common.message.common.dto;
 
-import com.insight.utils.Json;
+import com.insight.utils.pojo.BaseXo;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -10,8 +9,7 @@ import java.util.Map;
  * @date 2019/9/25
  * @remark 计划任务调用DTO
  */
-public class ScheduleCall implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class ScheduleCall extends BaseXo {
 
     /**
      * 请求方法
@@ -76,10 +74,5 @@ public class ScheduleCall implements Serializable {
 
     public void setBody(Object body) {
         this.body = body;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

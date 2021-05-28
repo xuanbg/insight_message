@@ -3,6 +3,7 @@ package com.insight.common.message.schedule;
 import com.insight.common.message.common.dto.Schedule;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 
 /**
  * @author 宣炳刚
@@ -14,12 +15,10 @@ public interface ScheduleService {
     /**
      * 获取计划任务列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
-    Reply getSchedules(String keyword, int page, int size);
+    Reply getSchedules(SearchDto search);
 
     /**
      * 获取计划任务详情
@@ -27,7 +26,7 @@ public interface ScheduleService {
      * @param id 计划任务ID
      * @return Reply
      */
-    Reply getSchedule(String id);
+    Reply getSchedule(Long id);
 
     /**
      * 新增计划任务
@@ -44,7 +43,7 @@ public interface ScheduleService {
      * @param id   计划任务ID
      * @return Reply
      */
-    Reply executeSchedule(LoginInfo info, String id);
+    Reply executeSchedule(LoginInfo info, Long id);
 
     /**
      * 删除计划任务
@@ -53,7 +52,7 @@ public interface ScheduleService {
      * @param id   计划任务ID
      * @return Reply
      */
-    Reply deleteSchedule(LoginInfo info, String id);
+    Reply deleteSchedule(LoginInfo info, Long id);
 
     /**
      * 禁用/启用计划任务
@@ -63,17 +62,15 @@ public interface ScheduleService {
      * @param status 禁用/启用状态
      * @return Reply
      */
-    Reply changeScheduleStatus(LoginInfo info, String id, boolean status);
+    Reply changeScheduleStatus(LoginInfo info, Long id, boolean status);
 
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
-    Reply getScheduleLogs(String keyword, int page, int size);
+    Reply getScheduleLogs(SearchDto search);
 
     /**
      * 获取日志详情
@@ -81,5 +78,5 @@ public interface ScheduleService {
      * @param id 日志ID
      * @return Reply
      */
-    Reply getScheduleLog(String id);
+    Reply getScheduleLog(Long id);
 }

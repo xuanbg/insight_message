@@ -57,28 +57,31 @@ public class TopicExchangeConfig {
 
     /**
      * 消息发送绑定
+     *
      * @return Binding
      */
     @Bean
-    public Binding manageBinding(){
+    public Binding manageBinding() {
         return BindingBuilder.bind(messageQueue()).to(exchange()).with("schedule.message");
     }
 
     /**
      * 本地调用绑定
+     *
      * @return Binding
      */
     @Bean
-    public Binding localBinding(){
+    public Binding localBinding() {
         return BindingBuilder.bind(localQueue()).to(exchange()).with("schedule.local");
     }
 
     /**
      * 远程调用绑定
+     *
      * @return Binding
      */
     @Bean
-    public Binding remoteBinding(){
+    public Binding remoteBinding() {
         return BindingBuilder.bind(remoteQueue()).to(exchange()).with("schedule.remote");
     }
 }

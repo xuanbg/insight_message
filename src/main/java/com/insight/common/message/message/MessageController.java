@@ -6,6 +6,7 @@ import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import com.insight.utils.pojo.SmsCode;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,18 +93,15 @@ public class MessageController {
     /**
      * 获取用户消息列表
      *
-     * @param info    用户关键信息
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param info   用户关键信息
+     * @param search 查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/messages")
-    public Reply getUserMessages(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
-                                 @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+    public Reply getUserMessages(@RequestHeader("loginInfo") String info, SearchDto search) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.getUserMessages(loginInfo, keyword, page, size);
+        return service.getUserMessages(loginInfo, search);
     }
 
     /**
@@ -114,7 +112,7 @@ public class MessageController {
      * @return Reply
      */
     @GetMapping("/v1.0/messages/{id}")
-    public Reply getUserMessage(@RequestHeader("loginInfo") String info, @PathVariable String id) {
+    public Reply getUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.getUserMessage(id, loginInfo.getUserId());
@@ -128,8 +126,8 @@ public class MessageController {
      * @return Reply
      */
     @DeleteMapping("/v1.0/messages")
-    public Reply deleteUserMessage(@RequestHeader("loginInfo") String info, @RequestBody String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply deleteUserMessage(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
