@@ -266,7 +266,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NullPointerException.class)
     public Reply handleNullPointerException(NullPointerException ex) {
-        String msg = "空指针异常, " + Json.toJson(ex.getStackTrace());
+        String msg = "空指针异常, " + ex.getMessage();
         String requestId = logger(LogLevel.ERROR, msg);
         printStack(requestId, ex);
 
