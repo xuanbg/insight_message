@@ -125,13 +125,10 @@ public class MessageController {
      * @param id   消息ID
      * @return Reply
      */
-    @DeleteMapping("/v1.0/messages")
-    public Reply deleteUserMessage(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @DeleteMapping("/v1.0/messages/{id}")
+    public Reply deleteUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.deleteUserMessage(id, loginInfo.getUserId());
     }
 }

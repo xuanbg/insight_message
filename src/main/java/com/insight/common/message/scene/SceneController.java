@@ -3,7 +3,6 @@ package com.insight.common.message.scene;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.utils.Json;
-import com.insight.utils.ReplyHelper;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
 import com.insight.utils.pojo.SearchDto;
@@ -62,11 +61,8 @@ public class SceneController {
      */
     @PostMapping("/v1.0/scenes")
     public Reply newScene(@RequestHeader("loginInfo") String info, @Valid @RequestBody Scene dto) {
-        if (dto == null) {
-            return ReplyHelper.invalidParam();
-        }
-
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.newScene(loginInfo, dto);
     }
 
@@ -74,16 +70,15 @@ public class SceneController {
      * 编辑场景
      *
      * @param info 用户关键信息
+     * @param id   场景ID
      * @param dto  场景DTO
      * @return Reply
      */
-    @PutMapping("/v1.0/scenes")
-    public Reply editScene(@RequestHeader("loginInfo") String info, @Valid @RequestBody Scene dto) {
-        if (dto == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @PutMapping("/v1.0/scenes/{id}")
+    public Reply editScene(@RequestHeader("loginInfo") String info, @PathVariable Long id, @Valid @RequestBody Scene dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        dto.setId(id);
+
         return service.editScene(loginInfo, dto);
     }
 
@@ -94,13 +89,10 @@ public class SceneController {
      * @param id   场景ID
      * @return Reply
      */
-    @DeleteMapping("/v1.0/scenes")
+    @DeleteMapping("/v1.0/scenes/{id}")
     public Reply deleteScene(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.deleteScene(loginInfo, id);
     }
 
@@ -112,7 +104,7 @@ public class SceneController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/{id}/configs")
-    public Reply getSceneConfigs(@RequestHeader("loginInfo") String info, @PathVariable("id") Long id) {
+    public Reply getSceneConfigs(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.getSceneConfigs(loginInfo, id);
@@ -122,16 +114,15 @@ public class SceneController {
      * 新增场景配置
      *
      * @param info 用户关键信息
+     * @param id   场景ID
      * @param dto  场景配置DTO
      * @return Reply
      */
-    @PostMapping("/v1.0/scenes/configs")
-    public Reply newSceneConfig(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
-        if (dto == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @PostMapping("/v1.0/scenes/{id}/configs")
+    public Reply newSceneConfig(@RequestHeader("loginInfo") String info, @PathVariable Long id, @Valid @RequestBody SceneConfig dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        dto.setSceneId(id);
+
         return service.newSceneConfig(loginInfo, dto);
     }
 
@@ -139,16 +130,15 @@ public class SceneController {
      * 编辑场景配置
      *
      * @param info 用户关键信息
+     * @param id   场景配置ID
      * @param dto  场景配置DTO
      * @return Reply
      */
-    @PutMapping("/v1.0/scenes/configs")
-    public Reply editSceneConfig(@RequestHeader("loginInfo") String info, @Valid @RequestBody SceneConfig dto) {
-        if (dto == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @PutMapping("/v1.0/scenes/configs/{id}")
+    public Reply editSceneConfig(@RequestHeader("loginInfo") String info, @PathVariable Long id, @Valid @RequestBody SceneConfig dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        dto.setId(id);
+
         return service.editSceneConfig(loginInfo, dto);
     }
 
@@ -159,13 +149,10 @@ public class SceneController {
      * @param id   场景配置ID
      * @return Reply
      */
-    @DeleteMapping("/v1.0/scenes/configs")
-    public Reply deleteSceneConfig(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @DeleteMapping("/v1.0/scenes/configs/{id}")
+    public Reply deleteSceneConfig(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.deleteSceneConfig(loginInfo, id);
     }
 
@@ -188,10 +175,6 @@ public class SceneController {
      */
     @GetMapping("/v1.0/scenes/logs/{id}")
     Reply getSceneLog(@PathVariable Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
         return service.getSceneLog(id);
     }
 }

@@ -2,7 +2,6 @@ package com.insight.common.message.schedule;
 
 import com.insight.common.message.common.dto.Schedule;
 import com.insight.utils.Json;
-import com.insight.utils.ReplyHelper;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
 import com.insight.utils.pojo.SearchDto;
@@ -70,13 +69,10 @@ public class ScheduleController {
      * @param id   计划任务ID
      * @return Reply
      */
-    @PutMapping("/v1.0/schedules")
-    public Reply executeSchedule(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @PutMapping("/v1.0/schedules/{id}")
+    public Reply executeSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.executeSchedule(loginInfo, id);
     }
 
@@ -87,13 +83,10 @@ public class ScheduleController {
      * @param id   计划任务ID
      * @return Reply
      */
-    @DeleteMapping("/v1.0/schedules")
-    public Reply deleteSchedule(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @DeleteMapping("/v1.0/schedules/{id}")
+    public Reply deleteSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.deleteSchedule(loginInfo, id);
     }
 
@@ -104,13 +97,10 @@ public class ScheduleController {
      * @param id   计划任务ID
      * @return Reply
      */
-    @PutMapping("/v1.0/schedules/disable")
-    public Reply disableSchedule(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @PutMapping("/v1.0/schedules/{id}/disable")
+    public Reply disableSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.changeScheduleStatus(loginInfo, id, true);
     }
 
@@ -121,13 +111,10 @@ public class ScheduleController {
      * @param id   计划任务ID
      * @return Reply
      */
-    @PutMapping("/v1.0/schedules/enable")
-    public Reply enableSchedule(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
+    @PutMapping("/v1.0/schedules/{id}/enable")
+    public Reply enableSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+
         return service.changeScheduleStatus(loginInfo, id, false);
     }
 
@@ -150,10 +137,6 @@ public class ScheduleController {
      */
     @GetMapping("/v1.0/schedules/logs/{id}")
     Reply getScheduleLog(@PathVariable Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
         return service.getScheduleLog(id);
     }
 }
