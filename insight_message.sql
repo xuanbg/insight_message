@@ -3,16 +3,16 @@
 -- ----------------------------
 DROP TABLE IF EXISTS `imm_message`;
 CREATE TABLE `imm_message` (
-  `id`                 bigint            NOT NULL                COMMENT '主键-0',
-  `tenant_id`          bigint                     DEFAULT NULL   COMMENT '租户ID',
-  `app_id`             bigint            NOT NULL                COMMENT '应用Id',
+  `id`                 bigint unsigned   NOT NULL                COMMENT '主键-0',
+  `tenant_id`          bigint unsigned            DEFAULT NULL   COMMENT '租户ID',
+  `app_id`             bigint unsigned   NOT NULL                COMMENT '应用Id',
   `tag`                varchar(8)        NOT NULL                COMMENT '消息标签',
   `title`              varchar(64)       NOT NULL                COMMENT '标题',
   `content`            varchar(512)               DEFAULT NULL   COMMENT '内容',
   `expire_date`        date                       DEFAULT NULL   COMMENT '失效日期',
   `is_broadcast`       bit               NOT NULL DEFAULT b'0'   COMMENT '是否广播消息：0、普通消息；1、广播消息',
   `creator`            varchar(64)       NOT NULL                COMMENT '创建人',
-  `creator_id`         bigint            NOT NULL                COMMENT '创建人ID',
+  `creator_id`         bigint unsigned   NOT NULL                COMMENT '创建人ID',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_message_tenant_id` (`tenant_id`),
@@ -28,9 +28,9 @@ CREATE TABLE `imm_message` (
 -- ----------------------------
 DROP TABLE IF EXISTS `imm_message_push`;
 CREATE TABLE `imm_message_push` (
-  `id`                 bigint            NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `message_id`         bigint            NOT NULL                COMMENT '消息ID',
-  `user_id`            bigint            NOT NULL                COMMENT '用户ID',
+  `id`                 bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `message_id`         bigint unsigned   NOT NULL                COMMENT '消息ID',
+  `user_id`            bigint unsigned   NOT NULL                COMMENT '用户ID',
   `is_read`            bit               NOT NULL DEFAULT b'0'   COMMENT '是否已读：0、未读；1、已读',
   `read_time`          datetime          NULL     DEFAULT NULL   COMMENT '阅读时间',
   `is_invalid`         bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效：0、正常；1、失效',
@@ -44,9 +44,9 @@ CREATE TABLE `imm_message_push` (
 -- ----------------------------
 DROP TABLE IF EXISTS `imm_message_subscribe`;
 CREATE TABLE `imm_message_subscribe` (
-  `id`                 bigint            NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `message_id`         bigint            NOT NULL                COMMENT '消息ID',
-  `user_id`            bigint            NOT NULL                COMMENT '用户ID',
+  `id`                 bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `message_id`         bigint unsigned   NOT NULL                COMMENT '消息ID',
+  `user_id`            bigint unsigned   NOT NULL                COMMENT '用户ID',
   `is_invalid`         bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效：0、正常；1、失效',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -60,7 +60,7 @@ CREATE TABLE `imm_message_subscribe` (
 -- ----------------------------
 DROP TABLE IF EXISTS `ims_scene`;
 CREATE TABLE `ims_scene` (
-  `id`                 bigint            NOT NULL                COMMENT '主键-1',
+  `id`                 bigint unsigned   NOT NULL                COMMENT '主键-1',
   `code`               char(8)           NOT NULL                COMMENT '场景遍号',
   `type`               tinyint unsigned  NOT NULL DEFAULT '0'    COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)',
   `name`               varchar(32)       NOT NULL                COMMENT '场景名称',
@@ -69,7 +69,7 @@ CREATE TABLE `ims_scene` (
   `param`              json                       DEFAULT NULL   COMMENT '消息参数',
   `remark`             varchar(256)               DEFAULT NULL   COMMENT '场景描述',
   `creator`            varchar(64)       NOT NULL                COMMENT '创建人',
-  `creator_id`         bigint            NOT NULL                COMMENT '创建人ID',
+  `creator_id`         bigint unsigned   NOT NULL                COMMENT '创建人ID',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `idx_scene_code` (`code`) USING BTREE,
@@ -82,10 +82,10 @@ CREATE TABLE `ims_scene` (
 -- ----------------------------
 DROP TABLE IF EXISTS `ims_scene_config`;
 CREATE TABLE `ims_scene_config` (
-  `id`                 bigint            NOT NULL                COMMENT '主键-2',
-  `tenant_id`          bigint                     DEFAULT NULL   COMMENT '租户ID',
-  `scene_id`           bigint            NOT NULL                COMMENT '场景ID',
-  `app_id`             bigint                     DEFAULT NULL   COMMENT '应用ID',
+  `id`                 bigint unsigned   NOT NULL                COMMENT '主键-2',
+  `tenant_id`          bigint unsigned            DEFAULT NULL   COMMENT '租户ID',
+  `scene_id`           bigint unsigned   NOT NULL                COMMENT '场景ID',
+  `app_id`             bigint unsigned            DEFAULT NULL   COMMENT '应用ID',
   `app_name`           varchar(64)                DEFAULT NULL   COMMENT '应用名称',
   `content`            varchar(512)      NOT NULL                COMMENT '消息内容',
   `sign`               varchar(16)                DEFAULT NULL   COMMENT '消息签名',
@@ -93,7 +93,7 @@ CREATE TABLE `ims_scene_config` (
   `remark`             varchar(256)               DEFAULT NULL   COMMENT '备注',
   `is_invalid`         bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效：0、正常；1、失效',
   `creator`            varchar(64)       NOT NULL                COMMENT '创建人',
-  `creator_id`         bigint            NOT NULL                COMMENT '创建人ID',
+  `creator_id`         bigint unsigned   NOT NULL                COMMENT '创建人ID',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_scene_config_tenant_id` (`tenant_id`) USING BTREE,
@@ -127,8 +127,8 @@ CREATE TABLE `imt_schedule` (
 -- ----------------------------
 DROP TABLE IF EXISTS `imu_user_device`;
 CREATE TABLE `imu_user_device` (
-  `id`                 bigint            NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id`            bigint            NOT NULL                COMMENT '用户ID',
+  `id`                 bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id`            bigint unsigned   NOT NULL                COMMENT '用户ID',
   `device_id`          varchar(64)       NOT NULL                COMMENT '设备唯一标识',
   `device_info`        json                       DEFAULT NULL   COMMENT '设备信息',
   PRIMARY KEY (`id`) USING BTREE,
@@ -141,13 +141,13 @@ CREATE TABLE `imu_user_device` (
 -- ----------------------------
 DROP TABLE IF EXISTS `imu_user_tag`;
 CREATE TABLE `imu_user_tag` (
-  `id`                 bigint            NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id`            bigint            NOT NULL                COMMENT '用户ID',
+  `id`                 bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id`            bigint unsigned   NOT NULL                COMMENT '用户ID',
   `account`            varchar(32)                DEFAULT NULL   COMMENT '用户账号',
   `mobile`             varchar(16)                DEFAULT NULL   COMMENT '用户手机号',
   `tag`                varchar(16)                DEFAULT NULL   COMMENT '标签',
   `creator`            varchar(64)       NOT NULL                COMMENT '创建人',
-  `creator_id`         bigint            NOT NULL                COMMENT '创建人ID',
+  `creator_id`         bigint unsigned   NOT NULL                COMMENT '创建人ID',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_user_tag_user_id` (`user_id`),
