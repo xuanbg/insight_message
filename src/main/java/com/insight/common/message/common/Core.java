@@ -7,14 +7,13 @@ import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.utils.Redis;
 import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.http.HttpUtil;
-import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.base.Reply;
 import com.rabbitmq.client.Channel;
 import feign.Feign;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -364,7 +363,7 @@ public class Core {
     private boolean sendMail(InsightMessage message) {
         try {
             List<String> list = message.getReceivers();
-            String receivers = StringUtils.join(list.toArray(), ";");
+            String receivers = String.join(";", list);
             SimpleMailMessage mail = new SimpleMailMessage();
             mail.setFrom(sender);
             mail.setTo(receivers);

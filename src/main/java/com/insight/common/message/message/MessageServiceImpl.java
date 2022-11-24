@@ -1,7 +1,6 @@
 package com.insight.common.message.message;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.insight.common.message.common.MessageDal;
 import com.insight.common.message.common.client.RabbitClient;
 import com.insight.common.message.common.dto.*;
@@ -11,10 +10,10 @@ import com.insight.utils.Redis;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.Util;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
 import com.insight.utils.pojo.SmsCode;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -64,26 +63,14 @@ public class MessageServiceImpl implements MessageService {
         map.put("code", smsCode);
         map.put("minutes", dto.getMinutes());
 
-        String sceneCode;
-        switch (type) {
-            case 0:
-                sceneCode = "0002";
-                break;
-            case 1:
-                sceneCode = "0003";
-                break;
-            case 2:
-                sceneCode = "0004";
-                break;
-            case 3:
-                sceneCode = "0005";
-                break;
-            case 4:
-                sceneCode = "0006";
-                break;
-            default:
-                sceneCode = "0000";
-        }
+        String sceneCode = switch (type) {
+            case 0 -> "0002";
+            case 1 -> "0003";
+            case 2 -> "0004";
+            case 3 -> "0005";
+            case 4 -> "0006";
+            default -> "0000";
+        };
 
         // 组装标准消息
         NormalMessage message = new NormalMessage();
@@ -221,12 +208,13 @@ public class MessageServiceImpl implements MessageService {
      * @return Reply
      */
     @Override
-    public Reply getUserMessages(LoginInfo info, SearchDto search) {
-        PageHelper.startPage(search.getPage(), search.getSize());
-        List<MessageListDto> scenes = mapper.getMessages(info, search.getKeyword());
-        PageInfo<MessageListDto> pageInfo = new PageInfo<>(scenes);
+    public Reply getUserMessages(LoginInfo info, Search search) {
+        search.setOwnerId(info.getUserId());
+        var page = PageHelper.startPage(search.getPageNum(), search.getPageSize())
+                .setOrderBy(search.getOrderBy()).doSelectPage(() -> mapper.getMessages(search));
 
-        return ReplyHelper.success(scenes, pageInfo.getTotal());
+        var total = page.getTotal();
+        return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
     }
 
     /**

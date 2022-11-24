@@ -3,9 +3,9 @@ package com.insight.common.message.scene;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.utils.Json;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,7 +37,7 @@ public class SceneController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes")
-    public Reply getScenes(SearchDto search) {
+    public Reply getScenes(Search search) {
         return service.getScenes(search);
     }
 
@@ -163,7 +163,7 @@ public class SceneController {
      * @return Reply
      */
     @GetMapping("/v1.0/scenes/logs")
-    public Reply getSceneLogs(SearchDto search) {
+    public Reply getSceneLogs(Search search) {
         return service.getSceneLogs(search);
     }
 

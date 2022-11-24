@@ -1,20 +1,18 @@
 package com.insight.common.message.scene;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.insight.common.message.common.client.LogClient;
 import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.common.message.common.dto.SceneConfigDto;
-import com.insight.common.message.common.dto.SceneDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.common.message.common.mapper.SceneMapper;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.SnowflakeCreator;
-import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -54,12 +52,12 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply getScenes(SearchDto search) {
-        PageHelper.startPage(search.getPage(), search.getSize());
-        List<SceneDto> scenes = mapper.getScenes(search.getKeyword());
-        PageInfo<SceneDto> pageInfo = new PageInfo<>(scenes);
+    public Reply getScenes(Search search) {
+        var page = PageHelper.startPage(search.getPageNum(), search.getPageSize())
+                .setOrderBy(search.getOrderBy()).doSelectPage(() -> mapper.getScenes(search));
 
-        return ReplyHelper.success(scenes, pageInfo.getTotal());
+        var total = page.getTotal();
+        return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
     }
 
     /**
@@ -244,8 +242,8 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply getSceneLogs(SearchDto search) {
-        return client.getLogs(BUSINESS, search.getKeyword(), search.getPage(), search.getSize());
+    public Reply getSceneLogs(Search search) {
+        return client.getLogs(BUSINESS, search.getKeyword(), search.getPageNum(), search.getPageSize());
     }
 
     /**

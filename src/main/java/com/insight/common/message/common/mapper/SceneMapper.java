@@ -5,6 +5,7 @@ import com.insight.common.message.common.dto.SceneDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.utils.common.ArrayTypeHandler;
+import com.insight.utils.pojo.base.Search;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -20,14 +21,13 @@ public interface SceneMapper {
     /**
      * 获取消息场景列表
      *
-     * @param key 查询关键词
+     * @param search 查询DTO
      * @return 消息场景列表
      */
     @Results({@Result(property = "param", column = "param", javaType = String.class, typeHandler = ArrayTypeHandler.class)})
     @Select("<script>select * from ims_scene " +
-            "<if test = 'key != null'>where code = #{key} or name like concat('%',#{key},'%')</if> " +
-            "order by created_time</script>")
-    List<SceneDto> getScenes(@Param("key") String key);
+            "<if test = 'keyword != null'>where code = #{keyword} or name like concat('%',#{keyword},'%')</if></script>")
+    List<SceneDto> getScenes(Search search);
 
     /**
      * 获取场景详情

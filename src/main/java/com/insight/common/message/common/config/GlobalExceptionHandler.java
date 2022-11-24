@@ -3,7 +3,7 @@ package com.insight.common.message.common.config;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.common.BusinessException;
-import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.base.Reply;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -345,14 +345,9 @@ public class GlobalExceptionHandler {
         HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
         String requestId = request.getHeader("requestId");
         switch (level) {
-            case ERROR:
-                LOGGER.error("requestId: {}. 错误信息: {}", requestId, message);
-                break;
-            case WARN:
-                LOGGER.warn("requestId: {}. 警告信息: {}", requestId, message);
-                break;
-            default:
-                LOGGER.info("requestId: {}. 日志信息: {}", requestId, message);
+            case ERROR -> LOGGER.error("requestId: {}. 错误信息: {}", requestId, message);
+            case WARN -> LOGGER.warn("requestId: {}. 警告信息: {}", requestId, message);
+            default -> LOGGER.info("requestId: {}. 日志信息: {}", requestId, message);
         }
 
         return requestId;

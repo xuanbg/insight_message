@@ -2,10 +2,10 @@ package com.insight.common.message.message;
 
 import com.insight.common.message.common.dto.CustomMessage;
 import com.insight.common.message.common.dto.NormalMessage;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
 import com.insight.utils.pojo.SmsCode;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 
 /**
  * @author 宣炳刚
@@ -57,7 +57,7 @@ public interface MessageService {
      * @param search 查询实体类
      * @return Reply
      */
-    Reply getUserMessages(LoginInfo info, SearchDto search);
+    Reply getUserMessages(LoginInfo info, Search search);
 
     /**
      * 获取用户消息详情

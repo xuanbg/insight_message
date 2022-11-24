@@ -4,10 +4,10 @@ import com.insight.common.message.common.dto.CustomMessage;
 import com.insight.common.message.common.dto.NormalMessage;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
 import com.insight.utils.pojo.SmsCode;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -98,7 +98,7 @@ public class MessageController {
      * @return Reply
      */
     @GetMapping("/v1.0/messages")
-    public Reply getUserMessages(@RequestHeader("loginInfo") String info, SearchDto search) {
+    public Reply getUserMessages(@RequestHeader("loginInfo") String info, Search search) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.getUserMessages(loginInfo, search);

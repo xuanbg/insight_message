@@ -2,9 +2,9 @@ package com.insight.common.message.schedule;
 
 import com.insight.common.message.common.dto.Schedule;
 import com.insight.utils.Json;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,7 +36,7 @@ public class ScheduleController {
      * @return Reply
      */
     @GetMapping("/v1.0/schedules")
-    public Reply getSchedules(SearchDto search) {
+    public Reply getSchedules(Search search) {
         return service.getSchedules(search);
     }
 
@@ -125,7 +125,7 @@ public class ScheduleController {
      * @return Reply
      */
     @GetMapping("/v1.0/schedules/logs")
-    public Reply getScheduleLogs(SearchDto search) {
+    public Reply getScheduleLogs(Search search) {
         return service.getScheduleLogs(search);
     }
 

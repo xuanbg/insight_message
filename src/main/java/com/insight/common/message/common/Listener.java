@@ -39,23 +39,12 @@ public class Listener {
     @RabbitListener(queues = "schedule.message")
     public void receiveMessage(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         switch (schedule.getMethod()) {
-            case "addMessage":
-                core.addMessage(schedule, channel, message);
-                return;
-
-            case "pushNotice":
-                core.pushNotice(schedule, channel, message);
-                return;
-
-            case "sendSms":
-                core.sendSms(schedule, channel, message);
-                return;
-
-            case "sendMail":
-                core.sendMail(schedule, channel, message);
-                return;
-
-            default:
+            case "addMessage" -> core.addMessage(schedule, channel, message);
+            case "pushNotice" -> core.pushNotice(schedule, channel, message);
+            case "sendSms" -> core.sendSms(schedule, channel, message);
+            case "sendMail" -> core.sendMail(schedule, channel, message);
+            default -> {
+            }
         }
     }
 

@@ -1,9 +1,9 @@
 package com.insight.common.message.schedule;
 
 import com.insight.common.message.common.dto.Schedule;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 
 /**
  * @author 宣炳刚
@@ -18,7 +18,7 @@ public interface ScheduleService {
      * @param search 查询实体类
      * @return Reply
      */
-    Reply getSchedules(SearchDto search);
+    Reply getSchedules(Search search);
 
     /**
      * 获取计划任务详情
@@ -70,7 +70,7 @@ public interface ScheduleService {
      * @param search 查询实体类
      * @return Reply
      */
-    Reply getScheduleLogs(SearchDto search);
+    Reply getScheduleLogs(Search search);
 
     /**
      * 获取日志详情

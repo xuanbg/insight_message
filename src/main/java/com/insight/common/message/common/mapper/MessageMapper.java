@@ -5,7 +5,7 @@ import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
 import com.insight.utils.common.JsonTypeHandler;
-import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.base.Search;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -34,19 +34,17 @@ public interface MessageMapper {
     /**
      * 获取消息列表
      *
-     * @param info 用户关键信息
-     * @param key  查询关键词
+     * @param search 查询实体类
      * @return 消息列表
      */
     @Select("<script>select m.id, m.tag, m.title, case when r.message_id is null then 0 else r.is_read end as is_read, m.creator, m.created_time from imm_message m " +
-            "left join (select message_id, is_read, is_invalid from imm_message_push where user_id = #{info.userId} union all " +
-            "select message_id, 1 as is_read, is_invalid from imm_message_subscribe where user_id = #{info.userId}) r on r.message_id = m.id " +
-            "where m.app_id = #{info.appId} and m.expire_date > now() and (r.is_invalid = 0 or r.is_invalid is null) " +
-            "<if test = 'info.tenantId != null'>and m.tenant_id = #{info.tenantId} </if>" +
-            "<if test = 'info.tenantId == null'>and m.tenant_id is null </if>" +
-            "<if test = 'key != null'>and (m.tag = #{key} or m.title like concat('%',#{key},'%')) </if>" +
-            "order by m.created_time desc</script>")
-    List<MessageListDto> getMessages(@Param("info") LoginInfo info, @Param("key") String key);
+            "left join (select message_id, is_read, is_invalid from imm_message_push where user_id = #{ownerId} union all " +
+            "select message_id, 1 as is_read, is_invalid from imm_message_subscribe where user_id = #{ownerId}) r on r.message_id = m.id " +
+            "where m.app_id = #{appId} and m.expire_date > now() and (r.is_invalid = 0 or r.is_invalid is null) " +
+            "<if test = 'tenantId != null'>and m.tenant_id = #{tenantId} </if>" +
+            "<if test = 'tenantId == null'>and m.tenant_id is null </if>" +
+            "<if test = 'keyword != null'>and (m.tag = #{keyword} or m.title like concat('%',#{keyword},'%')) </if></script>")
+    List<MessageListDto> getMessages(Search search);
 
     /**
      * 获取消息详情
@@ -143,13 +141,12 @@ public interface MessageMapper {
     /**
      * 获取任务列表
      *
-     * @param key 查询关键词
+     * @param search 查询DTO
      * @return 任务列表
      */
     @Select("<script>select id, type, method, task_time, count, is_invalid, created_time from imt_schedule " +
-            "<if test = 'key != null'>where type = #{key} or method = #{key} </if>" +
-            "order by task_time</script>")
-    List<ScheduleListDto> getSchedules(@Param("key") String key);
+            "<if test = 'keyword != null'>where type = #{keyword} or method = #{keyword} </if></script>")
+    List<ScheduleListDto> getSchedules(Search search);
 
     /**
      * 获取任务详情

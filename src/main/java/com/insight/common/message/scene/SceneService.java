@@ -2,9 +2,9 @@ package com.insight.common.message.scene;
 
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 
 /**
  * @author 宣炳刚
@@ -19,7 +19,7 @@ public interface SceneService {
      * @param search 查询DTO
      * @return Reply
      */
-    Reply getScenes(SearchDto search);
+    Reply getScenes(Search search);
 
     /**
      * 获取场景
@@ -98,7 +98,7 @@ public interface SceneService {
      * @param search 查询实体类
      * @return Reply
      */
-    Reply getSceneLogs(SearchDto search);
+    Reply getSceneLogs(Search search);
 
     /**
      * 获取日志详情

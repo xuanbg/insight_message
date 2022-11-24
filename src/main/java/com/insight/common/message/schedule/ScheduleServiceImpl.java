@@ -1,21 +1,19 @@
 package com.insight.common.message.schedule;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.insight.common.message.common.client.LogClient;
 import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.dto.ScheduleCall;
-import com.insight.common.message.common.dto.ScheduleListDto;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.SnowflakeCreator;
-import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.Search;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -66,12 +64,12 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply getSchedules(SearchDto search) {
-        PageHelper.startPage(search.getPage(), search.getSize());
-        List<ScheduleListDto> schedules = mapper.getSchedules(search.getKeyword());
-        PageInfo<ScheduleListDto> pageInfo = new PageInfo<>(schedules);
+    public Reply getSchedules(Search search) {
+        var page = PageHelper.startPage(search.getPageNum(), search.getPageSize())
+                .setOrderBy(search.getOrderBy()).doSelectPage(() -> mapper.getSchedules(search));
 
-        return ReplyHelper.success(schedules, pageInfo.getTotal());
+        var total = page.getTotal();
+        return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
     }
 
     /**
@@ -197,8 +195,8 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply getScheduleLogs(SearchDto search) {
-        return client.getLogs(BUSINESS, search.getKeyword(), search.getPage(), search.getSize());
+    public Reply getScheduleLogs(Search search) {
+        return client.getLogs(BUSINESS, search.getKeyword(), search.getPageNum(), search.getPageSize());
     }
 
     /**
