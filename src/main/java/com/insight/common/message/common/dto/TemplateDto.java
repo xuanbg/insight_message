@@ -35,7 +35,7 @@ public class TemplateDto extends BaseXo {
     private String sign;
 
     /**
-     * 消息有效时长(小时)
+     * 消息有效时长(分钟)
      */
     private Integer expire;
 

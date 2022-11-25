@@ -1,5 +1,6 @@
 package com.insight.common.message.common.entity;
 
+import com.insight.utils.Util;
 import com.insight.utils.pojo.base.BaseXo;
 
 import java.time.LocalDate;
@@ -28,6 +29,11 @@ public class InsightMessage extends BaseXo {
      * 应用ID
      */
     private Long appId;
+
+    /**
+     * 通道
+     */
+    private String channel;
 
     /**
      * 消息标签
@@ -106,6 +112,14 @@ public class InsightMessage extends BaseXo {
 
     public void setAppId(Long appId) {
         this.appId = appId;
+    }
+
+    public String getChannel() {
+        return Util.isEmpty(channel) ? "aliyun" : channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
     public String getTag() {

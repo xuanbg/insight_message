@@ -143,8 +143,8 @@ public class MessageServiceImpl implements MessageService {
 
         // 处理签名
         String sign = template.getSign();
+        Map<String, Object> params = dto.getParams();
         if (sign != null && !sign.isEmpty()) {
-            Map<String, Object> params = dto.getParams();
             if (params == null) {
                 params = new HashMap<>(4);
             }
@@ -160,6 +160,7 @@ public class MessageServiceImpl implements MessageService {
 
         String content = assemblyContent(template.getContent(), dto.getParams());
         message.setContent(content);
+        message.setParams(params);
 
         String[] receivers = dto.getReceivers().split(",");
         message.setReceivers(new ArrayList<>(Arrays.asList(receivers)));
@@ -167,7 +168,7 @@ public class MessageServiceImpl implements MessageService {
         Integer expire = template.getExpire();
         LocalDateTime now = LocalDateTime.now();
         if (expire != null && expire > 0) {
-            message.setExpireDate(now.plusHours(expire).toLocalDate());
+            message.setExpireDate(now.plusMinutes(expire).toLocalDate());
         }
 
         message.setBroadcast(dto.getBroadcast());

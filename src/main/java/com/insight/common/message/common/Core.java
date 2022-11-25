@@ -1,11 +1,13 @@
 package com.insight.common.message.common;
 
+import com.insight.common.message.common.client.AliyunClient;
 import com.insight.common.message.common.client.TaskClient;
 import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.utils.Redis;
 import com.insight.utils.SnowflakeCreator;
+import com.insight.utils.common.BusinessException;
 import com.insight.utils.http.HttpUtil;
 import com.insight.utils.pojo.base.Reply;
 import com.rabbitmq.client.Channel;
@@ -346,7 +348,28 @@ public class Core {
      * @return 是否发送成功
      */
     private boolean sendSms(InsightMessage message) {
+        var receivers = message.getReceivers();
+        if (receivers == null || receivers.isEmpty()) {
+            throw new BusinessException("短信接收人手机号不能为空");
+        }
+
         try {
+            if (receivers.size() > 1) {
+                switch (message.getChannel()) {
+                    case "aliyun" -> {
+                    }
+                    case "a" -> throw new BusinessException("");
+                    default -> throw new BusinessException("不存在的短信通道");
+
+                }
+            } else {
+                var phone = receivers.get(0);
+                switch (message.getChannel()) {
+                    case "aliyun" -> AliyunClient.sendTemplateMessage(phone, "SMS_254755310", message.getParams(), "学堡");
+                    case "a" -> throw new BusinessException("");
+                    default -> throw new BusinessException("不存在的短信通道");
+                }
+            }
             return true;
         } catch (Exception ex) {
             logger.error("发送短信发生错误! 异常信息为: {}", ex.getMessage());
