@@ -51,8 +51,6 @@ public class AliyunClient {
         var response = client.sendSmsWithOptions(request, new RuntimeOptions());
         if (!response.statusCode.equals(200) || !response.body.code.equals("OK")) {
             throw new BusinessException(response.body.message);
-        }else {
-            logger.info("到号码为{}的短信已成功发送。发送内容为：{}", phone, Json.toJson(param));
         }
     }
 }
