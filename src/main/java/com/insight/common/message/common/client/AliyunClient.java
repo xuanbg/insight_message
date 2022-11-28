@@ -4,7 +4,7 @@ import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
-import com.insight.common.message.common.config.EnvUtil;
+import com.insight.utils.EnvUtil;
 import com.insight.utils.Json;
 import com.insight.utils.common.BusinessException;
 import org.slf4j.Logger;

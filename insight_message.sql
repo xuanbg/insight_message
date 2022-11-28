@@ -9,7 +9,7 @@ CREATE TABLE `imm_message` (
   `tag`                varchar(8)        NOT NULL                COMMENT '消息标签',
   `title`              varchar(64)       NOT NULL                COMMENT '标题',
   `content`            varchar(512)               DEFAULT NULL   COMMENT '内容',
-  `expire_date`        date                       DEFAULT NULL   COMMENT '失效日期',
+  `expire`             int                        DEFAULT NULL   COMMENT '有效时长(分钟)',
   `is_broadcast`       bit               NOT NULL DEFAULT b'0'   COMMENT '是否广播消息：0、普通消息；1、广播消息',
   `creator`            varchar(64)       NOT NULL                COMMENT '创建人',
   `creator_id`         bigint unsigned   NOT NULL                COMMENT '创建人ID',

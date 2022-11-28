@@ -1,10 +1,10 @@
 package com.insight.common.message.schedule;
 
-import com.insight.common.message.common.dto.Schedule;
 import com.insight.utils.Json;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
+import com.insight.utils.pojo.message.Schedule;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,7 +47,7 @@ public class ScheduleController {
      * @return Reply
      */
     @GetMapping("/v1.0/schedules/{id}")
-    public Reply getSchedule(@PathVariable Long id) {
+    public Schedule getSchedule(@PathVariable Long id) {
         return service.getSchedule(id);
     }
 
@@ -58,7 +58,7 @@ public class ScheduleController {
      * @return Reply
      */
     @PostMapping("/v1.0/schedules")
-    public Reply newSchedule(@Valid @RequestBody Schedule dto) {
+    public Long newSchedule(@Valid @RequestBody Schedule dto) {
         return service.newSchedule(dto);
     }
 
@@ -67,13 +67,12 @@ public class ScheduleController {
      *
      * @param info 用户关键信息
      * @param id   计划任务ID
-     * @return Reply
      */
     @PutMapping("/v1.0/schedules/{id}")
-    public Reply executeSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
+    public void executeSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.executeSchedule(loginInfo, id);
+        service.executeSchedule(loginInfo, id);
     }
 
     /**
@@ -81,13 +80,12 @@ public class ScheduleController {
      *
      * @param info 用户关键信息
      * @param id   计划任务ID
-     * @return Reply
      */
     @DeleteMapping("/v1.0/schedules/{id}")
-    public Reply deleteSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
+    public void deleteSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.deleteSchedule(loginInfo, id);
+        service.deleteSchedule(loginInfo, id);
     }
 
     /**
@@ -95,13 +93,12 @@ public class ScheduleController {
      *
      * @param info 用户关键信息
      * @param id   计划任务ID
-     * @return Reply
      */
     @PutMapping("/v1.0/schedules/{id}/disable")
-    public Reply disableSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
+    public void disableSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.changeScheduleStatus(loginInfo, id, true);
+        service.changeScheduleStatus(loginInfo, id, true);
     }
 
     /**
@@ -109,13 +106,12 @@ public class ScheduleController {
      *
      * @param info 用户关键信息
      * @param id   计划任务ID
-     * @return Reply
      */
     @PutMapping("/v1.0/schedules/{id}/enable")
-    public Reply enableSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
+    public void enableSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.changeScheduleStatus(loginInfo, id, false);
+        service.changeScheduleStatus(loginInfo, id, false);
     }
 
     /**

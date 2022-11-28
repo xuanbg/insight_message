@@ -2,14 +2,14 @@ package com.insight.common.message.common;
 
 import com.insight.common.message.common.client.AliyunClient;
 import com.insight.common.message.common.client.TaskClient;
-import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.dto.ScheduleCall;
-import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.utils.Redis;
 import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.common.BusinessException;
 import com.insight.utils.http.HttpUtil;
 import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.message.InsightMessage;
+import com.insight.utils.pojo.message.Schedule;
 import com.rabbitmq.client.Channel;
 import feign.Feign;
 import feign.codec.Decoder;

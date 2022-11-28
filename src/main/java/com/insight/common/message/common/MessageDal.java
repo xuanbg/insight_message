@@ -1,11 +1,11 @@
 package com.insight.common.message.common;
 
-import com.insight.common.message.common.dto.Schedule;
-import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.SnowflakeCreator;
+import com.insight.utils.pojo.message.InsightMessage;
+import com.insight.utils.pojo.message.Schedule;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

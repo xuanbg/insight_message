@@ -3,23 +3,27 @@ package com.insight.common.message.message;
 import com.github.pagehelper.PageHelper;
 import com.insight.common.message.common.MessageDal;
 import com.insight.common.message.common.client.RabbitClient;
-import com.insight.common.message.common.dto.*;
-import com.insight.common.message.common.entity.InsightMessage;
+import com.insight.common.message.common.dto.CustomMessage;
+import com.insight.common.message.common.dto.NormalMessage;
+import com.insight.common.message.common.dto.TemplateDto;
+import com.insight.common.message.common.dto.UserMessageDto;
 import com.insight.common.message.common.mapper.MessageMapper;
-import com.insight.utils.Redis;
-import com.insight.utils.ReplyHelper;
-import com.insight.utils.SnowflakeCreator;
-import com.insight.utils.Util;
+import com.insight.utils.*;
+import com.insight.utils.common.BusinessException;
 import com.insight.utils.pojo.SmsCode;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
+import com.insight.utils.pojo.message.InsightMessage;
+import com.insight.utils.pojo.message.Schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,10 +56,9 @@ public class MessageServiceImpl implements MessageService {
      *
      * @param info 用户关键信息
      * @param dto  验证码DTO
-     * @return Reply
      */
     @Override
-    public Reply seedSmsCode(LoginInfo info, SmsCode dto) {
+    public void seedSmsCode(LoginInfo info, SmsCode dto) {
         Integer type = dto.getType();
         String mobile = dto.getMobile();
         String smsCode = Util.randomString(dto.getLength());
@@ -77,18 +80,12 @@ public class MessageServiceImpl implements MessageService {
         message.setSceneCode(sceneCode);
         message.setReceivers(mobile);
         message.setParams(map);
-        message.setBroadcast(false);
-        Reply reply = sendNormalMessage(info, message);
-        if (!reply.getSuccess()) {
-            return reply;
-        }
+        sendNormalMessage(info, message);
 
         String key = Util.md5(type + mobile + smsCode);
         Redis.set("VerifyCode:" + key, mobile, Long.valueOf(dto.getMinutes()), TimeUnit.MINUTES);
         Redis.add("VerifyCodeSet:" + mobile, key, 1800L);
         logger.info("手机号[{}]的{}类短信验证码为: {}", mobile, type, smsCode);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -99,17 +96,17 @@ public class MessageServiceImpl implements MessageService {
      * @return Reply
      */
     @Override
-    public Reply verifySmsCode(String key, Boolean isCheck) {
+    public String verifySmsCode(String key, Boolean isCheck) {
         String codeKey = "VerifyCode:" + key;
         String mobile = Redis.get(codeKey);
         if (mobile == null || mobile.isEmpty()) {
-            return ReplyHelper.fail("验证码错误");
+            throw new BusinessException("验证码错误");
         }
 
         if (isCheck) {
             // 每验证一次有效时间减少15秒,以避免暴力破解
             Redis.changeExpire(codeKey, -15);
-            return ReplyHelper.success();
+            return null;
         }
 
         // 清理已通过验证的验证码对应手机号的全部验证码
@@ -122,7 +119,7 @@ public class MessageServiceImpl implements MessageService {
         // 清理验证码对应手机号缓存
         Redis.deleteKey(setKey);
 
-        return ReplyHelper.success(mobile);
+        return mobile;
     }
 
     /**
@@ -130,15 +127,14 @@ public class MessageServiceImpl implements MessageService {
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
-     * @return Reply
      */
     @Override
-    public Reply sendNormalMessage(LoginInfo info, NormalMessage dto) {
+    public void sendNormalMessage(LoginInfo info, NormalMessage dto) {
         Long tenantId = info == null ? null : info.getTenantId();
         Long appId = info == null ? null : info.getAppId();
         TemplateDto template = mapper.getTemplate(tenantId, appId, dto.getSceneCode());
         if (template == null) {
-            return ReplyHelper.fail("没有可用消息模板,请检查消息参数是否正确");
+            throw new BusinessException("没有可用消息模板,请检查消息参数是否正确");
         }
 
         // 处理签名
@@ -153,7 +149,7 @@ public class MessageServiceImpl implements MessageService {
         }
 
         // 组装消息
-        InsightMessage message = new InsightMessage();
+        InsightMessage message = Json.clone(dto, InsightMessage.class);
         message.setTag(template.getTag());
         message.setType(template.getType());
         message.setTitle(template.getTitle());
@@ -162,19 +158,8 @@ public class MessageServiceImpl implements MessageService {
         message.setContent(content);
         message.setParams(params);
 
-        String[] receivers = dto.getReceivers().split(",");
-        message.setReceivers(new ArrayList<>(Arrays.asList(receivers)));
-
-        Integer expire = template.getExpire();
-        LocalDateTime now = LocalDateTime.now();
-        if (expire != null && expire > 0) {
-            message.setExpireDate(now.plusMinutes(expire).toLocalDate());
-        }
-
-        message.setBroadcast(dto.getBroadcast());
+        message.setExpire(template.getExpire());
         sendMessage(info, message);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -182,25 +167,11 @@ public class MessageServiceImpl implements MessageService {
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
-     * @return Reply
      */
     @Override
-    public Reply sendCustomMessage(LoginInfo info, CustomMessage dto) {
-        // 组装消息
-        InsightMessage message = new InsightMessage();
-        message.setTag(dto.getTag());
-        message.setType(dto.getType());
-
-        String[] receivers = dto.getReceivers().split(",");
-        message.setReceivers(new ArrayList<>(Arrays.asList(receivers)));
-        message.setTitle(dto.getTitle());
-        message.setContent(dto.getContent());
-        message.setParams(dto.getParams());
-        message.setExpireDate(dto.getExpireDate());
-        message.setBroadcast(dto.getBroadcast());
+    public void sendCustomMessage(LoginInfo info, CustomMessage dto) {
+        InsightMessage message = Json.clone(dto, InsightMessage.class);
         sendMessage(info, message);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -228,10 +199,10 @@ public class MessageServiceImpl implements MessageService {
      * @return Reply
      */
     @Override
-    public Reply getUserMessage(Long messageId, Long userId) {
+    public UserMessageDto getUserMessage(Long messageId, Long userId) {
         UserMessageDto message = mapper.getMessage(messageId, userId);
         if (message == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
+            throw new BusinessException("ID不存在,未读取数据");
         }
 
         if (!message.getRead()) {
@@ -239,7 +210,7 @@ public class MessageServiceImpl implements MessageService {
             message.setRead(true);
         }
 
-        return ReplyHelper.success(message);
+        return message;
     }
 
     /**
@@ -247,13 +218,12 @@ public class MessageServiceImpl implements MessageService {
      *
      * @param messageId 消息ID
      * @param userId    用户ID
-     * @return Reply
      */
     @Override
-    public Reply deleteUserMessage(Long messageId, Long userId) {
+    public void deleteUserMessage(Long messageId, Long userId) {
         UserMessageDto message = mapper.getMessage(messageId, userId);
         if (message == null) {
-            return ReplyHelper.fail("ID不存在,未删除数据");
+            throw new BusinessException("ID不存在,未删除数据");
         }
 
         if (message.getBroadcast()) {
@@ -265,8 +235,6 @@ public class MessageServiceImpl implements MessageService {
         } else {
             mapper.deleteUserMessage(messageId, userId);
         }
-
-        return ReplyHelper.success();
     }
 
     /**

@@ -3,17 +3,18 @@ package com.insight.common.message.schedule;
 import com.github.pagehelper.PageHelper;
 import com.insight.common.message.common.client.LogClient;
 import com.insight.common.message.common.client.LogServiceClient;
-import com.insight.common.message.common.dto.Schedule;
 import com.insight.common.message.common.dto.ScheduleCall;
-import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.SnowflakeCreator;
+import com.insight.utils.common.BusinessException;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
+import com.insight.utils.pojo.message.InsightMessage;
+import com.insight.utils.pojo.message.Schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -79,13 +80,13 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply getSchedule(Long id) {
+    public Schedule getSchedule(Long id) {
         Schedule schedule = mapper.getSchedule(id);
         if (schedule == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
+            throw new BusinessException("ID不存在,未读取数据");
         }
 
-        return ReplyHelper.success(schedule);
+        return schedule;
     }
 
     /**
@@ -95,21 +96,21 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return Reply
      */
     @Override
-    public Reply newSchedule(Schedule dto) {
+    public Long newSchedule(Schedule dto) {
         if (dto.getType() > 0) {
             ScheduleCall call = Json.clone(dto.getContent(), ScheduleCall.class);
             if (call == null || call.getMethod() == null || call.getService() == null || call.getUrl() == null) {
-                return ReplyHelper.invalidParam();
+                throw new BusinessException(("无效参数"));
             }
         } else {
             boolean match = MATCH_LIST.stream().anyMatch(i -> i.equals(dto.getMethod()));
             if (!match) {
-                return ReplyHelper.invalidParam("调用方法错误");
+                throw new BusinessException("调用方法错误");
             }
 
             InsightMessage message = Json.clone(dto.getContent(), InsightMessage.class);
             if (message == null) {
-                return ReplyHelper.invalidParam();
+                throw new BusinessException(("无效参数"));
             }
         }
 
@@ -124,7 +125,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         dto.setCreatedTime(LocalDateTime.now());
 
         mapper.addSchedule(dto);
-        return ReplyHelper.created(id);
+        return id;
     }
 
     /**
@@ -132,19 +133,16 @@ public class ScheduleServiceImpl implements ScheduleService {
      *
      * @param info 用户关键信息
      * @param id   计划任务ID
-     * @return Reply
      */
     @Override
-    public Reply executeSchedule(LoginInfo info, Long id) {
+    public void executeSchedule(LoginInfo info, Long id) {
         Schedule schedule = mapper.getSchedule(id);
         if (schedule == null) {
-            return ReplyHelper.fail("ID不存在,未更新数据");
+            throw new BusinessException("ID不存在,未更新数据");
         }
 
         mapper.editSchedule(id);
         LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, schedule);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -152,19 +150,16 @@ public class ScheduleServiceImpl implements ScheduleService {
      *
      * @param info 用户关键信息
      * @param id   计划任务ID
-     * @return Reply
      */
     @Override
-    public Reply deleteSchedule(LoginInfo info, Long id) {
+    public void deleteSchedule(LoginInfo info, Long id) {
         Schedule schedule = mapper.getSchedule(id);
         if (schedule == null) {
-            return ReplyHelper.fail("ID不存在,未更新数据");
+            throw new BusinessException("ID不存在,未更新数据");
         }
 
         mapper.deleteSchedule(id);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, schedule);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -173,19 +168,16 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @param info   用户关键信息
      * @param id     计划任务ID
      * @param status 禁用/启用状态
-     * @return Reply
      */
     @Override
-    public Reply changeScheduleStatus(LoginInfo info, Long id, boolean status) {
+    public void changeScheduleStatus(LoginInfo info, Long id, boolean status) {
         Schedule schedule = mapper.getSchedule(id);
         if (schedule == null) {
-            return ReplyHelper.fail("ID不存在,未更新数据");
+            throw new BusinessException("ID不存在,未更新数据");
         }
 
         mapper.changeScheduleStatus(id, status);
         LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, schedule);
-
-        return ReplyHelper.success();
     }
 
     /**

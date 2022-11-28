@@ -1,10 +1,11 @@
 package com.insight.common.message.common.dto;
 
+import com.insight.utils.Util;
 import com.insight.utils.pojo.base.BaseXo;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,7 +31,7 @@ public class CustomMessage extends BaseXo {
      * 接收人,多个接收人使用逗号分隔
      */
     @NotEmpty(message = "接收人不能为空")
-    private String receivers;
+    private List<String> receivers;
 
     /**
      * 消息标题
@@ -56,9 +57,9 @@ public class CustomMessage extends BaseXo {
     private Boolean isBroadcast;
 
     /**
-     * 消息失效日期
+     * 有效时长(分钟)
      */
-    private LocalDate expireDate;
+    private Integer expire;
 
     public String getTag() {
         return tag;
@@ -76,12 +77,12 @@ public class CustomMessage extends BaseXo {
         this.type = type;
     }
 
-    public String getReceivers() {
+    public List<String> getReceivers() {
         return receivers;
     }
 
     public void setReceivers(String receivers) {
-        this.receivers = receivers;
+        this.receivers = Util.toStringList(receivers);
     }
 
     public String getTitle() {
@@ -116,11 +117,11 @@ public class CustomMessage extends BaseXo {
         isBroadcast = broadcast;
     }
 
-    public LocalDate getExpireDate() {
-        return expireDate;
+    public Integer getExpire() {
+        return expire;
     }
 
-    public void setExpireDate(LocalDate expireDate) {
-        this.expireDate = expireDate;
+    public void setExpire(Integer expire) {
+        this.expire = expire;
     }
 }

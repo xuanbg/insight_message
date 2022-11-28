@@ -1,10 +1,13 @@
 package com.insight.common.message.scene;
 
+import com.insight.common.message.common.dto.SceneConfigDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
+
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -27,7 +30,7 @@ public interface SceneService {
      * @param id 场景ID
      * @return Reply
      */
-    Reply getScene(Long id);
+    Scene getScene(Long id);
 
     /**
      * 新增场景
@@ -36,25 +39,23 @@ public interface SceneService {
      * @param dto  场景DTO
      * @return Reply
      */
-    Reply newScene(LoginInfo info, Scene dto);
+    Long newScene(LoginInfo info, Scene dto);
 
     /**
      * 编辑场景
      *
      * @param info 用户关键信息
      * @param dto  场景DTO
-     * @return Reply
      */
-    Reply editScene(LoginInfo info, Scene dto);
+    void editScene(LoginInfo info, Scene dto);
 
     /**
      * 删除场景
      *
      * @param info 用户关键信息
      * @param id   场景ID
-     * @return Reply
      */
-    Reply deleteScene(LoginInfo info, Long id);
+    void deleteScene(LoginInfo info, Long id);
 
     /**
      * 获取场景配置列表
@@ -63,7 +64,7 @@ public interface SceneService {
      * @param sceneId 场景ID
      * @return Reply
      */
-    Reply getSceneConfigs(LoginInfo info, Long sceneId);
+    List<SceneConfigDto> getSceneConfigs(LoginInfo info, Long sceneId);
 
     /**
      * 新增场景配置
@@ -72,25 +73,23 @@ public interface SceneService {
      * @param dto  场景配置DTO
      * @return Reply
      */
-    Reply newSceneConfig(LoginInfo info, SceneConfig dto);
+    Long newSceneConfig(LoginInfo info, SceneConfig dto);
 
     /**
      * 编辑场景配置
      *
      * @param info 用户关键信息
      * @param dto  场景配置DTO
-     * @return Reply
      */
-    Reply editSceneConfig(LoginInfo info, SceneConfig dto);
+    void editSceneConfig(LoginInfo info, SceneConfig dto);
 
     /**
      * 删除场景配置
      *
      * @param info 用户关键信息
      * @param id   场景配置ID
-     * @return Reply
      */
-    Reply deleteSceneConfig(LoginInfo info, Long id);
+    void deleteSceneConfig(LoginInfo info, Long id);
 
     /**
      * 获取日志列表

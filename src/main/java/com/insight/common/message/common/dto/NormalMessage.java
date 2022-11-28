@@ -1,9 +1,11 @@
 package com.insight.common.message.common.dto;
 
+import com.insight.utils.Util;
 import com.insight.utils.pojo.base.BaseXo;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +30,7 @@ public class NormalMessage extends BaseXo {
      * 接收人,多个接收人使用逗号分隔
      */
     @NotEmpty(message = "接收人不能为空")
-    private String receivers;
+    private List<String> receivers;
 
     /**
      * 自定义参数
@@ -57,12 +59,12 @@ public class NormalMessage extends BaseXo {
         this.partnerCode = partnerCode;
     }
 
-    public String getReceivers() {
+    public List<String> getReceivers() {
         return receivers;
     }
 
     public void setReceivers(String receivers) {
-        this.receivers = receivers;
+        this.receivers = Util.toStringList(receivers);
     }
 
     public Map<String, Object> getParams() {

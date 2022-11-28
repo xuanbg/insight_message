@@ -2,8 +2,9 @@ package com.insight.common.message.message;
 
 import com.insight.common.message.common.dto.CustomMessage;
 import com.insight.common.message.common.dto.NormalMessage;
+import com.insight.common.message.common.dto.UserMessageDto;
 import com.insight.utils.Json;
-import com.insight.utils.ReplyHelper;
+import com.insight.utils.common.BusinessException;
 import com.insight.utils.pojo.SmsCode;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
@@ -37,13 +38,12 @@ public class MessageController {
      *
      * @param info 用户关键信息
      * @param dto  验证码:0.验证手机号;1.用户注册;2.重置密码;3.修改支付密码;4.修改手机号
-     * @return Reply
      */
     @PostMapping("/v1.0/codes")
-    public Reply seedSmsCode(@RequestHeader(name = "loginInfo", required = false) String info, @Valid @RequestBody SmsCode dto) {
+    public void seedSmsCode(@RequestHeader(name = "loginInfo", required = false) String info, @Valid @RequestBody SmsCode dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.seedSmsCode(loginInfo, dto);
+        service.seedSmsCode(loginInfo, dto);
     }
 
     /**
@@ -54,9 +54,9 @@ public class MessageController {
      * @return Reply
      */
     @GetMapping("/v1.0/codes/{key}/status")
-    public Reply verifySmsCode(@PathVariable String key, @RequestParam(defaultValue = "true") Boolean isCheck) {
+    public String verifySmsCode(@PathVariable String key, @RequestParam(defaultValue = "true") Boolean isCheck) {
         if (key == null || key.isEmpty()) {
-            return ReplyHelper.invalidParam();
+            throw new BusinessException("无效的验证参数");
         }
 
         return service.verifySmsCode(key, isCheck);
@@ -67,13 +67,12 @@ public class MessageController {
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
-     * @return Reply
      */
     @PostMapping("/v1.0/messages")
-    public Reply sendNormalMessage(@RequestHeader(value = "loginInfo", required = false) String info, @Valid @RequestBody NormalMessage dto) {
+    public void sendNormalMessage(@RequestHeader(value = "loginInfo", required = false) String info, @Valid @RequestBody NormalMessage dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.sendNormalMessage(loginInfo, dto);
+        service.sendNormalMessage(loginInfo, dto);
     }
 
     /**
@@ -81,13 +80,12 @@ public class MessageController {
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
-     * @return Reply
      */
     @PostMapping("/v1.0/customs")
-    public Reply sendCustomMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody CustomMessage dto) {
+    public void sendCustomMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody CustomMessage dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.sendCustomMessage(loginInfo, dto);
+        service.sendCustomMessage(loginInfo, dto);
     }
 
     /**
@@ -112,7 +110,7 @@ public class MessageController {
      * @return Reply
      */
     @GetMapping("/v1.0/messages/{id}")
-    public Reply getUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
+    public UserMessageDto getUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.getUserMessage(id, loginInfo.getUserId());
@@ -123,12 +121,11 @@ public class MessageController {
      *
      * @param info 用户关键信息
      * @param id   消息ID
-     * @return Reply
      */
     @DeleteMapping("/v1.0/messages/{id}")
-    public Reply deleteUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
+    public void deleteUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.deleteUserMessage(id, loginInfo.getUserId());
+        service.deleteUserMessage(id, loginInfo.getUserId());
     }
 }

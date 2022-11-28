@@ -1,9 +1,9 @@
 package com.insight.common.message.schedule;
 
-import com.insight.common.message.common.dto.Schedule;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
+import com.insight.utils.pojo.message.Schedule;
 
 /**
  * @author 宣炳刚
@@ -26,7 +26,7 @@ public interface ScheduleService {
      * @param id 计划任务ID
      * @return Reply
      */
-    Reply getSchedule(Long id);
+    Schedule getSchedule(Long id);
 
     /**
      * 新增计划任务
@@ -34,25 +34,23 @@ public interface ScheduleService {
      * @param dto 计划任务DTO
      * @return Reply
      */
-    Reply newSchedule(Schedule dto);
+    Long newSchedule(Schedule dto);
 
     /**
      * 立即执行计划任务
      *
      * @param info 用户关键信息
      * @param id   计划任务ID
-     * @return Reply
      */
-    Reply executeSchedule(LoginInfo info, Long id);
+    void executeSchedule(LoginInfo info, Long id);
 
     /**
      * 删除计划任务
      *
      * @param info 用户关键信息
      * @param id   计划任务ID
-     * @return Reply
      */
-    Reply deleteSchedule(LoginInfo info, Long id);
+    void deleteSchedule(LoginInfo info, Long id);
 
     /**
      * 禁用/启用计划任务
@@ -60,9 +58,8 @@ public interface ScheduleService {
      * @param info   用户关键信息
      * @param id     计划任务ID
      * @param status 禁用/启用状态
-     * @return Reply
      */
-    Reply changeScheduleStatus(LoginInfo info, Long id, boolean status);
+    void changeScheduleStatus(LoginInfo info, Long id, boolean status);
 
     /**
      * 获取日志列表

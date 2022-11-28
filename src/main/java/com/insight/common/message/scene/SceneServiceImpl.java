@@ -9,6 +9,7 @@ import com.insight.common.message.common.entity.SceneConfig;
 import com.insight.common.message.common.mapper.SceneMapper;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.SnowflakeCreator;
+import com.insight.utils.common.BusinessException;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
@@ -67,13 +68,13 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply getScene(Long id) {
+    public Scene getScene(Long id) {
         Scene scene = mapper.getScene(id);
         if (scene == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
+            throw new BusinessException("ID不存在,未读取数据");
         }
 
-        return ReplyHelper.success(scene);
+        return scene;
     }
 
     /**
@@ -84,11 +85,11 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply newScene(LoginInfo info, Scene dto) {
+    public Long newScene(LoginInfo info, Scene dto) {
         Long id = creator.nextId(1);
         int count = mapper.getSceneCount(id, dto.getCode());
         if (count > 0) {
-            return ReplyHelper.invalidParam("场景编码已存在");
+            throw new BusinessException("场景编码已存在");
         }
 
         dto.setId(id);
@@ -98,7 +99,7 @@ public class SceneServiceImpl implements SceneService {
         mapper.addScene(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
 
-        return ReplyHelper.created(id);
+        return id;
     }
 
     /**
@@ -106,25 +107,22 @@ public class SceneServiceImpl implements SceneService {
      *
      * @param info 用户关键信息
      * @param dto  消息场景DTO
-     * @return Reply
      */
     @Override
-    public Reply editScene(LoginInfo info, Scene dto) {
+    public void editScene(LoginInfo info, Scene dto) {
         Long id = dto.getId();
         Scene scene = mapper.getScene(id);
         if (scene == null) {
-            return ReplyHelper.fail("ID不存在,未更新数据");
+            throw new BusinessException("ID不存在,未更新数据");
         }
 
         int count = mapper.getSceneCount(id, dto.getCode());
         if (count > 0) {
-            return ReplyHelper.invalidParam("场景编码已存在");
+            throw new BusinessException("场景编码已存在");
         }
 
         mapper.editScene(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -132,19 +130,16 @@ public class SceneServiceImpl implements SceneService {
      *
      * @param info 用户关键信息
      * @param id   消息场景ID
-     * @return Reply
      */
     @Override
-    public Reply deleteScene(LoginInfo info, Long id) {
+    public void deleteScene(LoginInfo info, Long id) {
         Scene scene = mapper.getScene(id);
         if (scene == null) {
-            return ReplyHelper.fail("ID不存在,未删除数据");
+            throw new BusinessException("ID不存在,未删除数据");
         }
 
         mapper.deleteScene(id);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, scene);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -155,10 +150,8 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply getSceneConfigs(LoginInfo info, Long sceneId) {
-        List<SceneConfigDto> configs = mapper.getSceneConfigs(info.getTenantId(), sceneId);
-
-        return ReplyHelper.success(configs);
+    public List<SceneConfigDto> getSceneConfigs(LoginInfo info, Long sceneId) {
+        return mapper.getSceneConfigs(info.getTenantId(), sceneId);
     }
 
     /**
@@ -169,13 +162,13 @@ public class SceneServiceImpl implements SceneService {
      * @return Reply
      */
     @Override
-    public Reply newSceneConfig(LoginInfo info, SceneConfig dto) {
+    public Long newSceneConfig(LoginInfo info, SceneConfig dto) {
         Long tenantId = info.getTenantId();
         Long id = creator.nextId(2);
 
         int count = mapper.getConfigCount(dto.getSceneId(), tenantId, dto.getAppId());
         if (count > 0) {
-            return ReplyHelper.invalidParam("场景配置已存在,请勿重复添加");
+            throw new BusinessException("场景配置已存在,请勿重复添加");
         }
 
         dto.setId(id);
@@ -186,7 +179,7 @@ public class SceneServiceImpl implements SceneService {
         mapper.addSceneConfig(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
 
-        return ReplyHelper.created(id);
+        return id;
     }
 
     /**
@@ -194,25 +187,22 @@ public class SceneServiceImpl implements SceneService {
      *
      * @param info 用户关键信息
      * @param dto  场景配置DTO
-     * @return Reply
      */
     @Override
-    public Reply editSceneConfig(LoginInfo info, SceneConfig dto) {
+    public void editSceneConfig(LoginInfo info, SceneConfig dto) {
         Long id = dto.getId();
         SceneConfig config = mapper.getSceneConfig(id);
         if (config == null) {
-            return ReplyHelper.fail("ID不存在,未更新数据");
+            throw new BusinessException("ID不存在,未更新数据");
         }
 
         Long tenantId = info.getTenantId();
         if (tenantId != null && !tenantId.equals(config.getTenantId())) {
-            return ReplyHelper.fail("您无权修改该数据");
+            throw new BusinessException("您无权修改该数据");
         }
 
         mapper.updateSceneConfig(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -220,19 +210,16 @@ public class SceneServiceImpl implements SceneService {
      *
      * @param info 用户关键信息
      * @param id   场景配置ID
-     * @return Reply
      */
     @Override
-    public Reply deleteSceneConfig(LoginInfo info, Long id) {
+    public void deleteSceneConfig(LoginInfo info, Long id) {
         SceneConfig config = mapper.getSceneConfig(id);
         if (config == null) {
-            return ReplyHelper.fail("ID不存在,未删除数据");
+            throw new BusinessException("ID不存在,未删除数据");
         }
 
         mapper.deleteSceneConfig(id);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, config);
-
-        return ReplyHelper.success();
     }
 
     /**

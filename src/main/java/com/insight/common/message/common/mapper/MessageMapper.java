@@ -1,11 +1,12 @@
 package com.insight.common.message.common.mapper;
 
 import com.insight.common.message.common.dto.*;
-import com.insight.common.message.common.entity.InsightMessage;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
 import com.insight.utils.common.JsonTypeHandler;
 import com.insight.utils.pojo.base.Search;
+import com.insight.utils.pojo.message.InsightMessage;
+import com.insight.utils.pojo.message.Schedule;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public interface MessageMapper {
     @Select("<script>select m.id, m.tag, m.title, case when r.message_id is null then 0 else r.is_read end as is_read, m.creator, m.created_time from imm_message m " +
             "left join (select message_id, is_read, is_invalid from imm_message_push where user_id = #{ownerId} union all " +
             "select message_id, 1 as is_read, is_invalid from imm_message_subscribe where user_id = #{ownerId}) r on r.message_id = m.id " +
-            "where m.app_id = #{appId} and m.expire_date > now() and (r.is_invalid = 0 or r.is_invalid is null) " +
+            "where m.app_id = #{appId} and date_add(m.created_time, interval m.expire minute) > now() and (r.is_invalid = 0 or r.is_invalid is null) " +
             "<if test = 'tenantId != null'>and m.tenant_id = #{tenantId} </if>" +
             "<if test = 'tenantId == null'>and m.tenant_id is null </if>" +
             "<if test = 'keyword != null'>and (m.tag = #{keyword} or m.title like concat('%',#{keyword},'%')) </if></script>")
@@ -64,8 +65,8 @@ public interface MessageMapper {
      *
      * @param message 消息DTO
      */
-    @Insert("insert imm_message(id, tenant_id, app_id, tag, title, content, expire_date, is_broadcast_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{tenantId}, #{appId}, #{tag}, #{title}, #{content}, #{expireDate}, #{isBroadcast}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert imm_message(id, tenant_id, app_id, tag, title, content, expire, is_broadcast_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{appId}, #{tag}, #{title}, #{content}, #{expire}, #{isBroadcast}, #{creator}, #{creatorId}, #{createdTime});")
     void addMessage(InsightMessage message);
 
     /**
@@ -119,7 +120,7 @@ public interface MessageMapper {
      * @param message 消息DTO
      */
     @Update("update imm_message set app_id = #{appId}, tag = #{tag}, type = #{type}, receivers = #{receivers, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
-            "content = #{content}, expire_date = #{expireDate}, is_broadcast = #{isBroadcast} where id = #{id};")
+            "content = #{content}, expire = #{expire}, is_broadcast = #{isBroadcast} where id = #{id};")
     void editMessage(InsightMessage message);
 
     /**

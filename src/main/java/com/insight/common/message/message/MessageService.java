@@ -2,6 +2,7 @@ package com.insight.common.message.message;
 
 import com.insight.common.message.common.dto.CustomMessage;
 import com.insight.common.message.common.dto.NormalMessage;
+import com.insight.common.message.common.dto.UserMessageDto;
 import com.insight.utils.pojo.SmsCode;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
@@ -19,9 +20,8 @@ public interface MessageService {
      *
      * @param info 用户关键信息
      * @param dto  验证码
-     * @return Reply
      */
-    Reply seedSmsCode(LoginInfo info, SmsCode dto);
+    void seedSmsCode(LoginInfo info, SmsCode dto);
 
     /**
      * 验证短信验证码
@@ -30,25 +30,23 @@ public interface MessageService {
      * @param isCheck 是否检验模式:true.检验模式,验证后验证码不失效;false.验证模式,验证后验证码失效
      * @return Reply
      */
-    Reply verifySmsCode(String key, Boolean isCheck);
+    String verifySmsCode(String key, Boolean isCheck);
 
     /**
      * 发送送标准消息
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
-     * @return Reply
      */
-    Reply sendNormalMessage(LoginInfo info, NormalMessage dto);
+    void sendNormalMessage(LoginInfo info, NormalMessage dto);
 
     /**
      * 发送自定义消息
      *
      * @param info 用户关键信息
      * @param dto  标准信息DTO
-     * @return Reply
      */
-    Reply sendCustomMessage(LoginInfo info, CustomMessage dto);
+    void sendCustomMessage(LoginInfo info, CustomMessage dto);
 
     /**
      * 获取用户消息列表
@@ -66,14 +64,13 @@ public interface MessageService {
      * @param userId    用户ID
      * @return Reply
      */
-    Reply getUserMessage(Long messageId, Long userId);
+    UserMessageDto getUserMessage(Long messageId, Long userId);
 
     /**
      * 删除用户消息
      *
      * @param messageId 消息ID
      * @param userId    用户ID
-     * @return Reply
      */
-    Reply deleteUserMessage(Long messageId, Long userId);
+    void deleteUserMessage(Long messageId, Long userId);
 }
