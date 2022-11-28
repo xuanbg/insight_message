@@ -86,6 +86,7 @@ public class Core {
     public void addMessage(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         InsightMessage msg = schedule.getContent();
         if (msg != null && !addMessage(msg)) {
+            schedule.setExpireTime(LocalDateTime.now().plusMinutes(msg.getExpire()));
             addSchedule(schedule);
         }
 
@@ -103,6 +104,7 @@ public class Core {
     public void pushNotice(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         InsightMessage msg = schedule.getContent();
         if (msg != null && !pushNotice(msg)) {
+            schedule.setExpireTime(LocalDateTime.now().plusMinutes(msg.getExpire()));
             addSchedule(schedule);
         }
 
@@ -120,6 +122,7 @@ public class Core {
     public void sendSms(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         InsightMessage msg = schedule.getContent();
         if (msg != null && !sendSms(msg)) {
+            schedule.setExpireTime(LocalDateTime.now().plusMinutes(msg.getExpire()));
             addSchedule(schedule);
         }
 
@@ -137,6 +140,7 @@ public class Core {
     public void sendMail(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         InsightMessage msg = schedule.getContent();
         if (msg != null && !sendMail(msg)) {
+            schedule.setExpireTime(LocalDateTime.now().plusMinutes(msg.getExpire()));
             addSchedule(schedule);
         }
 
@@ -246,6 +250,7 @@ public class Core {
      * @param schedule 计划任务DTO
      */
     private void addSchedule(Schedule schedule) {
+        var expireTime = schedule.getExpireTime();
         LocalDateTime now = LocalDateTime.now();
         Long id = schedule.getId();
         if (id == null) {
@@ -256,7 +261,7 @@ public class Core {
             schedule.setCreatedTime(now);
         } else {
             int count = schedule.getCount();
-            if (count > 99) {
+            if (count > 99 || (expireTime!=null && now.isAfter(expireTime))) {
                 schedule.setInvalid(true);
             } else {
                 schedule.setTaskTime(now.plusSeconds((long) Math.pow(count, 2)));

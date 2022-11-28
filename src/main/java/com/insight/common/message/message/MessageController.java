@@ -5,10 +5,10 @@ import com.insight.common.message.common.dto.NormalMessage;
 import com.insight.common.message.common.dto.UserMessageDto;
 import com.insight.utils.Json;
 import com.insight.utils.common.BusinessException;
-import com.insight.utils.pojo.SmsCode;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
+import com.insight.utils.pojo.message.SmsCode;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

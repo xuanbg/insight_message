@@ -9,11 +9,11 @@ import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.common.BusinessException;
-import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.InsightMessage;
+import com.insight.utils.pojo.message.OperateType;
 import com.insight.utils.pojo.message.Schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,12 +112,20 @@ public class ScheduleServiceImpl implements ScheduleService {
             if (message == null) {
                 throw new BusinessException(("无效参数"));
             }
+
+            if (dto.getExpireTime() == null) {
+                dto.setExpireTime(LocalDateTime.now().plusMinutes(message.getExpire()));
+            }
         }
 
         Long id = creator.nextId(3);
         dto.setId(id);
         if (dto.getTaskTime() == null) {
             dto.setTaskTime(LocalDateTime.now().plusSeconds(10));
+        }
+
+        if (dto.getExpireTime() == null) {
+            dto.setExpireTime(LocalDateTime.now().plusMinutes(60));
         }
 
         dto.setCount(0);

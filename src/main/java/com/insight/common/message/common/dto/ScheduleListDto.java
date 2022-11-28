@@ -37,6 +37,11 @@ public class ScheduleListDto extends BaseXo {
     private Integer count;
 
     /**
+     * 任务过期时间
+     */
+    private LocalDateTime expireTime;
+
+    /**
      * 是否失效
      */
     private Boolean isInvalid;
@@ -84,6 +89,14 @@ public class ScheduleListDto extends BaseXo {
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public LocalDateTime getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(LocalDateTime expireTime) {
+        this.expireTime = expireTime;
     }
 
     public Boolean getInvalid() {

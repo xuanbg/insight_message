@@ -2,9 +2,9 @@ package com.insight.common.message.common.client;
 
 import com.insight.utils.Json;
 import com.insight.utils.common.ApplicationContextHolder;
-import com.insight.utils.pojo.Log;
-import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.message.Log;
+import com.insight.utils.pojo.message.OperateType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 /**

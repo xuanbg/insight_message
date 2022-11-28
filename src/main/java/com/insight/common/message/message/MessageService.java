@@ -3,10 +3,10 @@ package com.insight.common.message.message;
 import com.insight.common.message.common.dto.CustomMessage;
 import com.insight.common.message.common.dto.NormalMessage;
 import com.insight.common.message.common.dto.UserMessageDto;
-import com.insight.utils.pojo.SmsCode;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
+import com.insight.utils.pojo.message.SmsCode;
 
 /**
  * @author 宣炳刚

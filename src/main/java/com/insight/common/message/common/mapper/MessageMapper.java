@@ -145,7 +145,7 @@ public interface MessageMapper {
      * @param search 查询DTO
      * @return 任务列表
      */
-    @Select("<script>select id, type, method, task_time, count, is_invalid, created_time from imt_schedule " +
+    @Select("<script>select id, type, method, task_time, count, expire_time, is_invalid, created_time from imt_schedule " +
             "<if test = 'keyword != null'>where type = #{keyword} or method = #{keyword} </if></script>")
     List<ScheduleListDto> getSchedules(Search search);
 
@@ -165,7 +165,7 @@ public interface MessageMapper {
      * @return DTO集合
      */
     @Results({@Result(property = "content", column = "content", javaType = InsightMessage.class, typeHandler = JsonTypeHandler.class)})
-    @Select("select * from imt_schedule where type = 0 and task_time < now() and is_invalid = 0;")
+    @Select("select * from imt_schedule where type = 0 and task_time < now() and expire_time > now() and is_invalid = 0;")
     List<Schedule<InsightMessage>> getMessageSchedule();
 
     /**
@@ -174,7 +174,7 @@ public interface MessageMapper {
      * @return 计划任务DTO集合
      */
     @Results({@Result(property = "content", column = "content", javaType = ScheduleCall.class, typeHandler = JsonTypeHandler.class)})
-    @Select("select * from imt_schedule where type = 1 and task_time < now() and is_invalid = 0;")
+    @Select("select * from imt_schedule where type = 1 and task_time < now() and expire_time > now() and is_invalid = 0;")
     List<Schedule<ScheduleCall>> getLocalSchedule();
 
     /**
@@ -183,7 +183,7 @@ public interface MessageMapper {
      * @return 计划任务DTO集合
      */
     @Results({@Result(property = "content", column = "content", javaType = ScheduleCall.class, typeHandler = JsonTypeHandler.class)})
-    @Select("select * from imt_schedule where type = 2 and task_time < now() and is_invalid = 0;")
+    @Select("select * from imt_schedule where type = 2 and task_time < now() and expire_time > now() and is_invalid = 0;")
     List<Schedule<ScheduleCall>> getRpcSchedule();
 
     /**
@@ -191,8 +191,9 @@ public interface MessageMapper {
      *
      * @param schedule 计划任务DTO
      */
-    @Insert("insert imt_schedule (id, type, method, task_time, content, count, is_invalid, created_time) values " +
-            "(#{id}, #{type}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.utils.common.JsonTypeHandler}, #{count}, #{isInvalid}, #{createdTime});")
+    @Insert("insert imt_schedule (id, type, method, task_time, content, count, expire_time, is_invalid, created_time) values " +
+            "(#{id}, #{type}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.utils.common.JsonTypeHandler}, " +
+            "#{count}, #{expireTime}, #{isInvalid}, #{createdTime});")
     void addSchedule(Schedule schedule);
 
     /**

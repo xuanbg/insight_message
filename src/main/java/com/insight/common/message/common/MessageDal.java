@@ -93,6 +93,10 @@ public class MessageDal {
      * @param schedule 计划任务DTO
      */
     public void addSchedule(Schedule schedule) {
+        if (schedule.getExpireTime() == null){
+            schedule.setExpireTime(LocalDateTime.now().plusMinutes(60));
+        }
+
         mapper.addSchedule(schedule);
     }
 }
