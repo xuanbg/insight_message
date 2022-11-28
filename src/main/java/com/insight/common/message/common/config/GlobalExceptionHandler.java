@@ -2,15 +2,20 @@ package com.insight.common.message.common.config;
 
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
-import com.insight.utils.common.BusinessException;
+import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.logging.LogLevel;
+import org.springframework.core.MethodParameter;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.UnexpectedTypeException;
@@ -41,7 +47,7 @@ import java.util.Objects;
 @ResponseStatus(HttpStatus.OK)
 @ResponseBody
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
@@ -52,8 +58,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BusinessException.class)
     public Reply handleBusinessException(BusinessException ex) {
-        String msg = "业务发生异常, " + ex.getMessage();
-        logger(LogLevel.INFO, msg);
+        String msg = ex.getMessage();
+        logger(LogLevel.INFO, "业务发生异常, " + msg);
 
         return ReplyHelper.fail(msg);
     }
@@ -362,5 +368,41 @@ public class GlobalExceptionHandler {
     private void printStack(String requestId, Exception ex) {
         String stackTrace = Json.toJson(ex.getStackTrace());
         LOGGER.error("requestId, {}. 异常堆栈, {}", requestId, stackTrace);
+    }
+
+    /**
+     * 是否支持重写Body
+     *
+     * @param parameter 方法参数
+     * @param converter 消息转换器
+     * @return boolean
+     */
+    @Override
+    public boolean supports(MethodParameter parameter, Class<? extends HttpMessageConverter<?>> converter) {
+        return true;
+    }
+
+    /**
+     * 重写Body
+     *
+     * @param object    Body对象
+     * @param parameter 方法参数
+     * @param type      媒体类型
+     * @param converter 消息转换器
+     * @param request   请求数据
+     * @param response  响应数据
+     * @return Object
+     */
+    @Override
+    public Object beforeBodyWrite(Object object, MethodParameter parameter, MediaType type, Class<? extends HttpMessageConverter<?>> converter, ServerHttpRequest request, ServerHttpResponse response) {
+        if (object instanceof Reply) {
+            return object;
+        }
+
+        if (object instanceof String) {
+            return ReplyHelper.success(object).toString();
+        }
+
+        return ReplyHelper.success(object);
     }
 }

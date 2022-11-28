@@ -3,7 +3,7 @@ package com.insight.common.message.common.mapper;
 import com.insight.common.message.common.dto.*;
 import com.insight.common.message.common.entity.PushMessage;
 import com.insight.common.message.common.entity.SubscribeMessage;
-import com.insight.utils.common.JsonTypeHandler;
+import com.insight.utils.pojo.base.JsonTypeHandler;
 import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.InsightMessage;
 import com.insight.utils.pojo.message.Schedule;
@@ -119,7 +119,7 @@ public interface MessageMapper {
      *
      * @param message 消息DTO
      */
-    @Update("update imm_message set app_id = #{appId}, tag = #{tag}, type = #{type}, receivers = #{receivers, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
+    @Update("update imm_message set app_id = #{appId}, tag = #{tag}, type = #{type}, receivers = #{receivers, typeHandler = com.insight.utils.pojo.base.ArrayTypeHandler}, " +
             "content = #{content}, expire = #{expire}, is_broadcast = #{isBroadcast} where id = #{id};")
     void editMessage(InsightMessage message);
 
@@ -192,7 +192,7 @@ public interface MessageMapper {
      * @param schedule 计划任务DTO
      */
     @Insert("insert imt_schedule (id, type, method, task_time, content, count, expire_time, is_invalid, created_time) values " +
-            "(#{id}, #{type}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.utils.common.JsonTypeHandler}, " +
+            "(#{id}, #{type}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.utils.pojo.base.JsonTypeHandler}, " +
             "#{count}, #{expireTime}, #{isInvalid}, #{createdTime});")
     void addSchedule(Schedule schedule);
 

@@ -6,7 +6,7 @@ import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
 import com.insight.utils.EnvUtil;
 import com.insight.utils.Json;
-import com.insight.utils.common.BusinessException;
+import com.insight.utils.pojo.base.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

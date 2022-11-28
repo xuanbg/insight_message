@@ -4,7 +4,7 @@ import com.insight.common.message.common.dto.SceneConfigDto;
 import com.insight.common.message.common.dto.SceneDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
-import com.insight.utils.common.ArrayTypeHandler;
+import com.insight.utils.pojo.base.ArrayTypeHandler;
 import com.insight.utils.pojo.base.Search;
 import org.apache.ibatis.annotations.*;
 
@@ -55,7 +55,7 @@ public interface SceneMapper {
      * @param scene 消息场景DTO
      */
     @Insert("insert ims_scene(id, `code`, type, `name`, title, tag, `param`, remark, creator, creator_id, created_time) values " +
-            "(#{id}, #{code}, #{type}, #{name}, #{title}, #{tag}, #{param, typeHandler = com.insight.utils.common.ArrayTypeHandler}, " +
+            "(#{id}, #{code}, #{type}, #{name}, #{title}, #{tag}, #{param, typeHandler = com.insight.utils.pojo.base.ArrayTypeHandler}, " +
             "#{remark}, #{creator}, #{creatorId}, now());")
     void addScene(Scene scene);
 
@@ -65,7 +65,7 @@ public interface SceneMapper {
      * @param scene 消息场景DTO
      */
     @Update("update ims_scene set `code` = #{code}, type = #{type}, `name` = #{name}, title = #{title}, tag = #{tag}, " +
-            "`param` = #{param, typeHandler = com.insight.utils.common.ArrayTypeHandler}, remark = #{remark} where id = #{id};")
+            "`param` = #{param, typeHandler = com.insight.utils.pojo.base.ArrayTypeHandler}, remark = #{remark} where id = #{id};")
     void editScene(Scene scene);
 
     /**
