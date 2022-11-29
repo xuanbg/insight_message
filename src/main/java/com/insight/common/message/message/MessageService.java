@@ -16,21 +16,12 @@ import com.insight.utils.pojo.message.SmsCode;
 public interface MessageService {
 
     /**
-     * 生成短信验证码
+     * 发送短信验证码
      *
      * @param info 用户关键信息
-     * @param dto  验证码
+     * @param dto  短信DTO
      */
     void seedSmsCode(LoginInfo info, SmsCode dto);
-
-    /**
-     * 验证短信验证码
-     *
-     * @param key     验证参数,MD5(type + mobile + code)
-     * @param isCheck 是否检验模式:true.检验模式,验证后验证码不失效;false.验证模式,验证后验证码失效
-     * @return Reply
-     */
-    String verifySmsCode(String key, Boolean isCheck);
 
     /**
      * 发送送标准消息

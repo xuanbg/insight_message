@@ -352,7 +352,7 @@ public class Core {
      * @param message 消息DTO
      * @return 是否发送成功
      */
-    private boolean sendSms(InsightMessage message) {
+    public boolean sendSms(InsightMessage message) {
         var receivers = message.getReceivers();
         if (receivers == null || receivers.isEmpty()) {
             throw new BusinessException("短信接收人手机号不能为空");
@@ -360,6 +360,7 @@ public class Core {
 
         try {
             if (receivers.size() > 1) {
+                // 群发
                 switch (message.getChannel()) {
                     case "aliyun" -> {
                     }
@@ -368,6 +369,7 @@ public class Core {
 
                 }
             } else {
+                // 单发
                 var phone = receivers.get(0);
                 switch (message.getChannel()) {
                     case "aliyun" -> AliyunClient.sendTemplateMessage(phone, "SMS_254755310", message.getParams(), "学堡");

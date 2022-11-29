@@ -1,6 +1,7 @@
 package com.insight.common.message.message;
 
 import com.github.pagehelper.PageHelper;
+import com.insight.common.message.common.Core;
 import com.insight.common.message.common.MessageDal;
 import com.insight.common.message.common.client.RabbitClient;
 import com.insight.common.message.common.dto.CustomMessage;
@@ -8,7 +9,9 @@ import com.insight.common.message.common.dto.NormalMessage;
 import com.insight.common.message.common.dto.TemplateDto;
 import com.insight.common.message.common.dto.UserMessageDto;
 import com.insight.common.message.common.mapper.MessageMapper;
-import com.insight.utils.*;
+import com.insight.utils.Json;
+import com.insight.utils.ReplyHelper;
+import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
@@ -22,9 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author 宣炳刚
@@ -37,6 +38,7 @@ public class MessageServiceImpl implements MessageService {
     private final SnowflakeCreator creator;
     private final MessageDal dal;
     private final MessageMapper mapper;
+    private final Core core;
 
     /**
      * 构造方法
@@ -44,82 +46,29 @@ public class MessageServiceImpl implements MessageService {
      * @param creator 雪花算法ID生成器
      * @param dal     MessageDal
      * @param mapper  MessageMapper
+     * @param core    计划任务异步执行核心类
      */
-    public MessageServiceImpl(SnowflakeCreator creator, MessageDal dal, MessageMapper mapper) {
+    public MessageServiceImpl(SnowflakeCreator creator, MessageDal dal, MessageMapper mapper, Core core) {
         this.creator = creator;
         this.dal = dal;
         this.mapper = mapper;
+        this.core = core;
     }
 
     /**
-     * 生成短信验证码
+     * 发送短信验证码
      *
      * @param info 用户关键信息
-     * @param dto  验证码DTO
+     * @param dto  短信DTO
      */
     @Override
     public void seedSmsCode(LoginInfo info, SmsCode dto) {
-        Integer type = dto.getType();
-        String mobile = dto.getMobile();
-        String smsCode = Util.randomString(dto.getLength());
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("code", smsCode);
-        map.put("minutes", dto.getMinutes());
+        InsightMessage message = new InsightMessage();
+        message.setChannel(dto.getChannel());
+        message.setReceiver(dto.getMobile());
+        message.setParams(dto.getParam());
 
-        String sceneCode = switch (type) {
-            case 0 -> "0002";
-            case 1 -> "0003";
-            case 2 -> "0004";
-            case 3 -> "0005";
-            case 4 -> "0006";
-            default -> "0000";
-        };
-
-        // 组装标准消息
-        NormalMessage message = new NormalMessage();
-        message.setSceneCode(sceneCode);
-        message.setReceivers(mobile);
-        message.setParams(map);
-        sendNormalMessage(info, message);
-
-        String key = Util.md5(type + mobile + smsCode);
-        Redis.set("VerifyCode:" + key, mobile, Long.valueOf(dto.getMinutes()), TimeUnit.MINUTES);
-        Redis.add("VerifyCodeSet:" + mobile, key, 1800L);
-        logger.info("手机号[{}]的{}类短信验证码为: {}", mobile, type, smsCode);
-    }
-
-    /**
-     * 验证短信验证码
-     *
-     * @param key     验证参数,MD5(type + mobile + code)
-     * @param isCheck 是否检验模式:true.检验模式,验证后验证码不失效;false.验证模式,验证后验证码失效
-     * @return Reply
-     */
-    @Override
-    public String verifySmsCode(String key, Boolean isCheck) {
-        String codeKey = "VerifyCode:" + key;
-        String mobile = Redis.get(codeKey);
-        if (mobile == null || mobile.isEmpty()) {
-            throw new BusinessException("验证码错误");
-        }
-
-        if (isCheck) {
-            // 每验证一次有效时间减少15秒,以避免暴力破解
-            Redis.changeExpire(codeKey, -15);
-            return null;
-        }
-
-        // 清理已通过验证的验证码对应手机号的全部验证码
-        String setKey = "VerifyCodeSet:" + mobile;
-        List<String> keys = Redis.getMembers(setKey);
-        for (String k : keys) {
-            Redis.deleteKey("VerifyCode:" + k);
-        }
-
-        // 清理验证码对应手机号缓存
-        Redis.deleteKey(setKey);
-
-        return mobile;
+        core.sendSms(message);
     }
 
     /**
