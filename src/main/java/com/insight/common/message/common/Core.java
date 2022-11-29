@@ -289,7 +289,9 @@ public class Core {
             message.setContent(now + "保存任务失败! 请尽快处理");
 
             Redis.set(key, now.toString(), 24L, TimeUnit.HOURS);
-            sendSms(message);
+            if(!sendSms(message)){
+                throw new BusinessException("短信发送失败，请稍后重试");
+            }
         }
     }
 

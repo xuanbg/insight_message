@@ -69,7 +69,9 @@ public class MessageServiceImpl implements MessageService {
         message.setChannel(dto.getChannel());
         message.setReceiver(mobile);
         message.setParams(dto.getParam());
-        core.sendSms(message);
+        if(!core.sendSms(message)){
+            throw new BusinessException("短信发送失败，请稍后重试");
+        }
 
         Integer type = dto.getType();
         if (type == null){
