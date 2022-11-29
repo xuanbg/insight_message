@@ -5,6 +5,7 @@ import com.insight.common.message.common.dto.NormalMessage;
 import com.insight.common.message.common.dto.UserMessageDto;
 import com.insight.utils.Json;
 import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.SmsCode;
@@ -43,6 +44,22 @@ public class MessageController {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         service.seedSmsCode(loginInfo, dto);
+    }
+
+    /**
+     * 验证短信验证码
+     *
+     * @param key     验证参数,MD5(type + mobile + code)
+     * @param isCheck 是否检验模式:true.检验模式,验证后验证码不失效;false.验证模式,验证后验证码失效
+     * @return Reply
+     */
+    @GetMapping("/v1.0/codes/{key}/status")
+    public String verifySmsCode(@PathVariable String key, @RequestParam(defaultValue = "true") Boolean isCheck) {
+        if (key == null || key.isEmpty()) {
+            throw new BusinessException("无效的验证参数");
+        }
+
+        return service.verifySmsCode(key, isCheck);
     }
 
     /**
