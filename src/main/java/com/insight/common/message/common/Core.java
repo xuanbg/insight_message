@@ -61,6 +61,12 @@ public class Core {
     private String sender;
 
     /**
+     * 默认短信通道
+     */
+    @Value("${insight.sms.channel}")
+    private String defaultChannel;
+
+    /**
      * 构造方法
      *
      * @param discoveryClient DiscoveryClient
@@ -173,20 +179,13 @@ public class Core {
         try {
             Reply reply;
             switch (call.getMethod()) {
-                case "GET":
-                    reply = taskClient.get(uri);
-                    break;
-                case "POST":
-                    reply = taskClient.post(uri, body);
-                    break;
-                case "PUT":
-                    reply = taskClient.put(uri, body);
-                    break;
-                case "DELETE":
-                    reply = taskClient.delete(uri, body);
-                    break;
-                default:
+                case "GET" -> reply = taskClient.get(uri);
+                case "POST" -> reply = taskClient.post(uri, body);
+                case "PUT" -> reply = taskClient.put(uri, body);
+                case "DELETE" -> reply = taskClient.delete(uri, body);
+                default -> {
                     return;
+                }
             }
             if (!reply.getSuccess()) {
                 logger.error("本地调用发生错误! 错误信息为: {}", reply.getMessage());
@@ -217,20 +216,13 @@ public class Core {
         try {
             String result;
             switch (method) {
-                case "GET":
-                    result = HttpUtil.get(url, headers, String.class);
-                    break;
-                case "POST":
-                    result = HttpUtil.post(url, body, headers, String.class);
-                    break;
-                case "PUT":
-                    result = HttpUtil.put(url, body, headers, String.class);
-                    break;
-                case "DELETE":
-                    result = HttpUtil.delete(url, body, headers, String.class);
-                    break;
-                default:
+                case "GET" -> result = HttpUtil.get(url, headers, String.class);
+                case "POST" -> result = HttpUtil.post(url, body, headers, String.class);
+                case "PUT" -> result = HttpUtil.put(url, body, headers, String.class);
+                case "DELETE" -> result = HttpUtil.delete(url, body, headers, String.class);
+                default -> {
                     return;
+                }
             }
             if (result == null || result.isEmpty() || result.contains("error")) {
                 logger.error("本地调用发生错误! 错误信息为: {}", result);
@@ -261,7 +253,7 @@ public class Core {
             schedule.setCreatedTime(now);
         } else {
             int count = schedule.getCount();
-            if (count > 99 || (expireTime!=null && now.isAfter(expireTime))) {
+            if (count > 99 || (expireTime != null && now.isAfter(expireTime))) {
                 schedule.setInvalid(true);
             } else {
                 schedule.setTaskTime(now.plusSeconds((long) Math.pow(count, 2)));
@@ -289,7 +281,7 @@ public class Core {
             message.setContent(now + "保存任务失败! 请尽快处理");
 
             Redis.set(key, now.toString(), 24L, TimeUnit.HOURS);
-            if(!sendSms(message)){
+            if (!sendSms(message)) {
                 throw new BusinessException("短信发送失败，请稍后重试");
             }
         }
@@ -361,9 +353,10 @@ public class Core {
         }
 
         try {
+            var channel = message.getChannel() == null ? defaultChannel : message.getChannel();
             if (receivers.size() > 1) {
                 // 群发
-                switch (message.getChannel()) {
+                switch (channel) {
                     case "aliyun" -> {
                     }
                     case "a" -> throw new BusinessException("");

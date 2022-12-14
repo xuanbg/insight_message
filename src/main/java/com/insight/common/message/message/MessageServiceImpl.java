@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.insight.common.message.common.Core;
 import com.insight.common.message.common.MessageDal;
 import com.insight.common.message.common.client.RabbitClient;
+import com.insight.common.message.common.client.UserClient;
 import com.insight.common.message.common.dto.CustomMessage;
 import com.insight.common.message.common.dto.NormalMessage;
 import com.insight.common.message.common.dto.TemplateDto;
@@ -19,6 +20,7 @@ import com.insight.utils.pojo.message.Schedule;
 import com.insight.utils.pojo.message.SmsCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,20 +37,29 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class MessageServiceImpl implements MessageService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final UserClient client;
     private final SnowflakeCreator creator;
     private final MessageDal dal;
     private final MessageMapper mapper;
     private final Core core;
 
     /**
+     * 允许发送匿名短信
+     */
+    @Value("${insight.sms.allowAnonymity}")
+    private boolean allowAnonymity;
+
+    /**
      * 构造方法
      *
+     * @param client  Feign客户端
      * @param creator 雪花算法ID生成器
      * @param dal     MessageDal
      * @param mapper  MessageMapper
      * @param core    计划任务异步执行核心类
      */
-    public MessageServiceImpl(SnowflakeCreator creator, MessageDal dal, MessageMapper mapper, Core core) {
+    public MessageServiceImpl(UserClient client, SnowflakeCreator creator, MessageDal dal, MessageMapper mapper, Core core) {
+        this.client = client;
         this.creator = creator;
         this.dal = dal;
         this.mapper = mapper;
@@ -64,17 +75,29 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void seedSmsCode(LoginInfo info, SmsCode dto) {
         String mobile = dto.getMobile();
+        Integer type = dto.getType();
+        if (type == null || type > 1) {
+            var reply = client.getUser(mobile, false);
+            if (!reply.getSuccess()) {
+                throw new BusinessException("验证手机号失败，请稍后重试");
+            }
+
+            if (reply.getBeanFromOption(Integer.class) == 0) {
+                throw new BusinessException("用户不存在");
+            }
+        } else if (!allowAnonymity) {
+            throw new BusinessException("当前设置不允许发送匿名验证码，请联系管理员");
+        }
 
         InsightMessage message = new InsightMessage();
         message.setChannel(dto.getChannel());
         message.setReceiver(mobile);
         message.setParams(dto.getParam());
-        if(!core.sendSms(message)){
+        if (!core.sendSms(message)) {
             throw new BusinessException("短信发送失败，请稍后重试");
         }
 
-        Integer type = dto.getType();
-        if (type == null){
+        if (type == null) {
             return;
         }
 
