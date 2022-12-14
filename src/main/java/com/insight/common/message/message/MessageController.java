@@ -36,14 +36,11 @@ public class MessageController {
     /**
      * 发送短信验证码
      *
-     * @param info 用户关键信息
-     * @param dto  短信DTO
+     * @param dto 短信DTO
      */
     @PostMapping("/v1.0/codes")
-    public void seedSmsCode(@RequestHeader(name = "loginInfo", required = false) String info, @Valid @RequestBody SmsCode dto) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        service.seedSmsCode(loginInfo, dto);
+    public void seedSmsCode(@Valid @RequestBody SmsCode dto) {
+        service.seedSmsCode(dto);
     }
 
     /**

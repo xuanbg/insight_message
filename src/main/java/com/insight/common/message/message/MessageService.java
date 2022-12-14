@@ -18,10 +18,9 @@ public interface MessageService {
     /**
      * 生成短信验证码
      *
-     * @param info 用户关键信息
-     * @param dto  验证码
+     * @param dto 验证码
      */
-    void seedSmsCode(LoginInfo info, SmsCode dto);
+    void seedSmsCode(SmsCode dto);
 
     /**
      * 验证短信验证码
