@@ -366,7 +366,7 @@ public class Core {
             } else {
                 // 单发
                 var phone = receivers.get(0);
-                switch (message.getChannel()) {
+                switch (channel) {
                     case "aliyun" -> AliyunClient.sendTemplateMessage(phone, "SMS_254755310", message.getParams(), "学堡");
                     case "a" -> throw new BusinessException("");
                     default -> throw new BusinessException("不存在的短信通道");
