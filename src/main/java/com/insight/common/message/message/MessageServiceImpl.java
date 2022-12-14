@@ -125,7 +125,7 @@ public class MessageServiceImpl implements MessageService {
         if (isCheck) {
             // 每验证一次有效时间减少15秒,以避免暴力破解
             Redis.changeExpire(codeKey, -15);
-            return null;
+            return mobile;
         }
 
         // 清理已通过验证的验证码对应手机号的全部验证码
