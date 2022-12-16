@@ -115,7 +115,7 @@ CREATE TABLE `imt_schedule` (
   `task_time`          datetime          NOT NULL                COMMENT '任务开始时间',
   `content`            json                       DEFAULT NULL   COMMENT '任务内容',
   `count`              int unsigned               DEFAULT NULL   COMMENT '累计执行次数',
-  `expire_time`        date                       DEFAULT NULL   COMMENT '任务过期时间',
+  `expire_time`        datetime                   DEFAULT NULL   COMMENT '任务过期时间',
   `is_invalid`         bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效：0、正常；1、失效',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
