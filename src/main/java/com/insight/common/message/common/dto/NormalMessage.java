@@ -41,7 +41,7 @@ public class NormalMessage extends BaseXo {
      * 是否广播消息
      */
     @NotNull(message = "广播设置不能为空")
-    private Boolean isBroadcast;
+    private Boolean broadcast;
 
     public String getSceneCode() {
         return sceneCode;
@@ -76,10 +76,10 @@ public class NormalMessage extends BaseXo {
     }
 
     public Boolean getBroadcast() {
-        return isBroadcast;
+        return broadcast;
     }
 
     public void setBroadcast(Boolean broadcast) {
-        isBroadcast = broadcast;
+        this.broadcast = broadcast;
     }
 }

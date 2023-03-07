@@ -29,7 +29,7 @@ public class MessageListDto extends BaseXo {
     /**
      * 是否已读
      */
-    private Boolean isRead;
+    private Boolean read;
 
     /**
      * 创建人
@@ -66,11 +66,11 @@ public class MessageListDto extends BaseXo {
     }
 
     public Boolean getRead() {
-        return isRead;
+        return read;
     }
 
     public void setRead(Boolean read) {
-        isRead = read;
+        this.read = read;
     }
 
     public String getCreator() {

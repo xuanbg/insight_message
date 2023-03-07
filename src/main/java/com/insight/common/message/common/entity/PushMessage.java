@@ -29,7 +29,7 @@ public class PushMessage extends BaseXo {
     /**
      * 是否已读
      */
-    private Boolean isRead;
+    private Boolean read;
 
     /**
      * 阅读时间
@@ -61,11 +61,11 @@ public class PushMessage extends BaseXo {
     }
 
     public Boolean getRead() {
-        return isRead;
+        return read;
     }
 
     public void setRead(Boolean read) {
-        isRead = read;
+        this.read = read;
     }
 
     public LocalDateTime getReadTime() {

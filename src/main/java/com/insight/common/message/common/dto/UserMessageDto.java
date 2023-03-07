@@ -34,12 +34,12 @@ public class UserMessageDto extends BaseXo {
     /**
      * 是否已读
      */
-    private Boolean isRead;
+    private Boolean read;
 
     /**
      * 是否广播消息
      */
-    private Boolean isBroadcast;
+    private Boolean broadcast;
 
     /**
      * 创建人
@@ -89,19 +89,19 @@ public class UserMessageDto extends BaseXo {
     }
 
     public Boolean getRead() {
-        return isRead;
+        return read;
     }
 
     public void setRead(Boolean read) {
-        isRead = read;
+        this.read = read;
     }
 
     public Boolean getBroadcast() {
-        return isBroadcast;
+        return broadcast;
     }
 
     public void setBroadcast(Boolean broadcast) {
-        isBroadcast = broadcast;
+        this.broadcast = broadcast;
     }
 
     public String getCreator() {

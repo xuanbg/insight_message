@@ -44,7 +44,7 @@ public class ScheduleListDto extends BaseXo {
     /**
      * 是否失效
      */
-    private Boolean isInvalid;
+    private Boolean invalid;
 
     /**
      * 创建时间
@@ -100,11 +100,11 @@ public class ScheduleListDto extends BaseXo {
     }
 
     public Boolean getInvalid() {
-        return isInvalid;
+        return invalid;
     }
 
     public void setInvalid(Boolean invalid) {
-        isInvalid = invalid;
+        this.invalid = invalid;
     }
 
     public LocalDateTime getCreatedTime() {

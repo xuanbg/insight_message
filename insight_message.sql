@@ -10,7 +10,7 @@ CREATE TABLE `imm_message` (
   `title`              varchar(64)       NOT NULL                COMMENT '标题',
   `content`            varchar(512)               DEFAULT NULL   COMMENT '内容',
   `expire`             int                        DEFAULT NULL   COMMENT '有效时长(分钟)',
-  `is_broadcast`       bit               NOT NULL DEFAULT b'0'   COMMENT '是否广播消息：0、普通消息；1、广播消息',
+  `broadcast`          bit               NOT NULL DEFAULT b'0'   COMMENT '是否广播消息: 0.普通消息, 1.广播消息',
   `creator`            varchar(64)       NOT NULL                COMMENT '创建人',
   `creator_id`         bigint unsigned   NOT NULL                COMMENT '创建人ID',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
@@ -18,7 +18,7 @@ CREATE TABLE `imm_message` (
   KEY `idx_message_tenant_id` (`tenant_id`),
   KEY `idx_message_app_id` (`app_id`),
   KEY `idx_message_tag` (`tag`),
-  KEY `idx_message_is_broadcast` (`is_broadcast`),
+  KEY `idx_message_broadcast` (`broadcast`),
   KEY `idx_message_creator_id` (`creator_id`),
   KEY `idx_message_created_time` (`created_time`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT ='消息表';
@@ -31,9 +31,9 @@ CREATE TABLE `imm_message_push` (
   `id`                 bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '主键',
   `message_id`         bigint unsigned   NOT NULL                COMMENT '消息ID',
   `user_id`            bigint unsigned   NOT NULL                COMMENT '用户ID',
-  `is_read`            bit               NOT NULL DEFAULT b'0'   COMMENT '是否已读：0、未读；1、已读',
+  `read`               bit               NOT NULL DEFAULT b'0'   COMMENT '是否已读: 0.未读, 1.已读',
   `read_time`          datetime          NULL     DEFAULT NULL   COMMENT '阅读时间',
-  `is_invalid`         bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效：0、正常；1、失效',
+  `invalid`            bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效: 0.有效, 1.失效',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_message_push_message_id` (`message_id`),
   KEY `idx_message_push_user_id` (`user_id`)
@@ -47,7 +47,7 @@ CREATE TABLE `imm_message_subscribe` (
   `id`                 bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '主键',
   `message_id`         bigint unsigned   NOT NULL                COMMENT '消息ID',
   `user_id`            bigint unsigned   NOT NULL                COMMENT '用户ID',
-  `is_invalid`         bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效：0、正常；1、失效',
+  `invalid`            bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效: 0.有效, 1.失效',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_message_subscribe_message_id` (`message_id`),
@@ -62,7 +62,7 @@ DROP TABLE IF EXISTS `ims_scene`;
 CREATE TABLE `ims_scene` (
   `id`                 bigint unsigned   NOT NULL                COMMENT '主键-1',
   `code`               char(8)           NOT NULL                COMMENT '场景遍号',
-  `type`               tinyint unsigned  NOT NULL DEFAULT '0'    COMMENT '发送类型：0、未定义；1、仅消息(001)；2、仅推送(010)；3、推送+消息(011)；4、仅短信(100)',
+  `type`               tinyint unsigned  NOT NULL DEFAULT '0'    COMMENT '发送类型: 0.未定义, 1.仅消息(001), 2.仅推送(010), 3.推送+消息(011), 4.仅短信(100)',
   `name`               varchar(32)       NOT NULL                COMMENT '场景名称',
   `title`              varchar(64)                DEFAULT NULL   COMMENT '消息标题',
   `tag`                varchar(8)                 DEFAULT NULL   COMMENT '消息标签',
@@ -91,7 +91,7 @@ CREATE TABLE `ims_scene_config` (
   `sign`               varchar(16)                DEFAULT NULL   COMMENT '消息签名',
   `expire`             int unsigned      NOT NULL DEFAULT 1      COMMENT '消息有效时长(小时)',
   `remark`             varchar(256)               DEFAULT NULL   COMMENT '备注',
-  `is_invalid`         bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效：0、正常；1、失效',
+  `invalid`            bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效: 0.有效, 1.失效',
   `creator`            varchar(64)       NOT NULL                COMMENT '创建人',
   `creator_id`         bigint unsigned   NOT NULL                COMMENT '创建人ID',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
@@ -102,7 +102,6 @@ CREATE TABLE `ims_scene_config` (
   KEY `idx_scene_config_creator_id` (`creator_id`) USING BTREE,
   KEY `idx_scene_config_created_time` (`created_time`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT ='场景模板配置表';
-
 
 -- ----------------------------
 -- Table structure for imt_schedule
@@ -116,12 +115,11 @@ CREATE TABLE `imt_schedule` (
   `content`            json                       DEFAULT NULL   COMMENT '任务内容',
   `count`              int unsigned               DEFAULT NULL   COMMENT '累计执行次数',
   `expire_time`        datetime                   DEFAULT NULL   COMMENT '任务过期时间',
-  `is_invalid`         bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效：0、正常；1、失效',
+  `invalid`            bit               NOT NULL DEFAULT b'0'   COMMENT '是否失效: 0.有效, 1.失效',
   `created_time`       datetime          NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_schedule_created_time` (`created_time`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT ='任务队列表';
-
 
 -- ----------------------------
 -- Table structure for imu_user_device

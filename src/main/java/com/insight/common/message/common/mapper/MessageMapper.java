@@ -38,10 +38,10 @@ public interface MessageMapper {
      * @param search 查询实体类
      * @return 消息列表
      */
-    @Select("<script>select m.id, m.tag, m.title, case when r.message_id is null then 0 else r.is_read end as is_read, m.creator, m.created_time from imm_message m " +
-            "left join (select message_id, is_read, is_invalid from imm_message_push where user_id = #{ownerId} union all " +
-            "select message_id, 1 as is_read, is_invalid from imm_message_subscribe where user_id = #{ownerId}) r on r.message_id = m.id " +
-            "where m.app_id = #{appId} and date_add(m.created_time, interval m.expire minute) > now() and (r.is_invalid = 0 or r.is_invalid is null) " +
+    @Select("<script>select m.id, m.tag, m.title, case when r.message_id is null then 0 else r.read end as read, m.creator, m.created_time from imm_message m " +
+            "left join (select message_id, read, invalid from imm_message_push where user_id = #{ownerId} union all " +
+            "select message_id, 1 as read, invalid from imm_message_subscribe where user_id = #{ownerId}) r on r.message_id = m.id " +
+            "where m.app_id = #{appId} and date_add(m.created_time, interval m.expire minute) > now() and (r.invalid = 0 or r.invalid is null) " +
             "<if test = 'tenantId != null'>and m.tenant_id = #{tenantId} </if>" +
             "<if test = 'tenantId == null'>and m.tenant_id is null </if>" +
             "<if test = 'keyword != null'>and (m.tag = #{keyword} or m.title like concat('%',#{keyword},'%')) </if></script>")
@@ -54,9 +54,9 @@ public interface MessageMapper {
      * @param userId    用户ID
      * @return 消息详情
      */
-    @Select("select m.id, m.tag, m.title, m.content, case when r.message_id is null then 0 else 1 end as is_read, m.is_broadcast, m.creator, m.creator_id, m.created_time " +
-            "from imm_message m left join (select message_id, is_read from imm_message_push where message_id = #{messageId} and user_id = #{userId} union all " +
-            "select message_id, 1 as is_read from imm_message_subscribe where message_id = #{messageId} and user_id = #{userId}) r on r.message_id = m.id " +
+    @Select("select m.id, m.tag, m.title, m.content, case when r.message_id is null then 0 else 1 end as read, m.broadcast, m.creator, m.creator_id, m.created_time " +
+            "from imm_message m left join (select message_id, read from imm_message_push where message_id = #{messageId} and user_id = #{userId} union all " +
+            "select message_id, 1 as read from imm_message_subscribe where message_id = #{messageId} and user_id = #{userId}) r on r.message_id = m.id " +
             "where m.id = #{messageId};")
     UserMessageDto getMessage(@Param("messageId") Long messageId, @Param("userId") Long userId);
 
@@ -65,8 +65,8 @@ public interface MessageMapper {
      *
      * @param message 消息DTO
      */
-    @Insert("insert imm_message(id, tenant_id, app_id, tag, title, content, expire, is_broadcast_id, creator, creator_id, created_time) values " +
-            "(#{id}, #{tenantId}, #{appId}, #{tag}, #{title}, #{content}, #{expire}, #{isBroadcast}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert imm_message(id, tenant_id, app_id, tag, title, content, expire, broadcast_id, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{appId}, #{tag}, #{title}, #{content}, #{expire}, #{broadcast}, #{creator}, #{creatorId}, #{createdTime});")
     void addMessage(InsightMessage message);
 
     /**
@@ -85,7 +85,7 @@ public interface MessageMapper {
      * @param messageId 消息ID
      * @param userId    用户ID
      */
-    @Update("update imm_message_push set is_read = 1, read_time = now() where message_id = #{messageId} and user_id = #{userId};")
+    @Update("update imm_message_push set read = 1, read_time = now() where message_id = #{messageId} and user_id = #{userId};")
     void readMessage(@Param("messageId") Long messageId, @Param("userId") Long userId);
 
     /**
@@ -102,7 +102,7 @@ public interface MessageMapper {
      * @param messageId 消息ID
      * @param userId    用户ID
      */
-    @Update("update imm_message_push set is_invalid = 1 where message_id = #{messageId} and user_id = #{userId};")
+    @Update("update imm_message_push set invalid = 1 where message_id = #{messageId} and user_id = #{userId};")
     void deleteUserMessage(@Param("messageId") Long messageId, @Param("userId") Long userId);
 
     /**
@@ -111,7 +111,7 @@ public interface MessageMapper {
      * @param messageId 消息ID
      * @param userId    用户ID
      */
-    @Update("update imm_message_subscribe set is_invalid = 1 where message_id = #{messageId} and user_id = #{userId};")
+    @Update("update imm_message_subscribe set invalid = 1 where message_id = #{messageId} and user_id = #{userId};")
     void unsubscribeMessage(@Param("messageId") Long messageId, @Param("userId") Long userId);
 
     /**
@@ -120,7 +120,7 @@ public interface MessageMapper {
      * @param message 消息DTO
      */
     @Update("update imm_message set app_id = #{appId}, tag = #{tag}, type = #{type}, receivers = #{receivers, typeHandler = com.insight.utils.pojo.base.ArrayTypeHandler}, " +
-            "content = #{content}, expire = #{expire}, is_broadcast = #{isBroadcast} where id = #{id};")
+            "content = #{content}, expire = #{expire}, broadcast = #{broadcast} where id = #{id};")
     void editMessage(InsightMessage message);
 
     /**
@@ -145,7 +145,7 @@ public interface MessageMapper {
      * @param search 查询DTO
      * @return 任务列表
      */
-    @Select("<script>select id, type, method, task_time, count, expire_time, is_invalid, created_time from imt_schedule " +
+    @Select("<script>select id, type, method, task_time, count, expire_time, invalid, created_time from imt_schedule " +
             "<if test = 'keyword != null'>where type = #{keyword} or method = #{keyword} </if></script>")
     List<ScheduleListDto> getSchedules(Search search);
 
@@ -165,7 +165,7 @@ public interface MessageMapper {
      * @return DTO集合
      */
     @Results({@Result(property = "content", column = "content", javaType = InsightMessage.class, typeHandler = JsonTypeHandler.class)})
-    @Select("select * from imt_schedule where type = 0 and task_time < now() and expire_time > now() and is_invalid = 0;")
+    @Select("select * from imt_schedule where type = 0 and task_time < now() and expire_time > now() and invalid = 0;")
     List<Schedule<InsightMessage>> getMessageSchedule();
 
     /**
@@ -174,7 +174,7 @@ public interface MessageMapper {
      * @return 计划任务DTO集合
      */
     @Results({@Result(property = "content", column = "content", javaType = ScheduleCall.class, typeHandler = JsonTypeHandler.class)})
-    @Select("select * from imt_schedule where type = 1 and task_time < now() and expire_time > now() and is_invalid = 0;")
+    @Select("select * from imt_schedule where type = 1 and task_time < now() and expire_time > now() and invalid = 0;")
     List<Schedule<ScheduleCall>> getLocalSchedule();
 
     /**
@@ -183,7 +183,7 @@ public interface MessageMapper {
      * @return 计划任务DTO集合
      */
     @Results({@Result(property = "content", column = "content", javaType = ScheduleCall.class, typeHandler = JsonTypeHandler.class)})
-    @Select("select * from imt_schedule where type = 2 and task_time < now() and expire_time > now() and is_invalid = 0;")
+    @Select("select * from imt_schedule where type = 2 and task_time < now() and expire_time > now() and invalid = 0;")
     List<Schedule<ScheduleCall>> getRpcSchedule();
 
     /**
@@ -191,9 +191,9 @@ public interface MessageMapper {
      *
      * @param schedule 计划任务DTO
      */
-    @Insert("insert imt_schedule (id, type, method, task_time, content, count, expire_time, is_invalid, created_time) values " +
+    @Insert("insert imt_schedule (id, type, method, task_time, content, count, expire_time, invalid, created_time) values " +
             "(#{id}, #{type}, #{method}, #{taskTime}, #{content, typeHandler = com.insight.utils.pojo.base.JsonTypeHandler}, " +
-            "#{count}, #{expireTime}, #{isInvalid}, #{createdTime});")
+            "#{count}, #{expireTime}, #{invalid}, #{createdTime});")
     void addSchedule(Schedule schedule);
 
     /**
@@ -201,7 +201,7 @@ public interface MessageMapper {
      *
      * @param id 计划任务ID
      */
-    @Update("update imt_schedule set task_time = now(), is_invalid = 0 where id = #{id};")
+    @Update("update imt_schedule set task_time = now(), invalid = 0 where id = #{id};")
     void editSchedule(Long id);
 
     /**
@@ -210,7 +210,7 @@ public interface MessageMapper {
      * @param id     计划任务ID
      * @param status 禁用/启用状态
      */
-    @Update("update imt_schedule set is_invalid = #{status} where id = #{id};")
+    @Update("update imt_schedule set invalid = #{status} where id = #{id};")
     void changeScheduleStatus(Long id, boolean status);
 
     /**
