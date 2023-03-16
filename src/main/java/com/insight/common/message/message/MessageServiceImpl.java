@@ -75,7 +75,11 @@ public class MessageServiceImpl implements MessageService {
     public void seedSmsCode(SmsCode dto) {
         String mobile = dto.getMobile();
         Integer type = dto.getType();
-        if (type == null || type > 1) {
+        if (type == null) {
+            throw new BusinessException("验证码类型错误");
+        }
+
+        if (type > 1) {
             var reply = client.getUserCount(mobile);
             if (!reply.getSuccess()) {
                 throw new BusinessException("验证手机号失败，请稍后重试");
@@ -94,10 +98,6 @@ public class MessageServiceImpl implements MessageService {
         message.setParams(dto.getParam());
         if (!core.sendSms(message)) {
             throw new BusinessException("短信发送失败，请稍后重试");
-        }
-
-        if (type == null) {
-            return;
         }
 
         String smsCode = dto.getCode();

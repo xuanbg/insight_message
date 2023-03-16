@@ -85,7 +85,7 @@ Insight
 
 请求方法：**POST**
 
-接口URL：**/base/message/v1.0/smscodes**
+接口URL：**/common/message/v1.0/smscodes**
 
 请求参数如下：
 
@@ -127,7 +127,7 @@ Insight
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/smscodes/{key}/status**
+接口URL：**/common/message/v1.0/codes/{key}/status**
 
 请求参数如下：
 
@@ -139,7 +139,7 @@ Insight
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f568f5b0a44f7/status?isCheck=false" \
+curl "http://192.168.236.8:6200/common/message/v1.0/smscodes/fec92254fd0ecc1cee7f568f5b0a44f7/status?isCheck=false" \
  -H 'Accept: application/json' \
  -H 'Accept-Encoding: gzip, identity' \
  -H 'Content-Type: application/json'
@@ -166,7 +166,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 请求方法：**POST**
 
-接口URL：**/base/message/v1.0/messages**
+接口URL：**/common/message/v1.0/messages**
 
 请求参数如下：
 
@@ -212,7 +212,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 请求方法：**POST**
 
-接口URL：**/base/message/v1.0/customs**
+接口URL：**/common/message/v1.0/customs**
 
 请求参数如下：
 
@@ -260,7 +260,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/messages**
+接口URL：**/common/message/v1.0/messages**
 
 请求参数如下：
 
@@ -284,7 +284,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/smscodes/fec92254fd0ecc1cee7f5
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/messages?keyword=a" \
+curl "http://192.168.236.8:6200/common/message/v1.0/messages?keyword=a" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6IjY2ZmZlMTRlYTcwYTQ4MTJhZjdhZjMwOGUyZjJlNmRhIiwic2VjcmV0IjoiNTMwZDA3OTFiOTgxNGIwODg0NmY3MjQ2MjczNTUyZTcifQ==' \
@@ -320,7 +320,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/messages?keyword=a" \
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/messages/{id}**
+接口URL：**/common/message/v1.0/messages/{id}**
 
 请求参数如下：
 
@@ -345,7 +345,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/messages?keyword=a" \
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/messages/7ab89a1bace84e5aadca44851901df02" \
+curl "http://192.168.236.8:6200/common/message/v1.0/messages/7ab89a1bace84e5aadca44851901df02" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6IjY2ZmZlMTRlYTcwYTQ4MTJhZjdhZjMwOGUyZjJlNmRhIiwic2VjcmV0IjoiNTMwZDA3OTFiOTgxNGIwODg0NmY3MjQ2MjczNTUyZTcifQ==' \
@@ -382,7 +382,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/messages/7ab89a1bace84e5aadca4
 
 请求方法：**DELETE**
 
-接口URL：**/base/message/v1.0/messages**
+接口URL：**/common/message/v1.0/messages**
 
 请求参数如下：
 
@@ -418,7 +418,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/messages/7ab89a1bace84e5aadca4
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/schedules**
+接口URL：**/common/message/v1.0/schedules**
 
 请求参数如下：
 
@@ -443,7 +443,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/messages/7ab89a1bace84e5aadca4
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/schedules" \
+curl "http://192.168.236.8:6200/common/message/v1.0/schedules" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6ImUwYWMzMjgwY2YzODQwMDQ5MGVlNDExOTdlN2YwOTVjIiwic2VjcmV0IjoiYjE3MTYwNGJhN2VkNGJjMjkzOGI2NTE2NWM3OTBjZmIifQ==' \
@@ -480,7 +480,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules" \
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/schedules/{id}**
+接口URL：**/common/message/v1.0/schedules/{id}**
 
 请求参数如下：
 
@@ -504,7 +504,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules" \
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b24ec42c3db06" \
+curl "http://192.168.236.8:6200/common/message/v1.0/schedules/13b09fd03a5a47b7918b24ec42c3db06" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6ImUwYWMzMjgwY2YzODQwMDQ5MGVlNDExOTdlN2YwOTVjIiwic2VjcmV0IjoiYjE3MTYwNGJhN2VkNGJjMjkzOGI2NTE2NWM3OTBjZmIifQ==' \
@@ -524,9 +524,9 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
     "method": "getConfigs",
     "taskTime": "2019-10-04 21:27:35",
     "content": {
-      "url": "/base/auth/v1.0/configs",
+      "url": "/common/auth/v1.0/configs",
       "body": {
-        "url": "/base/user/v1.0/users",
+        "url": "/common/user/v1.0/users",
         "name": "获取用户列表",
         "limit": true,
         "method": "GET",
@@ -563,7 +563,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 请求方法：**POST**
 
-接口URL：**/base/message/v1.0/schedules**
+接口URL：**/common/message/v1.0/schedules**
 
 请求参数如下：
 
@@ -589,7 +589,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
   "content": {
     "method": "POST",
     "service": "base-auth",
-    "url": "/base/auth/v1.0/configs",
+    "url": "/common/auth/v1.0/configs",
     "headers": {
       "Accept": "application/json",
       "Content-Type": "application/json",
@@ -599,7 +599,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
     "body": {
       "name": "获取用户列表",
       "method": "GET",
-      "url": "/base/user/v1.0/users",
+      "url": "/common/user/v1.0/users",
       "authCode": null,
       "limitGap": 1,
       "limitCycle": null,
@@ -633,7 +633,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 请求方法：**PUT**
 
-接口URL：**/base/message/v1.0/schedules**
+接口URL：**/common/message/v1.0/schedules**
 
 请求参数如下：
 
@@ -667,7 +667,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 请求方法：**DELETE**
 
-接口URL：**/base/message/v1.0/schedules**
+接口URL：**/common/message/v1.0/schedules**
 
 请求参数如下：
 
@@ -701,7 +701,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 请求方法：**PUT**
 
-接口URL：**/base/message/v1.0/schedules/disable**
+接口URL：**/common/message/v1.0/schedules/disable**
 
 请求参数如下：
 
@@ -735,7 +735,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 请求方法：**PUT**
 
-接口URL：**/base/message/v1.0/schedules/enable**
+接口URL：**/common/message/v1.0/schedules/enable**
 
 请求参数如下：
 
@@ -771,7 +771,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/templates**
+接口URL：**/common/message/v1.0/templates**
 
 请求参数如下：
 
@@ -797,7 +797,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/schedules/13b09fd03a5a47b7918b
 请求示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
+curl "http://192.168.236.8:6200/common/message/v1.0/templates?keyword=0001" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6IjQ3OWNlZTRhZDY3MjQzYTJiYzgyNWQ1NTg4MjBiZTY1Iiwic2VjcmV0IjoiOWU1MDk1ZmQ5ZWUyNGRmZWEyMTMyOGNmMmNlZmQyMzAifQ==' \
@@ -835,7 +835,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/templates/{id}**
+接口URL：**/common/message/v1.0/templates/{id}**
 
 请求参数如下：
 
@@ -863,7 +863,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates?keyword=0001" \
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc200242ac110004" \
+curl "http://192.168.236.8:6200/common/message/v1.0/templates/387e156ddc7211e9bc200242ac110004" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6Ijc0MDc0ZmJkZjVmODQ3ZWZhM2ZjZDY2NmNlOWIzYjViIiwic2VjcmV0IjoiNWU1MzQxNTQ1Y2IwNDIyODliZDljNzNlYjlmMDk3ODUifQ==' \
@@ -904,7 +904,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
 
 请求方法：**POST**
 
-接口URL：**/base/message/v1.0/templates**
+接口URL：**/common/message/v1.0/templates**
 
 请求参数如下：
 
@@ -948,7 +948,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
 
 请求方法：**PUT**
 
-接口URL：**/base/message/v1.0/templates**
+接口URL：**/common/message/v1.0/templates**
 
 请求参数如下：
 
@@ -995,7 +995,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
 
 请求方法：**DELETE**
 
-接口URL：**/base/message/v1.0/templates**
+接口URL：**/common/message/v1.0/templates**
 
 请求参数如下：
 
@@ -1029,7 +1029,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
 
 请求方法：**PUT**
 
-接口URL：**/base/message/v1.0/templates/disable**
+接口URL：**/common/message/v1.0/templates/disable**
 
 请求参数如下：
 
@@ -1063,7 +1063,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
 
 请求方法：**PUT**
 
-接口URL：**/base/message/v1.0/templates/enable**
+接口URL：**/common/message/v1.0/templates/enable**
 
 请求参数如下：
 
@@ -1099,7 +1099,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/scenes**
+接口URL：**/common/message/v1.0/scenes**
 
 请求参数如下：
 
@@ -1122,7 +1122,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/templates/387e156ddc7211e9bc20
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/scenes?keyword=0001" \
+curl "http://192.168.236.8:6200/common/message/v1.0/scenes?keyword=0001" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6ImY0YzUzZGU3ZjJkZDRlNDk5YWZlNzgyMTRhZTI0MWEyIiwic2VjcmV0IjoiYjQ4NzcxMTIwNDQzNDFjY2EwNjE2NWIxZDM1Y2ZjNmUifQ==' \
@@ -1157,7 +1157,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes?keyword=0001" \
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/scenes/{id}**
+接口URL：**/common/message/v1.0/scenes/{id}**
 
 请求参数如下：
 
@@ -1180,7 +1180,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes?keyword=0001" \
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc200242ac110004" \
+curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200242ac110004" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6ImY0YzUzZGU3ZjJkZDRlNDk5YWZlNzgyMTRhZTI0MWEyIiwic2VjcmV0IjoiYjQ4NzcxMTIwNDQzNDFjY2EwNjE2NWIxZDM1Y2ZjNmUifQ==' \
@@ -1215,7 +1215,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 请求方法：**POST**
 
-接口URL：**/base/message/v1.0/scenes**
+接口URL：**/common/message/v1.0/scenes**
 
 请求参数如下：
 
@@ -1254,7 +1254,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 请求方法：**PUT**
 
-接口URL：**/base/message/v1.0/scenes**
+接口URL：**/common/message/v1.0/scenes**
 
 请求参数如下：
 
@@ -1296,7 +1296,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 请求方法：**DELETE**
 
-接口URL：**/base/message/v1.0/scenes**
+接口URL：**/common/message/v1.0/scenes**
 
 请求参数如下：
 
@@ -1332,7 +1332,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 请求方法：**GET**
 
-接口URL：**/base/message/v1.0/scenes/{id}/configs**
+接口URL：**/common/message/v1.0/scenes/{id}/configs**
 
 请求参数如下：
 
@@ -1361,7 +1361,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 请求参数示例：
 
 ```sh
-curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc200242ac110004/configs?keyword=0001" \
+curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200242ac110004/configs?keyword=0001" \
      -H 'Accept: application/json' \
      -H 'Accept-Encoding: gzip, identity' \
      -H 'Authorization: eyJpZCI6ImE4N2NiNjFlNmU2YTRhNDNiODY1NmExMWViM2E0YTQ2Iiwic2VjcmV0IjoiMTA2YmIxY2FhNWJjNDc4MTk0MTdmNDkwYTI4NWE1YjAifQ==' \
@@ -1401,7 +1401,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 请求方法：**POST**
 
-接口URL：**/base/message/v1.0/scenes/configs**
+接口URL：**/common/message/v1.0/scenes/configs**
 
 请求参数如下：
 
@@ -1444,7 +1444,7 @@ curl "http://192.168.236.8:6200/base/message/v1.0/scenes/27c3a319dc7011e9bc20024
 
 请求方法：**DELETE**
 
-接口URL：**/base/message/v1.0/scenes/configs**
+接口URL：**/common/message/v1.0/scenes/configs**
 
 请求参数如下：
 
