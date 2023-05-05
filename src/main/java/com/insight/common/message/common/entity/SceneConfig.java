@@ -1,8 +1,7 @@
 package com.insight.common.message.common.entity;
 
 import com.insight.utils.pojo.base.BaseXo;
-
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * @author 宣炳刚

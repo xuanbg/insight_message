@@ -10,7 +10,10 @@ import com.insight.common.message.common.dto.NormalMessage;
 import com.insight.common.message.common.dto.TemplateDto;
 import com.insight.common.message.common.dto.UserMessageDto;
 import com.insight.common.message.common.mapper.MessageMapper;
-import com.insight.utils.*;
+import com.insight.utils.Json;
+import com.insight.utils.ReplyHelper;
+import com.insight.utils.SnowflakeCreator;
+import com.insight.utils.Util;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
@@ -18,6 +21,7 @@ import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.InsightMessage;
 import com.insight.utils.pojo.message.Schedule;
 import com.insight.utils.pojo.message.SmsCode;
+import com.insight.utils.redis.Redis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -202,7 +206,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public Reply getUserMessages(LoginInfo info, Search search) {
-        search.setOwnerId(info.getUserId());
+        search.setOwnerId(info.getId());
         var page = PageHelper.startPage(search.getPageNum(), search.getPageSize())
                 .setOrderBy(search.getOrderBy()).doSelectPage(() -> mapper.getMessages(search));
 
@@ -273,8 +277,8 @@ public class MessageServiceImpl implements MessageService {
             message.setId(creator.nextId(0));
             message.setTenantId(info.getTenantId());
             message.setAppId(info.getAppId());
-            message.setCreator(info.getUserName());
-            message.setCreatorId(info.getUserId());
+            message.setCreator(info.getName());
+            message.setCreatorId(info.getId());
 
             message.setCreatedTime(LocalDateTime.now());
             schedule.setMethod("addMessage");

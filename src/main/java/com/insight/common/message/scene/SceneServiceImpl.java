@@ -93,8 +93,8 @@ public class SceneServiceImpl implements SceneService {
         }
 
         dto.setId(id);
-        dto.setCreator(info.getUserName());
-        dto.setCreatorId(info.getUserId());
+        dto.setCreator(info.getName());
+        dto.setCreatorId(info.getId());
 
         mapper.addScene(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
@@ -173,8 +173,8 @@ public class SceneServiceImpl implements SceneService {
 
         dto.setId(id);
         dto.setTenantId(tenantId);
-        dto.setCreator(info.getUserName());
-        dto.setCreatorId(info.getUserId());
+        dto.setCreator(info.getName());
+        dto.setCreatorId(info.getId());
 
         mapper.addSceneConfig(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);

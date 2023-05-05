@@ -65,17 +65,19 @@ Insight
 
 ### 通讯方式
 
-接口支持 **HTTP/HTTPS** 协议的 **GET/POST/PUT/DELETE** 方法，支持 **URL Params** 、 **Path Variable** 或 **BODY** 传递接口参数。如使用 **BODY**
-传参，则需使用 **Json** 格式的请求参数。接口 **/URL** 区分大小写，请求以及返回都使用 **UTF-8** 字符集进行编码，接口返回的数据封装为统一的 **Json** 格式。
+接口支持 **HTTP/HTTPS** 协议的 **GET/POST/PUT/DELETE** 方法，支持 **URL Params** 、 **Path Variable** 或 **BODY**
+传递接口参数。如使用 **BODY**
+传参，则需使用 **Json** 格式的请求参数。接口 **/URL** 区分大小写，请求以及返回都使用 **UTF-8** 字符集进行编码，接口返回的数据封装为统一的
+**Json** 格式。
 
 文档中所列举的类型皆为 **Java** 语言的数据类型，其它编程语言的的数据类型请自行对应。格式详见：[Reply数据类型](#Reply)。
 
 建议在HTTP请求头中设置以下参数：
 
-|参数名|参数值|
-| ------------ | ------------ |
-|Accept|application/json|
-|Content-Type|application/json|
+| 参数名          | 参数值              |
+|--------------|------------------|
+| Accept       | application/json |
+| Content-Type | application/json |
 
 ## 消息模块
 
@@ -89,12 +91,12 @@ Insight
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|Integer|type|是|验证码类型:0.验证手机号;1.注册用户账号;2.重置密码;3.修改支付密码;4.修改手机号|
-|String|mobile|是|手机号|
-|Integer|length|是|验证码长度,建议4-8位|
-|Integer|minutes|是|验证码有效时间(分钟)|
+| 类型      | 字段      | 是否必需 | 字段说明                                           |
+|---------|---------|------|------------------------------------------------|
+| Integer | type    | 是    | 验证码类型:0.验证手机号;1.注册用户账号;2.重置密码;3.修改支付密码;4.修改手机号 |
+| String  | mobile  | 是    | 手机号                                            |
+| Integer | length  | 是    | 验证码长度,建议4-8位                                   |
+| Integer | minutes | 是    | 验证码有效时间(分钟)                                    |
 
 请求参数示例：
 
@@ -131,10 +133,10 @@ Insight
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|key|是|验证参数,MD5(type + mobile + code)|
-|Boolean|isCheck|否|是否检验模式,检验模式不会使验证码失效.默认为true|
+| 类型      | 字段      | 是否必需 | 字段说明                           |
+|---------|---------|------|--------------------------------|
+| String  | key     | 是    | 验证参数,MD5(type + mobile + code) |
+| Boolean | isCheck | 否    | 是否检验模式,检验模式不会使验证码失效.默认为true    |
 
 请求参数示例：
 
@@ -170,13 +172,13 @@ curl "http://192.168.236.8:6200/common/message/v1.0/smscodes/fec92254fd0ecc1cee7
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|sceneCode|场景编码|
-|String|partnerCode|合作伙伴编码|
-|String|receivers|接收人,多个接收人使用逗号分隔|
-|Map\<String, Object>|params|自定义参数|
-|Boolean|isBroadcast|是否广播消息|
+| 类型                   | 字段          | 是否必需            | 字段说明 |
+|----------------------|-------------|-----------------|------|
+| String               | sceneCode   | 场景编码            |
+| String               | partnerCode | 合作伙伴编码          |
+| String               | receivers   | 接收人,多个接收人使用逗号分隔 |
+| Map\<String, Object> | params      | 自定义参数           |
+| Boolean              | isBroadcast | 是否广播消息          |
 
 请求参数示例：
 
@@ -216,16 +218,16 @@ curl "http://192.168.236.8:6200/common/message/v1.0/smscodes/fec92254fd0ecc1cee7
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|tag|是|消息标签|
-|Integer|type|是|发送类型:0.未定义;1.仅消息;2.仅通知;3.推送+消息;4.仅短信;8.仅邮件|
-|String|receivers|是|接收人,多个接收人使用逗号分隔|
-|String|title|是|消息标题|
-|String|content|是|消息内容|
-|Map\<String, Object>|params|否|自定义参数|
-|Boolean|isBroadcast|是|是否广播消息|
-|Date|expireDate|否|消息失效日期|
+| 类型                   | 字段          | 是否必需 | 字段说明                                       |
+|----------------------|-------------|------|--------------------------------------------|
+| String               | tag         | 是    | 消息标签                                       |
+| Integer              | type        | 是    | 发送类型:0.未定义;1.仅消息;2.仅通知;3.推送+消息;4.仅短信;8.仅邮件 |
+| String               | receivers   | 是    | 接收人,多个接收人使用逗号分隔                            |
+| String               | title       | 是    | 消息标题                                       |
+| String               | content     | 是    | 消息内容                                       |
+| Map\<String, Object> | params      | 否    | 自定义参数                                      |
+| Boolean              | isBroadcast | 是    | 是否广播消息                                     |
+| Date                 | expireDate  | 否    | 消息失效日期                                     |
 
 请求参数示例：
 
@@ -264,22 +266,22 @@ curl "http://192.168.236.8:6200/common/message/v1.0/smscodes/fec92254fd0ecc1cee7
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|keyword|否|查询关键词|
-|Integer|page|否|分页页码|
-|Integer|size|否|每页记录数|
+| 类型      | 字段      | 是否必需 | 字段说明  |
+|---------|---------|------|-------|
+| String  | keyword | 否    | 查询关键词 |
+| Integer | page    | 否    | 分页页码  |
+| Integer | size    | 否    | 每页记录数 |
 
 接口返回数据集合类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|消息ID|
-|String|tag|消息标签,如"平台通知"/"系统消息"|
-|String|title|消息标题|
-|Boolean|read|是否已读|
-|String|creator|创建人|
-|Date|createdTime|创建时间|
+| 类型      | 字段          | 字段说明                |
+|---------|-------------|---------------------|
+| String  | id          | 消息ID                |
+| String  | tag         | 消息标签,如"平台通知"/"系统消息" |
+| String  | title       | 消息标题                |
+| Boolean | read        | 是否已读                |
+| String  | creator     | 创建人                 |
+| Date    | createdTime | 创建时间                |
 
 请求参数示例：
 
@@ -324,23 +326,23 @@ curl "http://192.168.236.8:6200/common/message/v1.0/messages?keyword=a" \
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|id|是|消息ID|
+| 类型     | 字段 | 是否必需 | 字段说明 |
+|--------|----|------|------|
+| String | id | 是    | 消息ID |
 
 接口返回数据集合类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|消息ID|
-|String|tag|消息标签,如"平台通知"/"系统消息"|
-|String|title|消息标题|
-|String|content|消息内容|
-|Boolean|read|是否已读|
-|Boolean|broadcast|是否广播消息|
-|String|creator|创建人|
-|String|creatorId|创建人ID|
-|Date|createdTime|创建时间|
+| 类型      | 字段          | 字段说明                |
+|---------|-------------|---------------------|
+| String  | id          | 消息ID                |
+| String  | tag         | 消息标签,如"平台通知"/"系统消息" |
+| String  | title       | 消息标题                |
+| String  | content     | 消息内容                |
+| Boolean | read        | 是否已读                |
+| Boolean | broadcast   | 是否广播消息              |
+| String  | creator     | 创建人                 |
+| String  | creatorId   | 创建人ID               |
+| Date    | createdTime | 创建时间                |
 
 请求参数示例：
 
@@ -386,9 +388,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/messages/7ab89a1bace84e5aadc
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|消息ID|
+| 类型     | 字段 | 是否必需 | 字段说明 |
+|--------|----|------|------|
+| String | -  | 是    | 消息ID |
 
 请求参数示例：
 
@@ -422,23 +424,23 @@ curl "http://192.168.236.8:6200/common/message/v1.0/messages/7ab89a1bace84e5aadc
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|keyword|否|查询关键词,精确匹配任务类型(type)或调用方法(method)|
-|Integer|page|否|分页页码|
-|Integer|size|否|每页记录数|
+| 类型      | 字段      | 是否必需 | 字段说明                              |
+|---------|---------|------|-----------------------------------|
+| String  | keyword | 否    | 查询关键词,精确匹配任务类型(type)或调用方法(method) |
+| Integer | page    | 否    | 分页页码                              |
+| Integer | size    | 否    | 每页记录数                             |
 
 接口返回数据集合类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|任务ID|
-|Integer|type|任务类型:0.消息发送;1.本地调用;2.远程调用|
-|String|method|调用方法|
-|Date|taskTime|下次执行时间|
-|Integer|count|失败次数|
-|Boolean|invalid|是否失效|
-|Date|createdTime|创建时间|
+| 类型      | 字段          | 字段说明                      |
+|---------|-------------|---------------------------|
+| String  | id          | 任务ID                      |
+| Integer | type        | 任务类型:0.消息发送;1.本地调用;2.远程调用 |
+| String  | method      | 调用方法                      |
+| Date    | taskTime    | 下次执行时间                    |
+| Integer | count       | 失败次数                      |
+| Boolean | invalid     | 是否失效                      |
+| Date    | createdTime | 创建时间                      |
 
 请求参数示例：
 
@@ -484,22 +486,22 @@ curl "http://192.168.236.8:6200/common/message/v1.0/schedules" \
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|id|是|任务ID|
+| 类型     | 字段 | 是否必需 | 字段说明 |
+|--------|----|------|------|
+| String | id | 是    | 任务ID |
 
 接口返回数据类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|任务ID|
-|Integer|type|任务类型:0.消息发送;1.本地调用;2.远程调用|
-|String|method|调用方法|
-|Date|taskTime|下次执行时间|
-|\<T>|content|任务内容,泛型|
-|Integer|count|失败次数|
-|Boolean|invalid|是否失效|
-|Date|createdTime|创建时间|
+| 类型      | 字段          | 字段说明                      |
+|---------|-------------|---------------------------|
+| String  | id          | 任务ID                      |
+| Integer | type        | 任务类型:0.消息发送;1.本地调用;2.远程调用 |
+| String  | method      | 调用方法                      |
+| Date    | taskTime    | 下次执行时间                    |
+| \<T>    | content     | 任务内容,泛型                   |
+| Integer | count       | 失败次数                      |
+| Boolean | invalid     | 是否失效                      |
+| Date    | createdTime | 创建时间                      |
 
 请求参数示例：
 
@@ -567,18 +569,18 @@ curl "http://192.168.236.8:6200/common/message/v1.0/schedules/13b09fd03a5a47b791
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|Integer|type|是|任务类型:0.消息发送;1.本地调用;2.远程调用|
-|String|method|是|调用方法|
-|Date|taskTime|否|下次执行时间|
-|\<T>|content|是|任务内容,泛型([InsightMessage](#InsightMessage)\|[ScheduleCall](#ScheduleCall))|
+| 类型      | 字段       | 是否必需 | 字段说明                                                                      |
+|---------|----------|------|---------------------------------------------------------------------------|
+| Integer | type     | 是    | 任务类型:0.消息发送;1.本地调用;2.远程调用                                                 |
+| String  | method   | 是    | 调用方法                                                                      |
+| Date    | taskTime | 否    | 下次执行时间                                                                    |
+| \<T>    | content  | 是    | 任务内容,泛型([InsightMessage](#InsightMessage)\|[ScheduleCall](#ScheduleCall)) |
 
 接口返回数据类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|-|任务ID|
+| 类型     | 字段 | 字段说明 |
+|--------|----|------|
+| String | -  | 任务ID |
 
 请求参数示例：
 
@@ -637,9 +639,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/schedules/13b09fd03a5a47b791
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|任务ID|
+| 类型     | 字段 | 是否必需 | 字段说明 |
+|--------|----|------|------|
+| String | -  | 是    | 任务ID |
 
 请求参数示例：
 
@@ -671,9 +673,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/schedules/13b09fd03a5a47b791
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|任务ID|
+| 类型     | 字段 | 是否必需 | 字段说明 |
+|--------|----|------|------|
+| String | -  | 是    | 任务ID |
 
 请求参数示例：
 
@@ -705,9 +707,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/schedules/13b09fd03a5a47b791
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|任务ID|
+| 类型     | 字段 | 是否必需 | 字段说明 |
+|--------|----|------|------|
+| String | -  | 是    | 任务ID |
 
 请求参数示例：
 
@@ -739,9 +741,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/schedules/13b09fd03a5a47b791
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|任务ID|
+| 类型     | 字段 | 是否必需 | 字段说明 |
+|--------|----|------|------|
+| String | -  | 是    | 任务ID |
 
 请求参数示例：
 
@@ -775,24 +777,24 @@ curl "http://192.168.236.8:6200/common/message/v1.0/schedules/13b09fd03a5a47b791
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|keyword|否|查询关键词|
-|Integer|page|否|分页页码|
-|Integer|size|否|每页记录数|
+| 类型      | 字段      | 是否必需 | 字段说明  |
+|---------|---------|------|-------|
+| String  | keyword | 否    | 查询关键词 |
+| Integer | page    | 否    | 分页页码  |
+| Integer | size    | 否    | 每页记录数 |
 
 接口返回数据类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|UUID主键|
-|String|code|模板编号|
-|String|tag|消息标签|
-|Integer|type|发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信|
-|String|title|消息标题|
-|Integer|expire|消息有效时长(小时)|
-|String|creator|创建人|
-|Date|createdTime|创建时间|
+| 类型      | 字段          | 字段说明                                 |
+|---------|-------------|--------------------------------------|
+| String  | id          | UUID主键                               |
+| String  | code        | 模板编号                                 |
+| String  | tag         | 消息标签                                 |
+| Integer | type        | 发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信 |
+| String  | title       | 消息标题                                 |
+| Integer | expire      | 消息有效时长(小时)                           |
+| String  | creator     | 创建人                                  |
+| Date    | createdTime | 创建时间                                 |
 
 请求示例：
 
@@ -839,26 +841,26 @@ curl "http://192.168.236.8:6200/common/message/v1.0/templates?keyword=0001" \
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|id|是|消息模板ID|
+| 类型     | 字段 | 是否必需 | 字段说明   |
+|--------|----|------|--------|
+| String | id | 是    | 消息模板ID |
 
 接口返回数据类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|UUID主键|
-|String|tenantId|租户ID|
-|String|code|模板编号|
-|String|tag|消息标签|
-|Integer|type|发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件|
-|String|title|消息标题|
-|String|content|消息内容模板|
-|Integer|expire|消息有效时长(小时)|
-|String|remark|备注|
-|Boolean|invalid|是否失效|
-|String|creator|创建人|
-|Date|createdTime|创建时间|
+| 类型      | 字段          | 字段说明                                       |
+|---------|-------------|--------------------------------------------|
+| String  | id          | UUID主键                                     |
+| String  | tenantId    | 租户ID                                       |
+| String  | code        | 模板编号                                       |
+| String  | tag         | 消息标签                                       |
+| Integer | type        | 发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件 |
+| String  | title       | 消息标题                                       |
+| String  | content     | 消息内容模板                                     |
+| Integer | expire      | 消息有效时长(小时)                                 |
+| String  | remark      | 备注                                         |
+| Boolean | invalid     | 是否失效                                       |
+| String  | creator     | 创建人                                        |
+| Date    | createdTime | 创建时间                                       |
 
 请求参数示例：
 
@@ -908,14 +910,14 @@ curl "http://192.168.236.8:6200/common/message/v1.0/templates/387e156ddc7211e9bc
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|tag|是|消息标签|
-|Integer|type|是|发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件|
-|String|title|是|消息标题|
-|String|content|是|消息内容模板|
-|Integer|expire|否|消息有效时长(小时)|
-|String|remark|否|备注|
+| 类型      | 字段      | 是否必需 | 字段说明                                       |
+|---------|---------|------|--------------------------------------------|
+| String  | tag     | 是    | 消息标签                                       |
+| Integer | type    | 是    | 发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件 |
+| String  | title   | 是    | 消息标题                                       |
+| String  | content | 是    | 消息内容模板                                     |
+| Integer | expire  | 否    | 消息有效时长(小时)                                 |
+| String  | remark  | 否    | 备注                                         |
 
 请求参数示例：
 
@@ -952,15 +954,15 @@ curl "http://192.168.236.8:6200/common/message/v1.0/templates/387e156ddc7211e9bc
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|id|是|UUID主键|
-|String|tag|是|消息标签|
-|Integer|type|是|发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件|
-|String|title|是|消息标题|
-|String|content|是|消息内容模板|
-|Integer|expire|否|消息有效时长(小时)|
-|String|remark|否|备注|
+| 类型      | 字段      | 是否必需 | 字段说明                                       |
+|---------|---------|------|--------------------------------------------|
+| String  | id      | 是    | UUID主键                                     |
+| String  | tag     | 是    | 消息标签                                       |
+| Integer | type    | 是    | 发送类型:0.未定义;1.仅消息;2.仅推送;3.推送+消息;4.仅短信;8:仅邮件 |
+| String  | title   | 是    | 消息标题                                       |
+| String  | content | 是    | 消息内容模板                                     |
+| Integer | expire  | 否    | 消息有效时长(小时)                                 |
+| String  | remark  | 否    | 备注                                         |
 
 请求参数示例：
 
@@ -999,9 +1001,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/templates/387e156ddc7211e9bc
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|消息模板ID|
+| 类型     | 字段 | 是否必需 | 字段说明   |
+|--------|----|------|--------|
+| String | -  | 是    | 消息模板ID |
 
 请求参数示例：
 
@@ -1033,9 +1035,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/templates/387e156ddc7211e9bc
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|消息模板ID|
+| 类型     | 字段 | 是否必需 | 字段说明   |
+|--------|----|------|--------|
+| String | -  | 是    | 消息模板ID |
 
 请求参数示例：
 
@@ -1067,9 +1069,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/templates/387e156ddc7211e9bc
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|消息模板ID|
+| 类型     | 字段 | 是否必需 | 字段说明   |
+|--------|----|------|--------|
+| String | -  | 是    | 消息模板ID |
 
 请求参数示例：
 
@@ -1103,21 +1105,21 @@ curl "http://192.168.236.8:6200/common/message/v1.0/templates/387e156ddc7211e9bc
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|keyword|否|查询关键词|
-|Integer|page|否|分页页码|
-|Integer|size|否|每页记录数|
+| 类型      | 字段      | 是否必需 | 字段说明  |
+|---------|---------|------|-------|
+| String  | keyword | 否    | 查询关键词 |
+| Integer | page    | 否    | 分页页码  |
+| Integer | size    | 否    | 每页记录数 |
 
 接口返回数据类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|UUID主键|
-|String|code|场景编号|
-|String|name|场景名称|
-|String|remark|备注|
-|String|creator|创建人|
+| 类型     | 字段      | 字段说明   |
+|--------|---------|--------|
+| String | id      | UUID主键 |
+| String | code    | 场景编号   |
+| String | name    | 场景名称   |
+| String | remark  | 备注     |
+| String | creator | 创建人    |
 
 请求参数示例：
 
@@ -1161,21 +1163,21 @@ curl "http://192.168.236.8:6200/common/message/v1.0/scenes?keyword=0001" \
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|id|是|消息场景ID|
+| 类型     | 字段 | 是否必需 | 字段说明   |
+|--------|----|------|--------|
+| String | id | 是    | 消息场景ID |
 
 接口返回数据类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|UUID主键|
-|String|code|场景编号|
-|String|name|场景名称|
-|String|remark|备注|
-|String|creator|创建人|
-|String|creatorId|创建人ID|
-|Date|createdTime|创建时间|
+| 类型     | 字段          | 字段说明   |
+|--------|-------------|--------|
+| String | id          | UUID主键 |
+| String | code        | 场景编号   |
+| String | name        | 场景名称   |
+| String | remark      | 备注     |
+| String | creator     | 创建人    |
+| String | creatorId   | 创建人ID  |
+| Date   | createdTime | 创建时间   |
 
 请求参数示例：
 
@@ -1219,11 +1221,11 @@ curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|code|是|场景编号|
-|String|name|是|场景名称|
-|String|remark|否|备注|
+| 类型     | 字段     | 是否必需 | 字段说明 |
+|--------|--------|------|------|
+| String | code   | 是    | 场景编号 |
+| String | name   | 是    | 场景名称 |
+| String | remark | 否    | 备注   |
 
 请求参数示例：
 
@@ -1258,12 +1260,12 @@ curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|id|是|场景ID|
-|String|code|是|场景编号|
-|String|name|是|场景名称|
-|String|remark|否|备注|
+| 类型     | 字段     | 是否必需 | 字段说明 |
+|--------|--------|------|------|
+| String | id     | 是    | 场景ID |
+| String | code   | 是    | 场景编号 |
+| String | name   | 是    | 场景名称 |
+| String | remark | 否    | 备注   |
 
 请求参数示例：
 
@@ -1300,9 +1302,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|消息场景ID|
+| 类型     | 字段 | 是否必需 | 字段说明   |
+|--------|----|------|--------|
+| String | -  | 是    | 消息场景ID |
 
 请求参数示例：
 
@@ -1336,27 +1338,27 @@ curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|id|是|消息场景ID|
-|String|keyword|否|查询关键词|
-|Integer|page|否|分页页码|
-|Integer|size|否|每页记录数|
+| 类型      | 字段      | 是否必需 | 字段说明   |
+|---------|---------|------|--------|
+| String  | id      | 是    | 消息场景ID |
+| String  | keyword | 否    | 查询关键词  |
+| Integer | page    | 否    | 分页页码   |
+| Integer | size    | 否    | 每页记录数  |
 
 接口返回数据类型：
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|UUID主键|
-|String|sceneId|场景ID|
-|String|scene|场景名称|
-|String|appId|应用ID|
-|String|appName|应用名称|
-|String|partnerCode|合作伙伴编码|
-|String|partner|合作伙伴名称|
-|String|templateId|模板ID|
-|String|template|模板名称|
-|String|sign|签名|
+| 类型     | 字段          | 字段说明   |
+|--------|-------------|--------|
+| String | id          | UUID主键 |
+| String | sceneId     | 场景ID   |
+| String | scene       | 场景名称   |
+| String | appId       | 应用ID   |
+| String | appName     | 应用名称   |
+| String | partnerCode | 合作伙伴编码 |
+| String | partner     | 合作伙伴名称 |
+| String | templateId  | 模板ID   |
+| String | template    | 模板名称   |
+| String | sign        | 签名     |
 
 请求参数示例：
 
@@ -1405,15 +1407,15 @@ curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|sceneId|是|场景ID|
-|String|appId|否|应用ID|
-|String|appName|否|应用名称|
-|String|partnerCode|否|合作伙伴编码|
-|String|partner|否|合作伙伴名称|
-|String|templateId|是|模板ID|
-|String|sign|否|签名|
+| 类型     | 字段          | 是否必需 | 字段说明   |
+|--------|-------------|------|--------|
+| String | sceneId     | 是    | 场景ID   |
+| String | appId       | 否    | 应用ID   |
+| String | appName     | 否    | 应用名称   |
+| String | partnerCode | 否    | 合作伙伴编码 |
+| String | partner     | 否    | 合作伙伴名称 |
+| String | templateId  | 是    | 模板ID   |
+| String | sign        | 否    | 签名     |
 
 请求参数示例：
 
@@ -1448,9 +1450,9 @@ curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200
 
 请求参数如下：
 
-|类型|字段|是否必需|字段说明|
-| ------------ | ------------ | ------------ | ------------ |
-|String|-|是|消息场景配置ID|
+| 类型     | 字段 | 是否必需 | 字段说明     |
+|--------|----|------|----------|
+| String | -  | 是    | 消息场景配置ID |
 
 请求参数示例：
 
@@ -1476,46 +1478,46 @@ curl "http://192.168.236.8:6200/common/message/v1.0/scenes/27c3a319dc7011e9bc200
 
 ### Reply
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|Boolean|success|接口调用是否成功，成功：true；失败：false|
-|Integer|code|错误代码，2xx代表成功，4xx或5xx代表失败|
-|String|message|错误消息，描述了接口调用失败原因|
-|Object|data|接口返回数据|
-|Object|option|附加数据，如分页数据的总条数|
+| 类型      | 字段      | 字段说明                      |
+|---------|---------|---------------------------|
+| Boolean | success | 接口调用是否成功，成功：true；失败：false |
+| Integer | code    | 错误代码，2xx代表成功，4xx或5xx代表失败  |
+| String  | message | 错误消息，描述了接口调用失败原因          |
+| Object  | data    | 接口返回数据                    |
+| Object  | option  | 附加数据，如分页数据的总条数            |
 
 [回目录](#目录)
 
 ### InsightMessage
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|id|UUID主键|
-|String|messageId|消息ID|
-|String|tenantId|租户ID|
-|String|appId|应用ID|
-|String|tag|消息标签|
-|Integer|type|消息类型|
-|List\<String>|receivers|接收人，用户ID(推送)/手机号(短信)/Email地址|
-|String|title|消息标题|
-|String|content|消息内容|
-|Map\<String, Object>|params|推送参数|
-|Date|expireDate|失效日期|
-|Boolean|isBroadcast|是否广播消息|
-|String|creator|创建人|
-|String|creatorId|创建人ID|
-|Date|createdTime|创建时间|
+| 类型                   | 字段          | 字段说明                         |
+|----------------------|-------------|------------------------------|
+| String               | id          | UUID主键                       |
+| String               | messageId   | 消息ID                         |
+| String               | tenantId    | 租户ID                         |
+| String               | appId       | 应用ID                         |
+| String               | tag         | 消息标签                         |
+| Integer              | type        | 消息类型                         |
+| List\<String>        | receivers   | 接收人，用户ID(推送)/手机号(短信)/Email地址 |
+| String               | title       | 消息标题                         |
+| String               | content     | 消息内容                         |
+| Map\<String, Object> | params      | 推送参数                         |
+| Date                 | expireDate  | 失效日期                         |
+| Boolean              | isBroadcast | 是否广播消息                       |
+| String               | creator     | 创建人                          |
+| String               | creatorId   | 创建人ID                        |
+| Date                 | createdTime | 创建时间                         |
 
 [回目录](#目录)
 
 ### ScheduleCall
 
-|类型|字段|字段说明|
-| ------------ | ------------ | ------------ |
-|String|method|请求方法,GET/POST/PUT/DELETE|
-|String|service|服务名/域名|
-|String|url|URL|
-|Map\<String, String>|headers|请求头数据|
-|Object|body|请求体数据|
+| 类型                   | 字段      | 字段说明                     |
+|----------------------|---------|--------------------------|
+| String               | method  | 请求方法,GET/POST/PUT/DELETE |
+| String               | service | 服务名/域名                   |
+| String               | url     | URL                      |
+| Map\<String, String> | headers | 请求头数据                    |
+| Object               | body    | 请求体数据                    |
 
 [回目录](#目录)

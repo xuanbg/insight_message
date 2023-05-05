@@ -1,9 +1,9 @@
 package com.insight.common.message.common.entity;
 
 import com.insight.utils.pojo.base.BaseXo;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**

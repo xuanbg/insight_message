@@ -6,12 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-
 /**
  * @author 宣炳刚
- * @date 2019-09-09
+ * @date 2023-1-4
  * @remark Feign配置类
  */
 @Configuration
@@ -25,17 +22,17 @@ public class FeignClientConfig implements RequestInterceptor {
      */
     @Override
     public void apply(RequestTemplate template) {
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        var requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) {
             return;
         }
 
-        HttpServletRequest request = requestAttributes.getRequest();
-        Enumeration<String> headers = request.getHeaderNames();
+        var request = requestAttributes.getRequest();
+        var headers = request.getHeaderNames();
         while (headers.hasMoreElements()) {
-            String name = headers.nextElement();
+            var name = headers.nextElement();
             if (name.toLowerCase().matches(REGULAR)) {
-                String values = request.getHeader(name);
+                var values = request.getHeader(name);
                 template.header(name, values);
             }
         }

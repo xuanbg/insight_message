@@ -9,9 +9,8 @@ import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.SmsCode;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 /**
  * @author 宣炳刚
@@ -110,7 +109,7 @@ public class MessageController {
     public UserMessageDto getUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.getUserMessage(id, loginInfo.getUserId());
+        return service.getUserMessage(id, loginInfo.getId());
     }
 
     /**
@@ -123,6 +122,6 @@ public class MessageController {
     public void deleteUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        service.deleteUserMessage(id, loginInfo.getUserId());
+        service.deleteUserMessage(id, loginInfo.getId());
     }
 }

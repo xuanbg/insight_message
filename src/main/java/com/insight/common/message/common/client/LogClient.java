@@ -32,8 +32,8 @@ public class LogClient {
         log.setBusiness(business);
         log.setBusinessId(id);
         log.setContent(Json.clone(content, Object.class));
-        log.setCreator(info.getUserName());
-        log.setCreatorId(info.getUserId());
+        log.setCreator(info.getName());
+        log.setCreatorId(info.getId());
 
         TEMPLATE.convertAndSend("amq.topic", "insight.log", log);
     }
