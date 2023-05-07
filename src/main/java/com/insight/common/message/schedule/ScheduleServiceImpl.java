@@ -2,7 +2,6 @@ package com.insight.common.message.schedule;
 
 import com.github.pagehelper.PageHelper;
 import com.insight.common.message.common.client.LogClient;
-import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Json;
@@ -15,8 +14,6 @@ import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.InsightMessage;
 import com.insight.utils.pojo.message.OperateType;
 import com.insight.utils.pojo.message.Schedule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,7 +27,7 @@ import java.util.List;
  */
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
-    private static final String BUSINESS = "计划任务管理";
+    private static final String BUSINESS = "Schedule";
     private static final List<String> MATCH_LIST = new ArrayList<>();
 
     static {
@@ -40,21 +37,17 @@ public class ScheduleServiceImpl implements ScheduleService {
         MATCH_LIST.add("sendMail");
     }
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SnowflakeCreator creator;
-    private final LogServiceClient client;
     private final MessageMapper mapper;
 
     /**
      * 构造方法
      *
      * @param creator 雪花算法ID生成器
-     * @param client  LogServiceClient
      * @param mapper  MessageMapper
      */
-    public ScheduleServiceImpl(SnowflakeCreator creator, LogServiceClient client, MessageMapper mapper) {
+    public ScheduleServiceImpl(SnowflakeCreator creator, MessageMapper mapper) {
         this.creator = creator;
-        this.client = client;
         this.mapper = mapper;
     }
 
@@ -66,11 +59,11 @@ public class ScheduleServiceImpl implements ScheduleService {
      */
     @Override
     public Reply getSchedules(Search search) {
-        var page = PageHelper.startPage(search.getPageNum(), search.getPageSize())
-                .setOrderBy(search.getOrderBy()).doSelectPage(() -> mapper.getSchedules(search));
-
-        var total = page.getTotal();
-        return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
+        try (var page = PageHelper.startPage(search.getPageNum(), search.getPageSize()).setOrderBy(search.getOrderBy())
+                .doSelectPage(() -> mapper.getSchedules(search))) {
+            var total = page.getTotal();
+            return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
+        }
     }
 
     /**
@@ -186,27 +179,5 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         mapper.changeScheduleStatus(id, status);
         LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, schedule);
-    }
-
-    /**
-     * 获取日志列表
-     *
-     * @param search 查询实体类
-     * @return Reply
-     */
-    @Override
-    public Reply getScheduleLogs(Search search) {
-        return client.getLogs(BUSINESS, search.getKeyword(), search.getPageNum(), search.getPageSize());
-    }
-
-    /**
-     * 获取日志详情
-     *
-     * @param id 日志ID
-     * @return Reply
-     */
-    @Override
-    public Reply getScheduleLog(Long id) {
-        return client.getLog(id);
     }
 }

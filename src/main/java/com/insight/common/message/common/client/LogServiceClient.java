@@ -1,5 +1,6 @@
 package com.insight.common.message.common.client;
 
+
 import com.insight.common.message.common.config.FeignClientConfig;
 import com.insight.utils.pojo.base.Reply;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -18,14 +19,13 @@ public interface LogServiceClient {
     /**
      * 获取日志列表
      *
-     * @param business 业务类型
-     * @param keyword  查询关键词
-     * @param page     分页页码
-     * @param size     每页记录数
+     * @param id      业务ID
+     * @param code    业务代码
+     * @param keyword 查询关键词
      * @return Reply
      */
     @GetMapping("/common/log/v1.0/logs")
-    Reply getLogs(@RequestParam String business, @RequestParam(required = false) String keyword, @RequestParam int page, @RequestParam int size);
+    Reply getLogs(@RequestParam Long id, @RequestParam String code, @RequestParam String keyword);
 
     /**
      * 获取日志详情

@@ -90,20 +90,4 @@ public interface SceneService {
      * @param id   场景配置ID
      */
     void deleteSceneConfig(LoginInfo info, Long id);
-
-    /**
-     * 获取日志列表
-     *
-     * @param search 查询实体类
-     * @return Reply
-     */
-    Reply getSceneLogs(Search search);
-
-    /**
-     * 获取日志详情
-     *
-     * @param id 日志ID
-     * @return Reply
-     */
-    Reply getSceneLog(Long id);
 }

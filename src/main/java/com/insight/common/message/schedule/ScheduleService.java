@@ -60,20 +60,4 @@ public interface ScheduleService {
      * @param status 禁用/启用状态
      */
     void changeScheduleStatus(LoginInfo info, Long id, boolean status);
-
-    /**
-     * 获取日志列表
-     *
-     * @param search 查询实体类
-     * @return Reply
-     */
-    Reply getScheduleLogs(Search search);
-
-    /**
-     * 获取日志详情
-     *
-     * @param id 日志ID
-     * @return Reply
-     */
-    Reply getScheduleLog(Long id);
 }

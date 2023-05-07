@@ -2,7 +2,6 @@ package com.insight.common.message.scene;
 
 import com.github.pagehelper.PageHelper;
 import com.insight.common.message.common.client.LogClient;
-import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.common.message.common.dto.SceneConfigDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
@@ -14,8 +13,6 @@ import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.OperateType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,22 +24,18 @@ import java.util.List;
  */
 @Service
 public class SceneServiceImpl implements SceneService {
-    private static final String BUSINESS = "消息场景管理";
+    private static final String BUSINESS = "Scene";
     private final SnowflakeCreator creator;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final LogServiceClient client;
     private final SceneMapper mapper;
 
     /**
      * 构造方法
      *
      * @param creator 雪花算法ID生成器
-     * @param client  LogServiceClient
      * @param mapper  SceneMapper
      */
-    public SceneServiceImpl(SnowflakeCreator creator, LogServiceClient client, SceneMapper mapper) {
+    public SceneServiceImpl(SnowflakeCreator creator, SceneMapper mapper) {
         this.creator = creator;
-        this.client = client;
         this.mapper = mapper;
     }
 
@@ -54,11 +47,11 @@ public class SceneServiceImpl implements SceneService {
      */
     @Override
     public Reply getScenes(Search search) {
-        var page = PageHelper.startPage(search.getPageNum(), search.getPageSize())
-                .setOrderBy(search.getOrderBy()).doSelectPage(() -> mapper.getScenes(search));
-
-        var total = page.getTotal();
-        return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
+        try (var page = PageHelper.startPage(search.getPageNum(), search.getPageSize()).setOrderBy(search.getOrderBy())
+                .doSelectPage(() -> mapper.getScenes(search))) {
+            var total = page.getTotal();
+            return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
+        }
     }
 
     /**
@@ -220,27 +213,5 @@ public class SceneServiceImpl implements SceneService {
 
         mapper.deleteSceneConfig(id);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, config);
-    }
-
-    /**
-     * 获取日志列表
-     *
-     * @param search 查询实体类
-     * @return Reply
-     */
-    @Override
-    public Reply getSceneLogs(Search search) {
-        return client.getLogs(BUSINESS, search.getKeyword(), search.getPageNum(), search.getPageSize());
-    }
-
-    /**
-     * 获取日志详情
-     *
-     * @param id 日志ID
-     * @return Reply
-     */
-    @Override
-    public Reply getSceneLog(Long id) {
-        return client.getLog(id);
     }
 }

@@ -35,10 +35,22 @@ public class MessageController {
     /**
      * 发送短信验证码
      *
+     * @param mobile 手机号
+     */
+    @GetMapping("/v1.0/codes")
+    public void seedSmsCode(@RequestParam String mobile) {
+        var dto = new SmsCode();
+        dto.setMobile(mobile);
+        service.seedSmsCode(dto);
+    }
+
+    /**
+     * 发送短信验证码
+     *
      * @param dto 短信DTO
      */
     @PostMapping("/v1.0/codes")
-    public void seedSmsCode(@Valid @RequestBody SmsCode dto) {
+    public void seedCode(@Valid @RequestBody SmsCode dto) {
         service.seedSmsCode(dto);
     }
 

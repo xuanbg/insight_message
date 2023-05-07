@@ -1,5 +1,6 @@
 package com.insight.common.message.scene;
 
+import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.common.message.common.dto.SceneConfigDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
@@ -21,14 +22,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/common/message")
 public class SceneController {
+    private final LogServiceClient client;
     private final SceneService service;
 
     /**
      * 构造方法
      *
+     * @param client Feign客户端
      * @param service 注入Service
      */
-    public SceneController(SceneService service) {
+    public SceneController(LogServiceClient client, SceneService service) {
+        this.client = client;
         this.service = service;
     }
 
@@ -155,24 +159,28 @@ public class SceneController {
     }
 
     /**
-     * 获取日志列表
+     * 查询日志
      *
-     * @param search 查询实体类
-     * @return Reply
+     * @param loginInfo 用户登录信息
+     * @param search    查询条件
+     * @return 日志集合
      */
-    @GetMapping("/v1.0/scenes/logs")
-    public Reply getSceneLogs(Search search) {
-        return service.getSceneLogs(search);
+    @GetMapping("/v1.0/scenes/configs/{id}/logs")
+    public Reply getAirportLogs(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id, Search search) {
+        var info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        return client.getLogs(id, "Scene", search.getKeyword());
     }
 
     /**
-     * 获取日志详情
+     * 获取日志
      *
-     * @param id 日志ID
-     * @return Reply
+     * @param loginInfo 用户登录信息
+     * @param id        日志ID
+     * @return 日志VO
      */
-    @GetMapping("/v1.0/scenes/logs/{id}")
-    Reply getSceneLog(@PathVariable Long id) {
-        return service.getSceneLog(id);
+    @GetMapping("/v1.0/scenes/configs/logs/{id}")
+    public Reply getAirportLog(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        var info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        return client.getLog(id);
     }
 }

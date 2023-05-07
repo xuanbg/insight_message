@@ -1,5 +1,6 @@
 package com.insight.common.message.schedule;
 
+import com.insight.common.message.common.client.LogServiceClient;
 import com.insight.utils.Json;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
@@ -17,14 +18,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/common/message")
 public class ScheduleController {
+    private final LogServiceClient client;
     private final ScheduleService service;
 
     /**
      * 构造方法
      *
+     * @param client Feign客户端
      * @param service 注入Service
      */
-    public ScheduleController(ScheduleService service) {
+    public ScheduleController(LogServiceClient client, ScheduleService service) {
+        this.client = client;
         this.service = service;
     }
 
@@ -114,24 +118,28 @@ public class ScheduleController {
     }
 
     /**
-     * 获取日志列表
+     * 查询日志
      *
-     * @param search 查询实体类
-     * @return Reply
+     * @param loginInfo 用户登录信息
+     * @param search    查询条件
+     * @return 日志集合
      */
-    @GetMapping("/v1.0/schedules/logs")
-    public Reply getScheduleLogs(Search search) {
-        return service.getScheduleLogs(search);
+    @GetMapping("/v1.0/schedules/{id}/logs")
+    public Reply getAirportLogs(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id, Search search) {
+        var info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        return client.getLogs(id, "Schedule", search.getKeyword());
     }
 
     /**
-     * 获取日志详情
+     * 获取日志
      *
-     * @param id 日志ID
-     * @return Reply
+     * @param loginInfo 用户登录信息
+     * @param id        日志ID
+     * @return 日志VO
      */
     @GetMapping("/v1.0/schedules/logs/{id}")
-    Reply getScheduleLog(@PathVariable Long id) {
-        return service.getScheduleLog(id);
+    public Reply getAirportLog(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        var info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        return client.getLog(id);
     }
 }
