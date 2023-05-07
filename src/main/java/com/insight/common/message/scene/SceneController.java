@@ -165,7 +165,7 @@ public class SceneController {
      * @param search    查询条件
      * @return 日志集合
      */
-    @GetMapping("/v1.0/scenes/configs/{id}/logs")
+    @GetMapping("/v1.0/scenes/{id}/logs")
     public Reply getAirportLogs(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id, Search search) {
         var info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
         return client.getLogs(id, "Scene", search.getKeyword());
@@ -178,7 +178,7 @@ public class SceneController {
      * @param id        日志ID
      * @return 日志VO
      */
-    @GetMapping("/v1.0/scenes/configs/logs/{id}")
+    @GetMapping("/v1.0/scenes/logs/{id}")
     public Reply getAirportLog(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
         var info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
         return client.getLog(id);
