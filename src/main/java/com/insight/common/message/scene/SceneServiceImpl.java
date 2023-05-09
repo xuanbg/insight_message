@@ -90,7 +90,7 @@ public class SceneServiceImpl implements SceneService {
         dto.setCreatorId(info.getId());
 
         mapper.addScene(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.NEW, id, dto);
 
         return id;
     }
@@ -115,7 +115,7 @@ public class SceneServiceImpl implements SceneService {
         }
 
         mapper.editScene(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, dto);
     }
 
     /**
@@ -170,7 +170,7 @@ public class SceneServiceImpl implements SceneService {
         dto.setCreatorId(info.getId());
 
         mapper.addSceneConfig(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.NEW, id, dto);
 
         return id;
     }
@@ -195,7 +195,7 @@ public class SceneServiceImpl implements SceneService {
         }
 
         mapper.updateSceneConfig(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, dto);
     }
 
     /**

@@ -143,7 +143,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         mapper.editSchedule(id);
-        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, schedule);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, schedule);
     }
 
     /**
@@ -178,6 +178,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         mapper.changeScheduleStatus(id, status);
-        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, schedule);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, schedule);
     }
 }
