@@ -1,7 +1,6 @@
 package com.insight.common.message.scene;
 
 import com.github.pagehelper.PageHelper;
-import com.insight.common.message.common.client.LogClient;
 import com.insight.common.message.common.dto.SceneConfigDto;
 import com.insight.common.message.common.entity.Scene;
 import com.insight.common.message.common.entity.SceneConfig;
@@ -12,7 +11,6 @@ import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
-import com.insight.utils.pojo.message.OperateType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +22,6 @@ import java.util.List;
  */
 @Service
 public class SceneServiceImpl implements SceneService {
-    private static final String BUSINESS = "Scene";
     private final SnowflakeCreator creator;
     private final SceneMapper mapper;
 
@@ -90,8 +87,6 @@ public class SceneServiceImpl implements SceneService {
         dto.setCreatorId(info.getId());
 
         mapper.addScene(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.NEW, id, dto);
-
         return id;
     }
 
@@ -115,7 +110,6 @@ public class SceneServiceImpl implements SceneService {
         }
 
         mapper.editScene(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, dto);
     }
 
     /**
@@ -132,7 +126,6 @@ public class SceneServiceImpl implements SceneService {
         }
 
         mapper.deleteScene(id);
-        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, scene);
     }
 
     /**
@@ -170,8 +163,6 @@ public class SceneServiceImpl implements SceneService {
         dto.setCreatorId(info.getId());
 
         mapper.addSceneConfig(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.NEW, id, dto);
-
         return id;
     }
 
@@ -195,7 +186,6 @@ public class SceneServiceImpl implements SceneService {
         }
 
         mapper.updateSceneConfig(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, dto);
     }
 
     /**
@@ -212,6 +202,5 @@ public class SceneServiceImpl implements SceneService {
         }
 
         mapper.deleteSceneConfig(id);
-        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, config);
     }
 }

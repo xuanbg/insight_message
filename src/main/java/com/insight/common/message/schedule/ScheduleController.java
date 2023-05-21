@@ -1,6 +1,8 @@
 package com.insight.common.message.schedule;
 
+import com.insight.common.message.common.client.LogClient;
 import com.insight.common.message.common.client.LogServiceClient;
+import com.insight.common.message.common.entity.OperateType;
 import com.insight.utils.Json;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/common/message")
 public class ScheduleController {
+    private static final String BUSINESS = "Schedule";
     private final LogServiceClient client;
     private final ScheduleService service;
 
@@ -68,53 +71,57 @@ public class ScheduleController {
     /**
      * 立即执行计划任务
      *
-     * @param info 用户关键信息
+     * @param loginInfo 用户关键信息
      * @param id   计划任务ID
      */
     @PutMapping("/v1.0/schedules/{id}")
-    public void executeSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+    public void executeSchedule(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
 
-        service.executeSchedule(loginInfo, id);
+        service.executeSchedule(info, id);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id,null);
     }
 
     /**
      * 删除计划任务
      *
-     * @param info 用户关键信息
+     * @param loginInfo 用户关键信息
      * @param id   计划任务ID
      */
     @DeleteMapping("/v1.0/schedules/{id}")
-    public void deleteSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+    public void deleteSchedule(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
 
-        service.deleteSchedule(loginInfo, id);
+        service.deleteSchedule(info, id);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, null);
     }
 
     /**
      * 禁用计划任务
      *
-     * @param info 用户关键信息
+     * @param loginInfo 用户关键信息
      * @param id   计划任务ID
      */
     @PutMapping("/v1.0/schedules/{id}/disable")
-    public void disableSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+    public void disableSchedule(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
 
-        service.changeScheduleStatus(loginInfo, id, true);
+        service.changeScheduleStatus(info, id, true);
+        LogClient.writeLog(info, BUSINESS, OperateType.DISABLE, id, null);
     }
 
     /**
      * 启用计划任务
      *
-     * @param info 用户关键信息
+     * @param loginInfo 用户关键信息
      * @param id   计划任务ID
      */
     @PutMapping("/v1.0/schedules/{id}/enable")
-    public void enableSchedule(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+    public void enableSchedule(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
 
-        service.changeScheduleStatus(loginInfo, id, false);
+        service.changeScheduleStatus(info, id, false);
+        LogClient.writeLog(info, BUSINESS, OperateType.ENABLE, id, null);
     }
 
     /**

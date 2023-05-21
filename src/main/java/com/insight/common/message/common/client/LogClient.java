@@ -1,10 +1,10 @@
 package com.insight.common.message.common.client;
 
+import com.insight.common.message.common.entity.OperateType;
 import com.insight.utils.Json;
 import com.insight.utils.common.ApplicationContextHolder;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.message.Log;
-import com.insight.utils.pojo.message.OperateType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 /**
@@ -28,7 +28,7 @@ public class LogClient {
         Log log = new Log();
         log.setAppId(info.getAppId());
         log.setTenantId(info.getTenantId());
-        log.setType(type);
+        log.setType(type.toString());
         log.setBusiness(business);
         log.setBusinessId(id);
         log.setContent(Json.clone(content, Object.class));

@@ -1,7 +1,6 @@
 package com.insight.common.message.schedule;
 
 import com.github.pagehelper.PageHelper;
-import com.insight.common.message.common.client.LogClient;
 import com.insight.common.message.common.dto.ScheduleCall;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Json;
@@ -12,7 +11,6 @@ import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.InsightMessage;
-import com.insight.utils.pojo.message.OperateType;
 import com.insight.utils.pojo.message.Schedule;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +25,6 @@ import java.util.List;
  */
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
-    private static final String BUSINESS = "Schedule";
     private static final List<String> MATCH_LIST = new ArrayList<>();
 
     static {
@@ -143,7 +140,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         mapper.editSchedule(id);
-        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, schedule);
     }
 
     /**
@@ -160,7 +156,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         mapper.deleteSchedule(id);
-        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, schedule);
     }
 
     /**
@@ -178,6 +173,5 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         mapper.changeScheduleStatus(id, status);
-        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, schedule);
     }
 }
