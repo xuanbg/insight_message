@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
  * @date 2019-08-28
  * @remark 计划任务服务控制器
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/common/message")
 public class ScheduleController {

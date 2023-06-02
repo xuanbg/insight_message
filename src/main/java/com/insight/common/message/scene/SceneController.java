@@ -20,7 +20,6 @@ import java.util.List;
  * @date 2019-08-28
  * @remark 消息管理服务控制器
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/common/message")
 public class SceneController {
