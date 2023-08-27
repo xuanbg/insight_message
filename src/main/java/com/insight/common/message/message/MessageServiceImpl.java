@@ -90,7 +90,8 @@ public class MessageServiceImpl implements MessageService {
         String smsCode = dto.getCode();
         String key = Util.md5(type + mobile + smsCode);
         Redis.set("VerifyCode:" + key, mobile, Long.valueOf(dto.getMinutes()), TimeUnit.MINUTES);
-        Redis.add("VerifyCodeSet:" + mobile, key, 1800L);
+        Redis.add("VerifyCodeSet:" + mobile, key);
+        Redis.changeExpire("VerifyCodeSet:" + mobile, Long.valueOf(dto.getMinutes()) * 60);
         logger.info("手机号[{}]的{}类短信验证码为: {}", mobile, type, smsCode);
     }
 
