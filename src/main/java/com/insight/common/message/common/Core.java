@@ -61,10 +61,16 @@ public class Core {
     private String sender;
 
     /**
-     * 默认短信通道
+     * 默认短信模版
      */
-    @Value("${insight.sms.channel}")
-    private String defaultChannel;
+    @Value("${insight.sms.aliyun.template}")
+    private String defaultTemplate;
+
+    /**
+     * 默认短信签名
+     */
+    @Value("${insight.sms.aliyun.sign}")
+    private String defaultSign;
 
     /**
      * 构造方法
@@ -127,7 +133,8 @@ public class Core {
     @Async
     public void sendSms(Schedule<InsightMessage> schedule, Channel channel, Message message) throws IOException {
         InsightMessage msg = schedule.getContent();
-        if (msg != null && !sendSms(msg)) {
+        if (msg != null) {
+            sendSms(msg);
             schedule.setExpireTime(LocalDateTime.now().plusMinutes(msg.getExpire()));
             addSchedule(schedule);
         }
@@ -281,9 +288,7 @@ public class Core {
             message.setContent(now + "保存任务失败! 请尽快处理");
 
             Redis.set(key, now.toString(), 24L, TimeUnit.HOURS);
-            if (!sendSms(message)) {
-                throw new BusinessException("短信发送失败，请稍后重试");
-            }
+            sendSms(message);
         }
     }
 
@@ -344,38 +349,23 @@ public class Core {
      * 发送短信
      *
      * @param message 消息DTO
-     * @return 是否发送成功
      */
-    public boolean sendSms(InsightMessage message) {
+    public void sendSms(InsightMessage message) {
         var receivers = message.getReceivers();
         if (receivers == null || receivers.isEmpty()) {
             throw new BusinessException("短信接收人手机号不能为空");
         }
 
         try {
-            var channel = message.getChannel() == null ? defaultChannel : message.getChannel();
             if (receivers.size() > 1) {
                 // 群发
-                switch (channel) {
-                    case "aliyun" -> {
-                    }
-                    case "a" -> throw new BusinessException("");
-                    default -> throw new BusinessException("不存在的短信通道");
-
-                }
+                AliyunClient.createClient();
             } else {
-                // 单发
                 var phone = receivers.get(0);
-                switch (channel) {
-                    case "aliyun" -> AliyunClient.sendTemplateMessage(phone, "SMS_254755310", message.getParams(), "学堡");
-                    case "a" -> throw new BusinessException("");
-                    default -> throw new BusinessException("不存在的短信通道");
-                }
+                AliyunClient.sendTemplateMessage(phone, defaultTemplate, message.getParams(), defaultSign);
             }
-            return true;
         } catch (Exception ex) {
-            logger.error("发送短信发生错误! 异常信息为: {}", ex.getMessage());
-            return false;
+            throw new BusinessException("发送短信发生错误! 异常信息为: " + ex.getMessage());
         }
     }
 
