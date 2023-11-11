@@ -19,7 +19,7 @@ public class CodeDto extends BaseXo {
     }
 
     public Integer getType() {
-        return 1;
+        return 0;
     }
 
     public String getAccount() {

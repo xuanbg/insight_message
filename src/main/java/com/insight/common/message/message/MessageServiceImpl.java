@@ -84,7 +84,7 @@ public class MessageServiceImpl implements MessageService {
             var data = new CodeDto(mobile);
             var reply = client.getCode(data);
             if (!reply.getSuccess()){
-                throw new BusinessException(reply.getMessage());
+                throw new BusinessException("请输入正确的手机号");
             }
         }
 
