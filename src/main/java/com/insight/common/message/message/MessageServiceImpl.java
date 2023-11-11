@@ -3,11 +3,9 @@ package com.insight.common.message.message;
 import com.github.pagehelper.PageHelper;
 import com.insight.common.message.common.Core;
 import com.insight.common.message.common.MessageDal;
+import com.insight.common.message.common.client.AuthClient;
 import com.insight.common.message.common.client.RabbitClient;
-import com.insight.common.message.common.dto.CustomMessage;
-import com.insight.common.message.common.dto.NormalMessage;
-import com.insight.common.message.common.dto.TemplateDto;
-import com.insight.common.message.common.dto.UserMessageDto;
+import com.insight.common.message.common.dto.*;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
@@ -41,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class MessageServiceImpl implements MessageService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SnowflakeCreator creator;
+    private final AuthClient client;
     private final MessageDal dal;
     private final MessageMapper mapper;
     private final Core core;
@@ -55,12 +54,14 @@ public class MessageServiceImpl implements MessageService {
      * 构造方法
      *
      * @param creator 雪花算法ID生成器
+     * @param client  Feign客户端
      * @param dal     MessageDal
      * @param mapper  MessageMapper
      * @param core    计划任务异步执行核心类
      */
-    public MessageServiceImpl(SnowflakeCreator creator, MessageDal dal, MessageMapper mapper, Core core) {
+    public MessageServiceImpl(SnowflakeCreator creator, AuthClient client, MessageDal dal, MessageMapper mapper, Core core) {
         this.creator = creator;
+        this.client = client;
         this.dal = dal;
         this.mapper = mapper;
         this.core = core;
@@ -77,6 +78,14 @@ public class MessageServiceImpl implements MessageService {
         Integer type = dto.getType();
         if (type == 0 && !allowAnonymity) {
             throw new BusinessException("当前设置不允许发送匿名验证码，请联系管理员");
+        }
+
+        if (type > 1 && type < 4) {
+            var data = new CodeDto(mobile);
+            var reply = client.getCode(data);
+            if (!reply.getSuccess()){
+                throw new BusinessException(reply.getMessage());
+            }
         }
 
         InsightMessage message = new InsightMessage();
