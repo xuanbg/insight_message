@@ -32,14 +32,17 @@ public class MessageController {
     }
 
     /**
-     * 发送短信验证码
+     * 绑定手机号
      *
      * @param mobile 手机号
      */
     @GetMapping("/v1.0/codes")
-    public void seedSmsCode(@RequestParam String mobile) {
+    public void verifyMobile(@RequestHeader("loginInfo") String loginInfo, @RequestParam String mobile) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+
         var dto = new SmsCode();
         dto.setMobile(mobile);
+        dto.setType(4);
         service.seedSmsCode(dto);
     }
 
@@ -50,6 +53,10 @@ public class MessageController {
      */
     @PostMapping("/v1.0/codes")
     public void seedCode(@Valid @RequestBody SmsCode dto) {
+        if (dto.getType() < 0 || dto.getType() > 3) {
+            throw new BusinessException("无效的短信类型");
+        }
+
         service.seedSmsCode(dto);
     }
 
@@ -72,67 +79,62 @@ public class MessageController {
     /**
      * 发送送标准消息
      *
-     * @param info 用户关键信息
-     * @param dto  标准信息DTO
+     * @param loginInfo 用户关键信息
+     * @param dto       标准信息DTO
      */
     @PostMapping("/v1.0/messages")
-    public void sendNormalMessage(@RequestHeader(value = "loginInfo", required = false) String info, @Valid @RequestBody NormalMessage dto) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        service.sendNormalMessage(loginInfo, dto);
+    public void sendNormalMessage(@RequestHeader("loginInfo") String loginInfo, @Valid @RequestBody NormalMessage dto) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        service.sendNormalMessage(info, dto);
     }
 
     /**
      * 发送自定义消息
      *
-     * @param info 用户关键信息
-     * @param dto  标准信息DTO
+     * @param loginInfo 用户关键信息
+     * @param dto       标准信息DTO
      */
     @PostMapping("/v1.0/customs")
-    public void sendCustomMessage(@RequestHeader("loginInfo") String info, @Valid @RequestBody CustomMessage dto) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        service.sendCustomMessage(loginInfo, dto);
+    public void sendCustomMessage(@RequestHeader("loginInfo") String loginInfo, @Valid @RequestBody CustomMessage dto) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        service.sendCustomMessage(info, dto);
     }
 
     /**
      * 获取用户消息列表
      *
-     * @param info   用户关键信息
-     * @param search 查询实体类
+     * @param loginInfo 用户关键信息
+     * @param search    查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/messages")
-    public Reply getUserMessages(@RequestHeader("loginInfo") String info, Search search) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        return service.getUserMessages(loginInfo, search);
+    public Reply getUserMessages(@RequestHeader("loginInfo") String loginInfo, Search search) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        return service.getUserMessages(info, search);
     }
 
     /**
      * 获取用户消息详情
      *
-     * @param info 用户关键信息
-     * @param id   消息ID
+     * @param loginInfo 用户关键信息
+     * @param id        消息ID
      * @return Reply
      */
     @GetMapping("/v1.0/messages/{id}")
-    public UserMessageDto getUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        return service.getUserMessage(id, loginInfo.getId());
+    public UserMessageDto getUserMessage(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        return service.getUserMessage(id, info.getId());
     }
 
     /**
      * 删除用户消息
      *
-     * @param info 用户关键信息
-     * @param id   消息ID
+     * @param loginInfo 用户关键信息
+     * @param id        消息ID
      */
     @DeleteMapping("/v1.0/messages/{id}")
-    public void deleteUserMessage(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-
-        service.deleteUserMessage(id, loginInfo.getId());
+    public void deleteUserMessage(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        service.deleteUserMessage(id, info.getId());
     }
 }

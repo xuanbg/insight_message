@@ -5,7 +5,10 @@ import com.insight.common.message.common.Core;
 import com.insight.common.message.common.MessageDal;
 import com.insight.common.message.common.client.AuthClient;
 import com.insight.common.message.common.client.RabbitClient;
-import com.insight.common.message.common.dto.*;
+import com.insight.common.message.common.dto.CodeDto;
+import com.insight.common.message.common.dto.CustomMessage;
+import com.insight.common.message.common.dto.NormalMessage;
+import com.insight.common.message.common.dto.UserMessageDto;
 import com.insight.common.message.common.mapper.MessageMapper;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
@@ -18,6 +21,7 @@ import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.message.InsightMessage;
 import com.insight.utils.pojo.message.Schedule;
 import com.insight.utils.pojo.message.SmsCode;
+import com.insight.utils.redis.KeyOps;
 import com.insight.utils.redis.Redis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +30,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -74,32 +77,34 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public void seedSmsCode(SmsCode dto) {
-        String mobile = dto.getMobile();
-        Integer type = dto.getType();
-        if (type == 0 && !allowAnonymity) {
-            throw new BusinessException("当前设置不允许发送匿名验证码，请联系管理员");
-        }
-
-        if (type > 1 && type < 4) {
-            var data = new CodeDto(mobile);
-            var reply = client.getCode(data);
-            if (!reply.getSuccess()){
-                throw new BusinessException("请输入正确的手机号");
+        var mobile = dto.getMobile();
+        var type = dto.getType();
+        switch (type) {
+            case 0 -> {
+                if (allowAnonymity) {
+                    sendSmsCode(dto);
+                } else {
+                    throw new BusinessException("不允许发送匿名验证码");
+                }
             }
+            case 1 -> {
+                if (KeyOps.hasKey("ID:" + dto.getMobile())) {
+                    sendSmsCode(dto);
+                } else {
+                    throw new BusinessException("请输入正确的手机号");
+                }
+            }
+            case 2, 3 -> {
+                var data = new CodeDto(mobile);
+                var reply = client.getCode(data);
+                if (reply.getSuccess()) {
+                    sendSmsCode(dto);
+                } else {
+                    throw new BusinessException("请输入正确的手机号");
+                }
+            }
+            default -> throw new BusinessException("验证码类型不正确");
         }
-
-        InsightMessage message = new InsightMessage();
-        message.setChannel(dto.getChannel());
-        message.setReceiver(mobile);
-        message.setParams(dto.getParam());
-        core.sendSms(message);
-
-        String smsCode = dto.getCode();
-        String key = Util.md5(type + mobile + smsCode);
-        Redis.set("VerifyCode:" + key, mobile, Long.valueOf(dto.getMinutes()), TimeUnit.MINUTES);
-        Redis.add("VerifyCodeSet:" + mobile, key);
-        Redis.changeExpire("VerifyCodeSet:" + mobile, Long.valueOf(dto.getMinutes()) * 60);
-        logger.info("手机号[{}]的{}类短信验证码为: {}", mobile, type, smsCode);
     }
 
     /**
@@ -111,8 +116,8 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public String verifySmsCode(String key, Boolean isCheck) {
-        String codeKey = "VerifyCode:" + key;
-        String mobile = Redis.get(codeKey);
+        var codeKey = "VerifyCode:" + key;
+        var mobile = Redis.get(codeKey);
         if (mobile == null || mobile.isEmpty()) {
             throw new BusinessException("验证码错误");
         }
@@ -124,9 +129,9 @@ public class MessageServiceImpl implements MessageService {
         }
 
         // 清理已通过验证的验证码对应手机号的全部验证码
-        String setKey = "VerifyCodeSet:" + mobile;
-        List<String> keys = Redis.getMembers(setKey);
-        for (String k : keys) {
+        var setKey = "VerifyCodeSet:" + mobile;
+        var keys = Redis.getMembers(setKey);
+        for (var k : keys) {
             Redis.deleteKey("VerifyCode:" + k);
         }
 
@@ -144,16 +149,16 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public void sendNormalMessage(LoginInfo info, NormalMessage dto) {
-        Long tenantId = info == null ? null : info.getTenantId();
-        Long appId = info == null ? null : info.getAppId();
-        TemplateDto template = mapper.getTemplate(tenantId, appId, dto.getSceneCode());
+        var tenantId = info == null ? null : info.getTenantId();
+        var appId = info == null ? null : info.getAppId();
+        var template = mapper.getTemplate(tenantId, appId, dto.getSceneCode());
         if (template == null) {
             throw new BusinessException("没有可用消息模板,请检查消息参数是否正确");
         }
 
         // 处理签名
-        String sign = template.getSign();
-        Map<String, Object> params = dto.getParams();
+        var sign = template.getSign();
+        var params = dto.getParams();
         if (sign != null && !sign.isEmpty()) {
             if (params == null) {
                 params = new HashMap<>(4);
@@ -163,12 +168,12 @@ public class MessageServiceImpl implements MessageService {
         }
 
         // 组装消息
-        InsightMessage message = Json.clone(dto, InsightMessage.class);
+        var message = Json.clone(dto, InsightMessage.class);
         message.setTag(template.getTag());
         message.setType(template.getType());
         message.setTitle(template.getTitle());
 
-        String content = assemblyContent(template.getContent(), dto.getParams());
+        var content = assemblyContent(template.getContent(), dto.getParams());
         message.setContent(content);
         message.setParams(params);
 
@@ -184,7 +189,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public void sendCustomMessage(LoginInfo info, CustomMessage dto) {
-        InsightMessage message = Json.clone(dto, InsightMessage.class);
+        var message = Json.clone(dto, InsightMessage.class);
         sendMessage(info, message);
     }
 
@@ -214,7 +219,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public UserMessageDto getUserMessage(Long messageId, Long userId) {
-        UserMessageDto message = mapper.getMessage(messageId, userId);
+        var message = mapper.getMessage(messageId, userId);
         if (message == null) {
             throw new BusinessException("ID不存在,未读取数据");
         }
@@ -235,7 +240,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public void deleteUserMessage(Long messageId, Long userId) {
-        UserMessageDto message = mapper.getMessage(messageId, userId);
+        var message = mapper.getMessage(messageId, userId);
         if (message == null) {
             throw new BusinessException("ID不存在,未删除数据");
         }
@@ -252,13 +257,36 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
+     * 发送短信验证码
+     *
+     * @param dto 短信DTO
+     */
+    private void sendSmsCode(SmsCode dto) {
+        var mobile = dto.getMobile();
+        var type = dto.getType();
+
+        var message = new InsightMessage();
+        message.setChannel(dto.getChannel());
+        message.setReceiver(mobile);
+        message.setParams(dto.getParam());
+        core.sendSms(message);
+
+        var smsCode = dto.getCode();
+        var key = Util.md5(type + mobile + smsCode);
+        Redis.set("VerifyCode:" + key, mobile, Long.valueOf(dto.getMinutes()), TimeUnit.MINUTES);
+        Redis.add("VerifyCodeSet:" + mobile, key);
+        Redis.changeExpire("VerifyCodeSet:" + mobile, Long.valueOf(dto.getMinutes()) * 60);
+        logger.info("手机号[{}]的{}类短信验证码为: {}", mobile, type, smsCode);
+    }
+
+    /**
      * 发送消息到队列
      *
      * @param info    用户关键信息
      * @param message 消息DTO
      */
     private void sendMessage(LoginInfo info, InsightMessage message) {
-        Schedule<InsightMessage> schedule = new Schedule<>();
+        var schedule = new Schedule<InsightMessage>();
         schedule.setType(0);
         schedule.setContent(message);
         int type = message.getType();
@@ -303,13 +331,13 @@ public class MessageServiceImpl implements MessageService {
      * @return 消息内容
      */
     private String assemblyContent(String template, Map<String, Object> params) {
-        for (String k : params.keySet()) {
-            Object v = params.get(k);
+        for (var k : params.keySet()) {
+            var v = params.get(k);
             if (v == null) {
                 continue;
             }
 
-            String key = "\\{" + k + "}";
+            var key = "\\{" + k + "}";
             template = template.replaceAll(key, v.toString());
         }
 
