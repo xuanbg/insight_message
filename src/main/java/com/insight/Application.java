@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAsync
 @EnableScheduling
 @EnableTransactionManagement
-public class MessageApplication {
+public class Application {
 
     /**
      * 应用入口方法
@@ -27,6 +27,6 @@ public class MessageApplication {
      * @param args 启动参数
      */
     public static void main(String[] args) {
-        SpringApplication.run(MessageApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }

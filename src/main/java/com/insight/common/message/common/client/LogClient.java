@@ -31,7 +31,7 @@ public class LogClient {
         log.setType(type.toString());
         log.setBusiness(business);
         log.setBusinessId(id);
-        log.setContent(Json.clone(content, Object.class));
+        log.setContent(Json.toBean(content, Object.class));
         log.setCreator(info.getName());
         log.setCreatorId(info.getId());
 

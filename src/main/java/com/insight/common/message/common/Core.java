@@ -9,7 +9,9 @@ import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.message.InsightMessage;
 import com.insight.utils.pojo.message.Schedule;
-import com.insight.utils.redis.Redis;
+
+import com.insight.utils.redis.KeyOps;
+import com.insight.utils.redis.StringOps;
 import com.rabbitmq.client.Channel;
 import feign.Feign;
 import feign.codec.Decoder;
@@ -276,7 +278,7 @@ public class Core {
             logger.warn("保存任务失败! 任务数据为: {}", schedule);
 
             String key = "Config:Warning";
-            boolean isWarning = Redis.hasKey(key);
+            boolean isWarning = KeyOps.hasKey(key);
             if (isWarning) {
                 return;
             }
@@ -287,7 +289,7 @@ public class Core {
             message.setReceivers(list);
             message.setContent(now + "保存任务失败! 请尽快处理");
 
-            Redis.set(key, now.toString(), 24L, TimeUnit.HOURS);
+            StringOps.set(key, now.toString(), 24L, TimeUnit.HOURS);
             sendSms(message);
         }
     }

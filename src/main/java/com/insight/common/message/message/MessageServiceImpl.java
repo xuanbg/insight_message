@@ -22,7 +22,8 @@ import com.insight.utils.pojo.message.InsightMessage;
 import com.insight.utils.pojo.message.Schedule;
 import com.insight.utils.pojo.message.SmsCode;
 import com.insight.utils.redis.KeyOps;
-import com.insight.utils.redis.Redis;
+import com.insight.utils.redis.SetOps;
+import com.insight.utils.redis.StringOps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,26 +118,26 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public String verifySmsCode(String key, Boolean isCheck) {
         var codeKey = "VerifyCode:" + key;
-        var mobile = Redis.get(codeKey);
+        var mobile = StringOps.get(codeKey);
         if (mobile == null || mobile.isEmpty()) {
             throw new BusinessException("验证码错误");
         }
 
         if (isCheck) {
             // 每验证一次有效时间减少15秒,以避免暴力破解
-            Redis.changeExpire(codeKey, -15);
+            StringOps.changeExpire(codeKey, -15);
             return mobile;
         }
 
         // 清理已通过验证的验证码对应手机号的全部验证码
         var setKey = "VerifyCodeSet:" + mobile;
-        var keys = Redis.getMembers(setKey);
+        var keys = SetOps.members(setKey);
         for (var k : keys) {
-            Redis.deleteKey("VerifyCode:" + k);
+            KeyOps.delete("VerifyCode:" + k);
         }
 
         // 清理验证码对应手机号缓存
-        Redis.deleteKey(setKey);
+        KeyOps.delete(setKey);
 
         return mobile;
     }
@@ -168,7 +169,7 @@ public class MessageServiceImpl implements MessageService {
         }
 
         // 组装消息
-        var message = Json.clone(dto, InsightMessage.class);
+        var message = Json.toBean(dto, InsightMessage.class);
         message.setTag(template.getTag());
         message.setType(template.getType());
         message.setTitle(template.getTitle());
@@ -189,7 +190,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public void sendCustomMessage(LoginInfo info, CustomMessage dto) {
-        var message = Json.clone(dto, InsightMessage.class);
+        var message = Json.toBean(dto, InsightMessage.class);
         sendMessage(info, message);
     }
 
@@ -273,9 +274,9 @@ public class MessageServiceImpl implements MessageService {
 
         var smsCode = dto.getCode();
         var key = Util.md5(type + mobile + smsCode);
-        Redis.set("VerifyCode:" + key, mobile, Long.valueOf(dto.getMinutes()), TimeUnit.MINUTES);
-        Redis.add("VerifyCodeSet:" + mobile, key);
-        Redis.changeExpire("VerifyCodeSet:" + mobile, Long.valueOf(dto.getMinutes()) * 60);
+        StringOps.set("VerifyCode:" + key, mobile, Long.valueOf(dto.getMinutes()), TimeUnit.MINUTES);
+        SetOps.add("VerifyCodeSet:" + mobile, key);
+        StringOps.changeExpire("VerifyCodeSet:" + mobile, Long.valueOf(dto.getMinutes()) * 60);
         logger.info("手机号[{}]的{}类短信验证码为: {}", mobile, type, smsCode);
     }
 

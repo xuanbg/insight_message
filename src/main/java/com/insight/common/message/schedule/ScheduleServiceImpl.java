@@ -88,7 +88,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public Long newSchedule(Schedule dto) {
         if (dto.getType() > 0) {
-            ScheduleCall call = Json.clone(dto.getContent(), ScheduleCall.class);
+            ScheduleCall call = Json.toBean(dto.getContent(), ScheduleCall.class);
             if (call == null || call.getMethod() == null || call.getService() == null || call.getUrl() == null) {
                 throw new BusinessException(("无效参数"));
             }
@@ -98,7 +98,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 throw new BusinessException("调用方法错误");
             }
 
-            InsightMessage message = Json.clone(dto.getContent(), InsightMessage.class);
+            InsightMessage message = Json.toBean(dto.getContent(), InsightMessage.class);
             if (message == null) {
                 throw new BusinessException(("无效参数"));
             }

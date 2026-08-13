@@ -18,7 +18,7 @@ public class RabbitClient {
      * @param data 用户DTO
      */
     public static void sendResources(Object data) {
-        Object object = Json.clone(data, Object.class);
+        Object object = Json.toBean(data, Object.class);
         TEMPLATE.convertAndSend("amq.topic", "hxb.resources", object);
     }
 }
